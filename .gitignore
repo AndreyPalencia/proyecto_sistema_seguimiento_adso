@@ -1,2 +1,8 @@
 #node_modules
 /server/node_modules
+
+#Folder upload 
+/server/upload
+
+#Archivos .env
+/server/.env
