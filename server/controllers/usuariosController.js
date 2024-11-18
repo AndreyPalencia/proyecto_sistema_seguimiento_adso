@@ -84,7 +84,7 @@ exports.crearUsuario = async (req, res) => {
 };
 
 //Obtener usuarios
-exports.obtenerUsuario = async (req, res) => {
+exports.obtenerUsuarios = async (req, res) => {
     const { estado_usuario, numero_documento, nombre, apellido, correo_electronico } = req.body;
     const filtros = [];
     const valores = [estado_usuario];
