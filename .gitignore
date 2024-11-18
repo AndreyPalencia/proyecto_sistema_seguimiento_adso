@@ -7,3 +7,6 @@
 #Archivos .env
 /server/.env
 proyecto_sistema_seguimiento_adso.code-workspace
+
+#Ignore launch.json
+.vscode/launch.json
