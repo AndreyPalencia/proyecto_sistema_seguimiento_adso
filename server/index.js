@@ -5,9 +5,9 @@ const routes = require('./routes/index.js');//Invoco el archivo fichas para acce
 
 //Para convierta el body con json
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 //Configuración de peticiones externas
-
 app.use(cors());
 
 //Routas para las peticiones https

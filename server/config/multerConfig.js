@@ -41,5 +41,31 @@ const createUploadMiddleware  = (folderName) => {
 }
 
 
+// Middleware para cargar archivos (opcional)
+const createUploadMiddlewareOptional = (folderName) => {
+    const storage = createStorage(folderName);
+    const upload = multer({ storage }).single('archivo');
 
-module.exports = createUploadMiddleware;
+    return (req, res, next) => {
+        upload(req, res, (error) => {
+            if (error) {
+                return res.status(500).json({ mensaje: "Error al subir el archivo." });
+            }
+
+            // Si no se ha subido ningún archivo, continuar sin error
+            if (!req.file) {
+                console.log( "No se ha subido ningún archivo.");
+                return next(); // Continuar sin error
+            }
+
+            // Si se subió el archivo exitosamente
+            res.status(200).json({mensaje: "Archivo subido exitosamente", archivo: req.file});
+            return next();
+        });
+    };
+}
+
+
+
+
+module.exports = {createUploadMiddleware, createUploadMiddlewareOptional};
