@@ -34,12 +34,11 @@ const createUploadMiddleware  = (folderName) => {
                 return res.status(400).json({mensaje: "No se ha subido ningun archivo."})
             }
             //Aqui pondrianos la funicon de fillter
-            res.status(200).json({mensaje: "Archivo subido exitosamente", archivo: req.file});
+            //res.status(200).json({mensaje: "Archivo subido exitosamente", archivo: req.file});
             return next();
         });
     }
 }
-
 
 // Middleware para cargar archivos (opcional)
 const createUploadMiddlewareOptional = (folderName) => {
@@ -59,13 +58,10 @@ const createUploadMiddlewareOptional = (folderName) => {
             }
 
             // Si se subió el archivo exitosamente
-            res.status(200).json({mensaje: "Archivo subido exitosamente", archivo: req.file});
+            //res.status(200).json({mensaje: "Archivo subido exitosamente", archivo: req.file});
             return next();
         });
     };
 }
-
-
-
 
 module.exports = {createUploadMiddleware, createUploadMiddlewareOptional};
