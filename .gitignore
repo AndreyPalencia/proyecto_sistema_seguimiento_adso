@@ -1,4 +1,14 @@
 #node_modules
 /server/node_modules
-.env
+
+#Carpeta upload 
+/server/upload
+
+#Archivos .env
+/server/.env
+
+#Ignore launch.json
+.vscode/launch.json
+
+#Igonre el espacio de trabajo
 proyecto_sistema_seguimiento_adso.code-workspace
