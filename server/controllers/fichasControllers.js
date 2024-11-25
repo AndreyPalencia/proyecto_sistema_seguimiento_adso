@@ -1,4 +1,4 @@
-const db = require('../db/base_datos'); //Importamos la conexion de la base de datos
+const db = require('../config/base_datos'); //Importamos la conexion de la base de datos
 
 // Crear una ficha
 exports.nuevaFicha = async (req, res) => {
