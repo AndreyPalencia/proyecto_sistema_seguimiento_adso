@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();//Creacion de rutas
 
 const usuariosController = require('../controllers/usuariosController'); //Controlador de fichas
-const loginController = require('../auth/autentificacion'); //Controllador de login
 const upload = require('../config/multerConfig');
 
 /* Rutas Usuarios */
