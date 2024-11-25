@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();//Creacion de rutas
 
 const usuariosController = require('../controllers/usuariosController'); //Controlador de fichas
-const loginController = require('../auth/autentificacion'); //Controllador de login
 const upload = require('../config/multerConfig');
 
 /* Rutas Usuarios */
@@ -14,11 +13,11 @@ router.post('/crearUsuario', upload.createUploadMiddlewareOptional('firmas'), us
 //Visualizar usuarios por [id]
 router.post('/visualizarUsuarios', usuariosController.obtenerUsuarios);
 //Visualizar usuario por [id]
-router.get('/visualizarUsuario/:idUsuario', usuariosController.obtenerUsuarioPorId);
+router.get('/:idUsuario', usuariosController.obtenerUsuarioPorId);
 //Modificar usuarios por [id]
-router.put('/modificarUsuario/:idUsuario', upload.createUploadMiddlewareOptional('firmas'), usuariosController.modificarUsuario);
+router.put('/:idUsuario', upload.createUploadMiddlewareOptional('firmas'), usuariosController.modificarUsuario);
 //Eliminar usuarios
-router.patch('/cambiarEstadoUsuario/:idUsuario', usuariosController.cambiarEstadoUsuario);
+router.patch('/:idUsuario/cambiarEstadoUsuario', usuariosController.cambiarEstadoUsuario);
 
 
 module.exports = router;

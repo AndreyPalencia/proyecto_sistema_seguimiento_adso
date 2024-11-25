@@ -7,6 +7,6 @@ const router = express.Router();//Creacion de rutas
 
 
 router.use('/auth', authRoutes);
-router.use('/usurarios', usuariosRoutes);
+router.use('/usuarios', usuariosRoutes);
 
 module.exports = router;

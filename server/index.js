@@ -14,9 +14,9 @@ app.use(cors()); //Falta configurar cors para el servidor
 //Routas para las peticiones https
 app.use('/api', routes);
 
-app.use((req, res, next) => {
+/* app.use((req, res, next) => {
     res.status(404).json({ message: 'Ruta no encontrada' });
-});
+}); */
 
 //Puerto de escucha
 const PORT = 3000 || 5000;
