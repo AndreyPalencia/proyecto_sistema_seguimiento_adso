@@ -15,6 +15,6 @@ router.put('/:idFicha', fichasControllers.actualizarFicha);
 //Eliminar una ficha por [id]
 router.delete('/:idFicha', fichasControllers.eliminarFicha);//Falta probarlo
 //Archivar una ficha por [id] //Falta probarlo
-router.patch('/:idFicha/archivada', fichasControllers.archivarFicha);
+router.patch('/:idFicha/estado', fichasControllers.archivarFicha);
 
 module.exports = router;
