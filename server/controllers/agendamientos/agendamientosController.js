@@ -1,6 +1,6 @@
 // Importa la conexión a la base de datos desde el archivo db.js
 
-const conexion = require("../config/base_datos");
+const conexion = require("../../config/base_datos");
 
 // Función para crear un nuevo agendamiento
 const agendamientosController = {

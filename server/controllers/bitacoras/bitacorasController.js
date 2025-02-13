@@ -1,4 +1,4 @@
-const db = require("../config/base_datos"); //Importamos la conexion de la base de datos
+const db = require("../../config/base_datos"); //Importamos la conexion de la base de datos
 
 exports.crearBitacora = async (req, res) => {
   const { numero_bitacora, observacion, id_ficha_aprendiz } = req.body;
