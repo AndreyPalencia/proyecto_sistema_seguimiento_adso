@@ -1,5 +1,5 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/base_datos";
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/base_datos.js';
 
 class Usuario extends Model {
   static associate(models) {
@@ -19,8 +19,8 @@ Usuario.init(
       allowNull: false,
       validate: {
         isIn: {
-          args: [["CC", "CE", "TI", "PEP", "PPT"]],
-          msg: "TIpo de documento invalido.",
+          args: [['CC', 'CE', 'TI', 'PEP', 'PPT']],
+          msg: 'TIpo de documento invalido.',
         },
       },
     },
@@ -53,7 +53,7 @@ Usuario.init(
       allowNull: false,
       validate: {
         isInt: true,
-        len: [7, 10], // Teléfono fijo o celular Colombia
+        // len: [7, 10], // Teléfono fijo o celular Colombia
       },
     },
     correo_electronico: {
@@ -66,14 +66,14 @@ Usuario.init(
     },
     firma: {
       type: DataTypes.STRING(255),
-      defaultValue: "No foto",
+      defaultValue: 'No foto',
       allowNull: true,
     },
     rol: {
       type: DataTypes.STRING(20),
       allowNull: false,
       validate: {
-        isIn: [["admin", "instructor", "aprendiz"]],
+        isIn: [['admin', 'instructor', 'aprendiz']],
       },
     },
     password: {
@@ -88,8 +88,8 @@ Usuario.init(
   },
   {
     sequelize,
-    modelName: "Usuario",
-    tableName: "usuario",
+    modelName: 'Usuario',
+    tableName: 'usuario',
     timestamps: false,
     paranoid: false,
   }

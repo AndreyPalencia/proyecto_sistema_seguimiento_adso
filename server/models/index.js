@@ -1,15 +1,11 @@
-import Usuario from './Usuario';
-import Ficha from './Ficha';
+import Usuario from './Usuario.js';
 
-const models = { Usuario, Ficha };
-
+const models = { Usuario };
 
 Object.keys(models).forEach((modelName) => {
-  if ("associate" in models[modelName]) {
+  if ('associate' in models[modelName]) {
     models[modelName].associate(models);
   }
 });
 
-export default  { ...models };
- 
-
+export default {...models};
