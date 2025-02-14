@@ -1,8 +1,11 @@
-require('dotenv').config(); //Para cargar las variables de entornno en todo el servicio
-const express = require("express");
-const cors = require("cors"); //Permitir petiones de otras url
-const app = express(); //Para iniciar el servidor
-const routes = require('./routes/index.js');//Invoco el archivo fichas para acceder los middleware de ficha
+import express from 'express';
+import cors from 'cors'; //Permitir petiones de otras url
+//Para cargar las variables de entornno en todo el servicio
+import 'dotenv/config'
+//Importar las rutas de la carpeta routes para las peticiones https
+import routes from './routes/index.js';
+
+const app = express(); //Inicializar el servidor
 
 //Para convierta el body con json
 app.use(express.json());
