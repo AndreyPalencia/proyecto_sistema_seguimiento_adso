@@ -1,67 +1,72 @@
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import ApiResponse from '../utils/apiResponse.js';
 
-// Función para crear un almacenamiento dinámico
+// Obtener la ruta del archivo actual
+const __filename = fileURLToPath(import.meta.url);
+// Obtener el directorio actual del archivo
+const __dirname = path.dirname(__filename);
+
+/**
+ * Crea una configuración de almacenamiento dinámico para multer.
+ * @param {string} folderName - Nombre de la carpeta donde se almacenarán los archivos.
+ * @returns {multer.StorageEngine} Configuración de almacenamiento para multer.
+ */
 const createStorage = (folderName) => {
-    const uploadPath = path.join(__dirname, '../upload', folderName); //Indica la ruta a guardar el archivo
-    !fs.existsSync(uploadPath) ? console.log("Carpeta No existe.", uploadPath) :  console.log("Carpeta Existente.");
-    //fs.mkdirSync(uploadPath, { recursive: true });    
-    
-    return multer.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, uploadPath);  // Carpeta donde se guardan los archivos
-        },
-        filename: function (req, file, cb) {
-            const nameUniqueId = Date.now(); //Cantidad de caracteres
-            const fileExtension = path.extname(file.originalname); //Obtener la extecion del archivo
-            cb(null, `${nameUniqueId}${fileExtension}` );  // Nombre del archivo
-        }
-    })
-}
+  const uploadPath = path.join(__dirname, '../upload', folderName);
 
-// Middleware para cargar archivos
-const createUploadMiddleware  = (folderName) => {
-    const storage = createStorage(folderName); //Obtenermos la configuracion
-    const upload = multer({storage:storage}).single('archivo'); //Se le pasa la configuracion a multer 
-
-    return (req,res, next) =>{
-        upload(req, res, (error) => {
-            if (error) {
-                return res.status(500).json({mensaje: "Erro al subir el archivo."})
-            }
-            if (!req.file){
-                return res.status(400).json({mensaje: "No se ha subido ningun archivo."})
-            }
-            //Aqui pondrianos la funicon de fillter
-            //res.status(200).json({mensaje: "Archivo subido exitosamente", archivo: req.file});
-            return next();
-        });
+  
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true }); // Solo crea la carpeta si no existe
+      console.log('Carpeta Creada:', uploadPath);
+    } else {
+      console.log('Carpeta Existente:', folderName);
     }
-}
 
-// Middleware para cargar archivos (opcional)
-const createUploadMiddlewareOptional = (folderName) => {
-    const storage = createStorage(folderName);
-    const upload = multer({ storage }).single('archivo');
+  return multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, uploadPath); // Carpeta donde se guardan los archivos
+    },
+    filename: function (req, file, cb) {
+      const nameUniqueId = Date.now(); //Cantidad de caracteres
+      const fileExtension = path.extname(file.originalname); //Obtener la extecion del archivo
+      cb(null, `${nameUniqueId}${fileExtension}`); // Nombre del archivo
+    },
+  });
+};
 
-    return (req, res, next) => {
+/**
+ * Middleware para manejar la subida de archivos con promesas.
+ * @param {string} folderName - Nombre de la carpeta de destino.
+ * @param {boolean} allowEmpty - Permitir solicitudes sin archivos adjuntos.
+ * @returns {function} Middleware de Express para manejar la carga de archivos.
+ */
+export const createUploadMiddleware = (folderName, allowEmpty = false) => {
+  //Obtenermos la configuracion de multer
+  const storage = createStorage(folderName);
+  //Se le pasa la configuracion a multer
+  const upload = multer({ storage: storage }).single('archivo');
+
+  return async (req, res, next) => {
+    try {
+      //Se le pasan la req y res para que multer ejecute la subida del archivo
+      await new Promise((resolve, reject) => {
         upload(req, res, (error) => {
-            if (error) {
-                return res.status(500).json({ mensaje: "Error al subir el archivo." });
-            }
-
-            // Si no se ha subido ningún archivo, continuar sin error
-            if (!req.file) {
-                console.log( "No se ha subido ningún archivo.");
-                return next(); // Continuar sin error
-            }
-
-            // Si se subió el archivo exitosamente
-            //res.status(200).json({mensaje: "Archivo subido exitosamente", archivo: req.file});
-            return next();
+          if (error) return reject(error);
+          resolve();
         });
-    };
-}
-
-module.exports = {createUploadMiddleware, createUploadMiddlewareOptional};
+      });
+      //Si no se sube ningun archivo y no se permite que sea vacio se retorna un error
+      if (!req.file && !allowEmpty) {
+        return ApiResponse.badRequest(res, 'No se ha subido ningun archivo.');
+      }
+      //Agregar la propiedad filePath al req
+      req.filePath = req.file?.path;
+      next();
+    } catch (error) {
+      return ApiResponse.error(res, error, 'Error al subir el archivo');
+    }
+  };
+};
