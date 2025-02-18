@@ -9,12 +9,13 @@ class Usuario extends Model {
 
 Usuario.init(
   {
-    id_usuario: {
+    idUsuario: {
       type: DataTypes.INTEGER.UNSIGNED,
       primaryKey: true,
       autoIncrement: true,
+      field: 'id_usuario',
     },
-    tipo_documento: {
+    tipoDocumento: {
       type: DataTypes.STRING(20),
       allowNull: false,
       validate: {
@@ -23,14 +24,16 @@ Usuario.init(
           msg: 'TIpo de documento invalido.',
         },
       },
+      field: 'tipo_documento',
     },
-    numero_documento: {
+    numeroDocumento: {
       type: DataTypes.INTEGER.UNSIGNED,
       unique: true,
       allowNull: false,
       validate: {
         isInt: true,
       },
+      field: 'numero_documento',
     },
     nombre: {
       type: DataTypes.STRING(125),
@@ -56,13 +59,14 @@ Usuario.init(
         // len: [7, 10], // Teléfono fijo o celular Colombia
       },
     },
-    correo_electronico: {
+    correoElectronico: {
       type: DataTypes.STRING(50),
       unique: true,
       allowNull: false,
       validate: {
         isEmail: true,
       },
+      field: 'correo_electronico',
     },
     firma: {
       type: DataTypes.STRING(255),
@@ -80,11 +84,13 @@ Usuario.init(
       type: DataTypes.STRING(255),
       allowNull: false,
     },
-    estado_usuario: {
+    estadoUsuario: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       allowNull: false,
+      field: 'estado_usuario',
     },
+
   },
   {
     sequelize,
