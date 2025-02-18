@@ -1,18 +1,20 @@
-const express = require('express');
+import express from 'express';
 
-const usuariosRoutes = require('../routes/usuarios');
-const authRoutes = require('../routes/authRoutes');
-const fichaRoutes = require('../routes/fichas');
-const agendamientoRoutes = require("../routes/agendameintos");
-const bitacorasRoutes = require('../routes/bitacoras');
+// Importar todas las rutas
+import routerUsuarios from './usuarios/usuarios.routes.js';
 
-const router = express.Router();//Creacion de rutas
+// const authRoutes = require('../routes/authRoutes');
+// const fichaRoutes = require('../routes/fichas');
+// const agendamientoRoutes = require("../routes/agendameintos");
+// const bitacorasRoutes = require('../routes/bitacoras');
 
+//Creacion de rutas
+const routes = express.Router();
 
-router.use('/auth', authRoutes);
-router.use('/usuarios', usuariosRoutes);
-router.use('/ficha', fichaRoutes);
-router.use('/agendamientos', agendamientoRoutes);
-router.use('/bitacoras', bitacorasRoutes);
+// router.use('/auth', authRoutes);
+routes.use('/usuarios', routerUsuarios);
+// router.use('/ficha', fichaRoutes);
+// router.use('/agendamientos', agendamientoRoutes);
+// router.use('/bitacoras', bitacorasRoutes);
 
-module.exports = router;
+export default routes;

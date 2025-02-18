@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();//Creacion de rutas
 
-const autentificacion = require('../auth/autentificacion'); //Controllador de login
+const autentificacion = require('../../auth/autentificacion'); //Controllador de login
 
 /* Rutas Autentificacion */
 

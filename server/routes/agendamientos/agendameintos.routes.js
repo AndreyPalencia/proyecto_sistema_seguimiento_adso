@@ -10,11 +10,11 @@ const agendamientosController = require('../controllers/agendamientosController'
 router.post('/', agendamientosController.crearAgendamiento); 
 // Obtener todos los agendamientos
 router.post('/visualizarAgendamientos', agendamientosController.obtenerAgendamientos); 
-// Obtener un agendamiento por ID
+// Obtener un agendamiento por [ID]
 router.get('/:idAgendamiento', agendamientosController.obtenerAgendamientoEspecifico); 
-// Modificar un agendamiento por ID
+// Modificar un agendamiento por [ID]
 router.put('/:idAgendamiento', agendamientosController.modificarAgendamiento); 
-// Eliminar un agendamiento por ID
+// Eliminar un agendamiento por [ID]
 router.delete('/:idAgendamiento', agendamientosController.eliminarAgendamiento);
 // Actualizar el estado de la visita de un agendamiento
 router.patch('/:idAgendamiento/estado', agendamientosController.actualizarEstadoVisita); 
