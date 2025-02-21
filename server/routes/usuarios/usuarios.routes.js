@@ -3,7 +3,7 @@ import { createUploadMiddleware } from '../../config/multerConfig.js';
 
 // Importar controladores de usuarios
 import { createUsuario } from '../../controllers/usuarios/createUsuario.js';
-import { getUsuarios } from '../../controllers/usuarios/getUsuarios.js';
+import { searchUsuarios } from '../../controllers/usuarios/searchUsuarios.js';
 import { getUsuarioById } from '../../controllers/usuarios/getUsuarioById.js';
 import { updateUsuarioById } from '../../controllers/usuarios/updateUsuarioById.js';
 import { updateUsuarioState } from '../../controllers/usuarios/updateUsuarioState.js';
@@ -16,14 +16,10 @@ const routerUsuarios = express.Router();
 //router.post('/crearUsuarioFile', createUploadMiddleware('filesExcel'), crearUsuarioExcel);
 
 //Crear usuario
-routerUsuarios.post(
-  '/crearUsuario',
-  createUploadMiddleware('firmas'),
-  createUsuario
-);
+routerUsuarios.post('/', createUploadMiddleware('firmas'), createUsuario);
 
-//Visualizar los usuarios
-routerUsuarios.post('/visualizarUsuarios', getUsuarios);
+//Visualizar los usuarios por filtros
+routerUsuarios.post('/buscar', searchUsuarios);
 
 //Visualizar usuario por [ID]
 routerUsuarios.get('/:idUsuario', getUsuarioById);
@@ -36,6 +32,6 @@ routerUsuarios.put(
 );
 
 //Cambiar estado por [ID] del usuario
-routerUsuarios.post('/:idUsuario/estadoUsuario', updateUsuarioState);
+routerUsuarios.patch('/:idUsuario/estado', updateUsuarioState);
 
 export default routerUsuarios;

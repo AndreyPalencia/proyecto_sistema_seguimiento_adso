@@ -1,0 +1,18 @@
+import models from '../../models/index.js';
+const { Bitacora } = models;
+import ApiResponse from '../../utils/apiResponse.js';
+import fileHelpers from '../../utils/fileHelpers.js'
+
+export const createBitacora = async (req, res) => {
+  try {
+    if (req.file && req.file.filename) {
+      req.body.bitacora = req.file.filename;
+    }
+    const bitacora = await Bitacora.create(req.body);
+    return ApiResponse.created(res, bitacora, 'Bitacora subida');
+  } catch (error) {
+    console.error('Error en la creación de los datos', error);
+    await fileHelpers.rollbackFileOnError(req.filePath);
+    return ApiResponse.error(res, error, 'No se pudo subir la bitacora');
+  }
+};

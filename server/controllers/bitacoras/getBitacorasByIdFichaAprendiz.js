@@ -1,0 +1,42 @@
+import models from '../../models/index.js';
+const { Bitacora } = models;
+import ApiResponse from '../../utils/apiResponse.js';
+
+export const getBitacorasByIdFichaAprendiz = async (req, res) => {
+  const idFichaAprendiz = req.params.idFichaAprendiz;
+
+  if (!idFichaAprendiz) {
+    return ApiResponse.badRequest(
+      res,
+      'El campo idFichaAprendiz es requerido.'
+    );
+  }
+
+  try {
+    const bitacoras = await Bitacora.findAll({
+      where: {
+        idFichaAprendiz,
+      },
+    });
+
+    if (bitacoras.length === 0) {
+      return ApiResponse.notFound(
+        res,
+        'No se encontraron bitacoras realcionadas al idFichaAprendiz '
+      );
+    }
+
+    return ApiResponse.success(
+      res,
+      bitacoras,
+      'Bitacora visualizada exitosamente'
+    );
+  } catch (error) {
+    console.error('Error en la visualización de los datos', error);
+    return ApiResponse.error(
+      res,
+      error,
+      'Error en la visualización de la bitacora'
+    );
+  }
+};

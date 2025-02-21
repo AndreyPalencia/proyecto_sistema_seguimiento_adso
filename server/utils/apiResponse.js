@@ -46,6 +46,7 @@ class ApiResponse {
     //En desarrollo se envía el stack y el error completo
     if (process.env.NODE_ENV === 'development') {
       errorResponse.error = {
+        //Trazamiento de la pila de ejecucion cuando ocurrio el error
         stack: error?.stack,
         details: error,
       };

@@ -4,7 +4,7 @@ import ApiResponse from '../../utils/apiResponse.js';
 import { Op } from 'sequelize';
 
 // Obtener usuarios -> Agregar clasulas para rol instructro para no buscar en fichas no le corresponda
-export const getUsuarios = async (req, res) => {
+export const searchUsuarios = async (req, res) => {
   const {
     estadoUsuario,
     numeroDocumento,

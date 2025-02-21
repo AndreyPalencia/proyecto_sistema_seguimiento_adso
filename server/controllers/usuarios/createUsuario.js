@@ -1,7 +1,7 @@
 import models from '../../models/index.js';
 const { Usuario } = models;
 import ApiResponse from '../../utils/apiResponse.js';
-import encryptionUtil from '../../utils/encryption.js';
+import encryptionUtil from '../../utils/encryptionUtil.js';
 import fileHelpers from '../../utils/fileHelpers.js';
 
 //Crear un usuario

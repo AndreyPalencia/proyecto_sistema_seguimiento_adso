@@ -17,13 +17,12 @@ const __dirname = path.dirname(__filename);
 const createStorage = (folderName) => {
   const uploadPath = path.join(__dirname, '../upload', folderName);
 
-  
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true }); // Solo crea la carpeta si no existe
-      console.log('Carpeta Creada:', uploadPath);
-    } else {
-      console.log('Carpeta Existente:', folderName);
-    }
+  if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true }); // Solo crea la carpeta si no existe
+    console.log('Carpeta Creada:', uploadPath);
+  } else {
+    console.log('Carpeta Existente:', folderName);
+  }
 
   return multer.diskStorage({
     destination: function (req, file, cb) {
