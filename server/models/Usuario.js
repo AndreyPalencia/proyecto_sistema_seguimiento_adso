@@ -2,8 +2,26 @@ import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/base_datos.js';
 
 class Usuario extends Model {
+  /**
+   * Método para definir las asociaciones entre modelos.
+   */
   static associate(models) {
-    //Definir
+    // Relación 1:N -> Un Usuario (Aprendiz) puede estar asociado a múltiples registros en FichaAprendiz.
+    this.hasMany(models.FichaAprendiz, {
+      foreignKey: 'idUsuario',
+    });
+    // Relación 1:N -> Un usuario (Instructor) puede estar asociado a varias fichas.
+    this.hasMany(models.Ficha, {
+      foreignKey: 'idInstructor',
+    });
+    // Relación 1:N -> Un usuario (Instructor) puede tener multiples agendamientos.
+    this.hasMany(models.Agendamiento, {
+      foreignKey: 'idInstructor',
+    });
+    // Relación 1:N -> Un usuario puede recibir multipes notificaciones.
+    this.hasMany(models.Notificacion, {
+      foreignKey: 'idUsuario',
+    });
   }
 }
 
@@ -55,8 +73,8 @@ Usuario.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       validate: {
-        isInt: true,
-        // len: [7, 10], // Teléfono fijo o celular Colombia
+        min: 1000000, // 7 dígitos mínimo (para teléfono fijo)
+        max: 9999999999,
       },
     },
     correoElectronico: {
@@ -90,7 +108,6 @@ Usuario.init(
       allowNull: false,
       field: 'estado_usuario',
     },
-
   },
   {
     sequelize,

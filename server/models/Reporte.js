@@ -1,0 +1,66 @@
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/base_datos.js';
+
+class Reporte extends Model {
+  /**
+   * Método para definir las asociaciones entre modelos.
+   */
+  static associate(models) {
+    // Relación N:1 -> Un Reporte pertence a una única FichaAprendiz.
+    this.belongsTo(models.FichaAprendiz, {
+      foreignKey: 'idFichaAprendiz',
+    });
+  }
+}
+
+Reporte.init(
+  {
+    idReporte: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      primaryKey: true,
+      autoIncrement: true,
+      field: 'id_reporte',
+    },
+    nombreReporte: {
+      type: DataTypes.STRING(40),
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        len: [5, 40],
+      },
+      field: 'nombre_reporte',
+    },
+    fechaUltimaActualizacion: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        isDate: true,
+        isBefore: new Date().toString(),
+      },
+      field: 'fecha_ultima_actualizacion',
+    },
+    tipoReporte: {
+      type: DataTypes.STRING(30),
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        len: [7, 30],
+      },
+      field: 'tipo_reporte',
+    },
+    idFichaAprendiz: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      field: 'id_ficha_aprendiz',
+    },
+  },
+  {
+    sequelize,
+    modelName: 'Reporte',
+    tableName: 'reporte',
+    timestamps: false,
+    paranoid: false,
+  }
+);
+
+export default Reporte;
