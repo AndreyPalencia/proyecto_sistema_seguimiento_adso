@@ -2,19 +2,19 @@ import express from 'express';
 
 // Importar todas las rutas
 import routerUsuarios from './usuarios/usuarios.routes.js';
-
-// const authRoutes = require('../routes/authRoutes');
-// const fichaRoutes = require('../routes/fichas');
-// const agendamientoRoutes = require("../routes/agendameintos");
-// const bitacorasRoutes = require('../routes/bitacoras');
+import routerFichas from './fichas/fichas.routes.js';
+import routerAgendamientos from './agendamientos/agendameintos.routes.js';
+import routerBitcoras from './bitacoras/bitacoras.routes.js';
+import routerEmpresas from './empresas/empresas.routes.js';
 
 //Creacion de rutas
 const routes = express.Router();
 
 // router.use('/auth', authRoutes);
 routes.use('/usuarios', routerUsuarios);
-// router.use('/ficha', fichaRoutes);
-// router.use('/agendamientos', agendamientoRoutes);
-// router.use('/bitacoras', bitacorasRoutes);
+routes.use('/fichas', routerFichas);
+routes.use('/agendamientos', routerAgendamientos);
+routes.use('/bitacoras', routerBitcoras);
+routes.use('/empresas', routerEmpresas)
 
 export default routes;

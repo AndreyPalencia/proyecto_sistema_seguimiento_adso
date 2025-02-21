@@ -1,25 +1,30 @@
-const express = require('express');
-const router = express.Router();//Creacion de rutas
+import express from 'express';
 
+// Importar controladores de usuarios
+import { createAgendamiento } from '../../controllers/agendamientos/createAgendamiento.js';
+import { getAgendamientoByRol } from '../../controllers/agendamientos/getAgendamientoByRol.js';
+import { getAgendamientoById } from '../../controllers/agendamientos/getAgendamientoById.js';
+import { updateAgendamiento } from '../../controllers/agendamientos/updateAgendamiento.js';
+import { deleteAgendamiento } from '../../controllers/agendamientos/deleteAgendamiento.js';
+import { updateAgendamientoState } from '../../controllers/agendamientos/updateAgendamientoState.js';
 
 /* Rutas Agendamientos */
 
-const agendamientosController = require('../controllers/agendamientosController'); // Ajusta el path si está en otra carpeta
+const routerAgendamientos = express.Router();
 
 // Crear un nuevo agendamiento
-router.post('/', agendamientosController.crearAgendamiento); 
+routerAgendamientos.post('/', createAgendamiento);
 // Obtener todos los agendamientos
-router.post('/visualizarAgendamientos', agendamientosController.obtenerAgendamientos); 
+routerAgendamientos.post('/rol', getAgendamientoByRol);
 // Obtener un agendamiento por [ID]
-router.get('/:idAgendamiento', agendamientosController.obtenerAgendamientoEspecifico); 
+routerAgendamientos.get('/:idAgendamiento', getAgendamientoById);
 // Modificar un agendamiento por [ID]
-router.put('/:idAgendamiento', agendamientosController.modificarAgendamiento); 
-// Eliminar un agendamiento por [ID]
-router.delete('/:idAgendamiento', agendamientosController.eliminarAgendamiento);
+routerAgendamientos.put('/:idAgendamiento', updateAgendamiento);
 // Actualizar el estado de la visita de un agendamiento
-router.patch('/:idAgendamiento/estado', agendamientosController.actualizarEstadoVisita); 
+routerAgendamientos.patch('/:idAgendamiento/estado', updateAgendamientoState);
+// Eliminar un agendamiento por [ID]
+routerAgendamientos.delete('/:idAgendamiento', deleteAgendamiento);
 
 /*Notas: Visualizacion de agendamientos por filtro del metodo de ? */
 
-
-module.exports = router;
+export default routerAgendamientos;
