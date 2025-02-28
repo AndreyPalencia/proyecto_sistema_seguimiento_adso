@@ -6,7 +6,8 @@ import { getFichaById } from '../../controllers/fichas/getFichaById.js';
 import { updateFicha } from '../../controllers/fichas/updateFicha.js';
 import { updateFichaState } from '../../controllers/fichas/updateFichaState.js';
 
-// creacion de rutas
+/* Rutas Fichas */
+
 const routerFichas = express.Router();
 
 /* Rutass Fichas */

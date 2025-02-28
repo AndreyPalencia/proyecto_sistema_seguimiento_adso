@@ -9,10 +9,10 @@ import { updateBitacora } from '../../controllers/bitacoras/updateBitacora.js';
 import { updateBitacoraState } from '../../controllers/bitacoras/updateBitacoraState.js';
 import { deleteBitacora } from '../../controllers/bitacoras/deleteBitacora.js';
 
-//Creacion de rutas
+/* Rutas Bitacoras */
+
 const routerBitcoras = express.Router();
 
-/* Rutas Bitacoras */
 //Crear bitacora
 routerBitcoras.post('/', createUploadMiddleware('bitacoras'), createBitacora);
 

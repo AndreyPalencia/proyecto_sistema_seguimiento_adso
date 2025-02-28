@@ -8,10 +8,10 @@ import { getUsuarioById } from '../../controllers/usuarios/getUsuarioById.js';
 import { updateUsuarioById } from '../../controllers/usuarios/updateUsuarioById.js';
 import { updateUsuarioState } from '../../controllers/usuarios/updateUsuarioState.js';
 
-//Creacion de rutas
+/* Rutas Usuarios */
+
 const routerUsuarios = express.Router();
 
-/* Rutas Usuarios */
 //Crear usuarios por archivo
 //router.post('/crearUsuarioFile', createUploadMiddleware('filesExcel'), crearUsuarioExcel);
 

@@ -6,7 +6,7 @@ import { getEmpresa } from '../../controllers/empresas/getEmpresa.js';
 import { updateEmpresa } from '../../controllers/empresas/updateEmpresa.js';
 import { deleteEmpresa } from '../../controllers/empresas/deleteEmpresa.js';
 
-//Creacion de rutas
+/* Rutas Empresas */
 const routerEmpresas = express.Router();
 
 //Crear usuario
