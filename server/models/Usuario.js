@@ -101,6 +101,9 @@ Usuario.init(
     password: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      validate: {
+        len: [8, 255],
+      },
     },
     estadoUsuario: {
       type: DataTypes.BOOLEAN,

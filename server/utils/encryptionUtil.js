@@ -5,8 +5,8 @@ const encryptionUtil = {
   //Encriptacion de la contrasenia
   hashPassword: async (password) => {
     try {
-      const hashPassword = await hash(password, 10);
-      return hashPassword;
+      const passwordString = String(password);
+      return await hash(passwordString, 10);
     } catch (error) {
       console.error('Error al encriptar la constraseña', error);
       return null;
@@ -16,9 +16,10 @@ const encryptionUtil = {
   //Comparacion de la contrasenias
   comparePassword: async (password, hashPassword) => {
     try {
-      return await compare(password, hashPassword);
+      const passwordToCompare = String(password);
+      return await compare(passwordToCompare, hashPassword);
     } catch (error) {
-      console.error('Error comparar las contraseñas');
+      console.error('Error comparar las contraseñas', error);
       return false;
     }
   },
