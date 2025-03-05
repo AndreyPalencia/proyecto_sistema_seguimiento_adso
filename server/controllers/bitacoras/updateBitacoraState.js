@@ -8,11 +8,11 @@ export const updateBitacoraState = async (req, res) => {
   const { estadoBitacora } = req.body;
 
   if (!idBitacora) {
-    return ApiResponse.badRequest(res, 'El id bitacora es requerido');
+    return ApiResponse.badRequest(res, 'El id bitacora es requerido.');
   }
 
   if (estadoBitacora === null || estadoBitacora === undefined) {
-    return ApiResponse.badRequest(res, 'El estado de la bitacora es requerido');
+    return ApiResponse.badRequest(res, 'El estado de la bitacora es requerido.');
   }
 
   try {
@@ -22,20 +22,20 @@ export const updateBitacoraState = async (req, res) => {
     );
 
     if (updateRow[0] === 0) {
-      return ApiResponse.notFound(res, 'Bitacora no encontrada');
+      return ApiResponse.notFound(res, 'Bitacora no encontrada.');
     }
 
     return ApiResponse.success(
       res,
       undefined,
-      'Bitacora actualizada exitosamente'
+      'Bitacora actualizada exitosamente.'
     );
   } catch (error) {
-    console.error('Error en la actualización del estado de la visita', error);
+    console.error('Error en la actualización del estado de la visita:', error);
     return ApiResponse.error(
       res,
       error,
-      'Error en la actualización del estado de la visita'
+      'Error en la actualización del estado de la visita.'
     );
   }
 };

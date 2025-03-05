@@ -21,10 +21,10 @@ export const createUsuario = async (req, res) => {
     // Crear el usuario con la contraseña encriptada y la firma (si existe)
     const usuario = await Usuario.create(req.body);
 
-    return ApiResponse.created(res, usuario, 'Usuario creado exitosamente');
+    return ApiResponse.created(res, usuario, 'Usuario creado exitosamente.');
   } catch (error) {
-    console.error('Error en crear el usuario', error);
+    console.error('Error en crear el usuario:', error);
     await fileHelpers.rollbackFileOnError(req.filePath);
-    return ApiResponse.error(res, error, 'Error en crear el usuario');
+    return ApiResponse.error(res, error, 'Error en crear el usuario.');
   }
 };

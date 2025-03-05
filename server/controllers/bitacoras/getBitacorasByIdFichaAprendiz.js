@@ -22,21 +22,21 @@ export const getBitacorasByIdFichaAprendiz = async (req, res) => {
     if (bitacoras.length === 0) {
       return ApiResponse.notFound(
         res,
-        'No se encontraron bitacoras realcionadas al idFichaAprendiz '
+        'No se encontraron bitácoras realcionadas al idFichaAprendiz.'
       );
     }
 
     return ApiResponse.success(
       res,
       bitacoras,
-      'Bitacora visualizada exitosamente'
+      'Bitácora visualizada exitosamente.'
     );
   } catch (error) {
-    console.error('Error en la visualización de los datos', error);
+    console.error('Error en la visualización de los datos:', error);
     return ApiResponse.error(
       res,
       error,
-      'Error en la visualización de la bitacora'
+      'Error en la visualización de la bitácora.'
     );
   }
 };

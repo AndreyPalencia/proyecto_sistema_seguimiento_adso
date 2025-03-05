@@ -41,15 +41,14 @@ export const searchUsuarios = async (req, res) => {
     if (Object.keys(filtros).length === 0) {
       return ApiResponse.validation(
         res,
-        { mensaje: 'No se proporcionaron parámetros de búsqueda.' },
-        'Error de validación'
+        'No se proporcionaron parámetros de búsqueda.'
       );
     }
 
     const usuarios = await Usuario.findAll({ where: filtros });
 
     if (usuarios.length === 0) {
-      return ApiResponse.notFound(res, 'No se encontro Usuarios relacionados');
+      return ApiResponse.notFound(res, 'No se encontro Usuarios relacionados.');
     }
 
     return ApiResponse.success(
@@ -58,7 +57,7 @@ export const searchUsuarios = async (req, res) => {
       'Usuarios encontrados exitosamente.'
     );
   } catch (error) {
-    console.error('Error en obtener los usuarios', error);
-    return ApiResponse.error(res, error, 'Error en obtener los usuariso');
+    console.error('Error en obtener los usuarios:', error);
+    return ApiResponse.error(res, error, 'Error en obtener los usuariso.');
   }
 };

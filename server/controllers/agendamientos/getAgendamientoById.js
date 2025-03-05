@@ -7,19 +7,19 @@ export const getAgendamientoById = async (req, res) => {
   const idAgendamiento = req.params.idAgendamiento;
 
   if (!idAgendamiento) {
-    return ApiResponse.badRequest(res, 'El id agendamiento es requerido');
+    return ApiResponse.badRequest(res, 'El id agendamiento es requerido.');
   }
 
   try {
     const agendamiento = await Agendamiento.findByPk(idAgendamiento);
 
     if (!agendamiento) {
-      return ApiResponse.notFound(res, 'Agendamiento no encontrado');
+      return ApiResponse.notFound(res, 'Agendamiento no encontrado.');
     }
 
-    return ApiResponse.success(res, agendamiento, 'Agendamiento encontrado');
+    return ApiResponse.success(res, agendamiento, 'Agendamiento encontrado.');
   } catch (error) {
-    console.error('Error en la obtener el Agendamiento', error);
-    return ApiResponse.error(res, error, 'Error en la obtener el Agendamiento');
+    console.error('Error en la obtener el agendamiento:', error);
+    return ApiResponse.error(res, error, 'Error en la obtener el agendamiento.');
   }
 };

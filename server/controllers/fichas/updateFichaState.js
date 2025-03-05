@@ -10,14 +10,14 @@ export const updateFichaState = async (req, res) => {
   if (!idFicha) {
     return ApiResponse.badRequest(
       res,
-      'No hay numero de ficha definido'
+      'No hay numero de ficha definido.'
     );
   }
 
   if (estadoFicha === null || estadoFicha === undefined) {
     return ApiResponse.badRequest(
       res,
-      'No se mando el estado de la ficha'
+      'No se mando el estado de la ficha.'
     );
   }
 
@@ -27,17 +27,17 @@ export const updateFichaState = async (req, res) => {
     });
 
     if(updateRow[0] === null){
-      return ApiResponse.notFound(res, 'No se encontro la ficha')
+      return ApiResponse.notFound(res, 'No se encontro la ficha.')
     }
 
 
     return ApiResponse.success(
       res,
       undefined,
-      'Estado actualizado con exito'
+      'Estado actualizado con éxito.'
     );
   } catch (error) {
-    console.error('Error al actualizar el error:' + error);
-    return ApiResponse.error(res, error, 'Error al actualizar');
+    console.error('Error al actualizar el estado de la ficha:', error);
+    return ApiResponse.error(res, error, 'Error al actualizar el estado de la ficha.');
   }
 };

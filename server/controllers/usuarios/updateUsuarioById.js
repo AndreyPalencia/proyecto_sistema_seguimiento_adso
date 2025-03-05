@@ -11,7 +11,7 @@ export const updateUsuarioById = async (req, res) => {
 
   // Validación de id_usuario
   if (!idUsuario) {
-    return ApiResponse.badRequest(res, 'El id_usuario es requerido');
+    return ApiResponse.badRequest(res, 'El id_usuario es requerido.');
   }
 
   try {
@@ -36,7 +36,7 @@ export const updateUsuarioById = async (req, res) => {
 
     // Verificar si se actualizó algún registro
     if (updateRow[0] === 0) {
-      return ApiResponse.notFound(res, 'Usuario no encontrado');
+      return ApiResponse.notFound(res, 'Usuario no encontrado.');
     }
 
     // Obentenemos el usuarios actualizado
@@ -45,15 +45,15 @@ export const updateUsuarioById = async (req, res) => {
     return ApiResponse.success(
       res,
       usuarioActualizado,
-      'Usuario actualizado exitosamente'
+      'Usuario actualizado exitosamente.'
     );
   } catch (error) {
-    console.error('Error en la actualización de los datos del usuario', error);
+    console.error('Error en la actualización de los datos del usuario:', error);
     await fileHelpers.rollbackFileOnError(req.filePath);
     return ApiResponse.error(
       res,
       error,
-      'Error en la actualizacion de los datos del usuario'
+      'Error en la actualizacion de los datos del usuario.'
     );
   }
 };

@@ -7,7 +7,7 @@ export const updateBitacora = async (req, res) => {
   const idBitacora = req.params.idBitacora;
 
   if (!idBitacora) {
-    return ApiResponse.badRequest(res, 'El campo numero bitacora es requerido');
+    return ApiResponse.badRequest(res, 'El campo numero bitacora es requerido.');
   }
 
   try {
@@ -24,7 +24,7 @@ export const updateBitacora = async (req, res) => {
     if (updateRow[0] === 0) {
       return ApiResponse.notFound(
         res,
-        'No se encontró la bitácora para actualizar'
+        'No se encontró la bitácora para actualizar.'
       );
     }
 
@@ -36,8 +36,8 @@ export const updateBitacora = async (req, res) => {
       'Bitacora Actualizada correctamente'
     );
   } catch (error) {
-    console.error('Error en la actualización de los datos', error);
+    console.error('Error en la actualización de los datos:', error);
     await fileHelpers.rollbackFileOnError(filePath);
-    return ApiResponse.error(res, undefined, 'Error al actualizar los datos');
+    return ApiResponse.error(res, undefined, 'Error al actualizar los datos.');
   }
 };

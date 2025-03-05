@@ -23,7 +23,7 @@ export const resetPasswordRequest = async (req, res) => {
       },
     });
 
-    if (!usuario ) {
+    if (!usuario) {
       return ApiResponse.notFound(
         res,
         'Usuario no encontrado o cuenta inactiva.'
@@ -51,17 +51,17 @@ export const resetPasswordRequest = async (req, res) => {
       return ApiResponse.error(
         res,
         emailSend.error.message,
-        'Error al enviar correo de recuperación'
+        'Error al enviar correo de recuperación.'
       );
     }
 
     return ApiResponse.success(
       res,
       undefined,
-      'Se envio el correo recuperación con exito.'
+      'Se envio el correo recuperación con éxito.'
     );
   } catch (error) {
-    console.error('Error en el proceso de recuperación', error);
-    return ApiResponse.error(res,error, 'Error en el proceso de recuperación');
+    console.error('Error en el proceso de recuperación:', error);
+    return ApiResponse.error(res, error, 'Error en el proceso de recuperación.');
   }
 };

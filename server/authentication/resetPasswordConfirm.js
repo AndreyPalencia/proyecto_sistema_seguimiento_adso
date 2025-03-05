@@ -30,7 +30,7 @@ export const resetPasswordConfirm = async (req, res) => {
     );
 
     if (updateRow === 0) {
-      return ApiResponse.notFound(res, 'Usuario no encontrado');
+      return ApiResponse.notFound(res, 'Usuario no encontrado.');
     }
 
     const emailSend = await sendResetPasswordConfirmationEmail(
@@ -42,7 +42,7 @@ export const resetPasswordConfirm = async (req, res) => {
       return ApiResponse.error(
         res,
         emailSend.error.message,
-        'Error al enviar correo de recuperación'
+        'Error al enviar correo de recuperación.'
       );
     }
     return ApiResponse.success(

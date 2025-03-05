@@ -7,7 +7,7 @@ export const deleteAgendamiento = async (req, res) => {
   const idAgendamiento = req.params.idAgendamiento;
 
   if (!idAgendamiento) {
-    return ApiResponse.badRequest(res, 'El id agendamiento es requerido');
+    return ApiResponse.badRequest(res, 'El id agendamiento es requerido.');
   }
 
   try {
@@ -19,13 +19,13 @@ export const deleteAgendamiento = async (req, res) => {
       return ApiResponse.success(
         res,
         undefined,
-        'Agendamiento borrado exitosamente'
+        'Agendamiento borrado exitosamente.'
       );
     }
 
-    return ApiResponse.notFound(res, 'Agendamiento no encontrado');
+    return ApiResponse.notFound(res, 'Agendamiento no encontrado.');
   } catch (error) {
-    console.error('Error al eliminar el Agendamiento', error);
-    return ApiResponse.error(res, error, 'Error al eliminar el Agendamiento');
+    console.error('Error al eliminar el agendamiento:', error);
+    return ApiResponse.error(res, error, 'Error al eliminar el agendamiento.');
   }
 };

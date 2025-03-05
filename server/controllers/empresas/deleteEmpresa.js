@@ -7,7 +7,7 @@ export const deleteEmpresa = async (req, res) => {
 
   // Validación de id_empresa
   if (!idEmpresa) {
-    return ApiResponse.badRequest(res, 'El id_empresa es requerido');
+    return ApiResponse.badRequest(res, 'El id_empresa es requerido.');
   }
   try {
     await Empresa.destroy({
@@ -18,15 +18,15 @@ export const deleteEmpresa = async (req, res) => {
 
     const empresa = await Empresa.findByPk(idEmpresa);
     if (empresa === null) {
-      return ApiResponse.success(res, 'Empresa eliminada con éxito');
+      return ApiResponse.success(res, 'Empresa eliminada con éxito.');
     }
-    return ApiResponse.notFound(res, 'Empresa no encontrada');
+    return ApiResponse.notFound(res, 'Empresa no encontrada.');
   } catch (error) {
-    console.error('Error en la eliminacion de la empresa', error);
+    console.error('Error en la eliminacion de la empresa:', error);
     return ApiResponse.error(
       res,
       error,
-      'Error en la eliminacion de la empresa'
+      'Error en la eliminacion de la empresa.'
     );
   }
 };

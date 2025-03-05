@@ -18,15 +18,15 @@ export const getAgendamientoByRol = async (req, res) => {
       where: filtros,
     });
     if (agendamientosObtenidos.length === 0) {
-      return ApiResponse.notFound(res, 'No se encontraron agendamientos');
+      return ApiResponse.notFound(res, 'No se encontraron agendamientos.');
     }
     return ApiResponse.success(
       res,
       agendamientosObtenidos,
-      'Agendamientos obtenidos exitosamente'
+      'Agendamientos obtenidos exitosamente.'
     );
   } catch (error) {
     console.error('Error al obtener los agendamientos:', error);
-    return ApiResponse.error(res, error, 'Error al obtener Agendamientos');
+    return ApiResponse.error(res, error, 'Error al obtener agendamientos.');
   }
 };

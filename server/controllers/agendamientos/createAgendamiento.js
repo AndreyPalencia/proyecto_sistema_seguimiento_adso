@@ -10,10 +10,10 @@ export const createAgendamiento = async (req, res) => {
     return ApiResponse.created(
       res,
       agendamientoCreado,
-      'Agendamiento creado exitosamente'
+      'Agendamiento creado exitosamente.'
     );
   } catch (error) {
     console.error('Error al crear el agendamiento:', error);
-    return ApiResponse.error(res, error, 'Error al crear el agendamiento');
+    return ApiResponse.error(res, error, 'Error al crear el agendamiento.');
   }
 };

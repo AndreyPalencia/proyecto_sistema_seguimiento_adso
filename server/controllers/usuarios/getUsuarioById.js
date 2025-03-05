@@ -8,7 +8,7 @@ export const getUsuarioById = async (req, res) => {
 
   // Validación de id_usuario
   if (!idUsuario) {
-    return ApiResponse.badRequest(res, 'El id_usuario es requerido');
+    return ApiResponse.badRequest(res, 'El id_usuario es requerido.');
   }
 
   try {
@@ -17,13 +17,13 @@ export const getUsuarioById = async (req, res) => {
 
     // Verificar si el usuario existe
     if (!usuario) {
-      return ApiResponse.notFound(res, 'Usuario no encontrado');
+      return ApiResponse.notFound(res, 'Usuario no encontrado.');
     }
 
     // Devolver el usuario encontrado
-    return ApiResponse.success(res, usuario, 'Usuario encontrado');
+    return ApiResponse.success(res, usuario, 'Usuario encontrado.');
   } catch (error) {
-    console.error('Error en la obtener el usuario', error);
-    return ApiResponse.error(res, error, 'Error en la obtener el usuario');
+    console.error('Error en la obtener el usuario:', error);
+    return ApiResponse.error(res, error, 'Error en la obtener el usuario.');
   }
 };

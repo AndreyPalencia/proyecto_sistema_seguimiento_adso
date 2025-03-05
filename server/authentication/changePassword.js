@@ -12,7 +12,7 @@ export const changePassword = async (req, res) => {
   if (!password || !newPassword)
     return ApiResponse.badRequest(
       res,
-      'Se deben proporcionar la contraseña actual y la nueva contraseña'
+      'Se deben proporcionar la contraseña actual y la nueva contraseña.'
     );
 
   try {
@@ -69,7 +69,7 @@ export const changePassword = async (req, res) => {
       'Contraseña actualizada correctamente.'
     );
   } catch (error) {
-    console.error('Error al cambiar la contraseña.', error);
+    console.error('Error al cambiar la contraseña:', error);
     return ApiResponse.error(res, error, 'Error al cambiar la contraseña.');
   }
 };

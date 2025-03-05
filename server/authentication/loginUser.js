@@ -19,7 +19,7 @@ export const loginUser = async (req, res) => {
     if (!usuarioEncontrado) {
       return ApiResponse.badRequest(
         res,
-        'El usuario o contraseña es incorrecta..'
+        'El usuario o contraseña es incorrecta.'
       );
     }
 
@@ -31,7 +31,7 @@ export const loginUser = async (req, res) => {
     if (!verifyPassword) {
       return ApiResponse.badRequest(
         res,
-        'El usuario o contraseña es incorrecta...'
+        'El usuario o contraseña es incorrecta.'
       );
     }
 
@@ -57,7 +57,7 @@ export const loginUser = async (req, res) => {
       .status(200)
       .send({ success: true, message: 'Inicio de sesion Autorizado.' });
   } catch (error) {
-    console.error('Error en el inicio de sesión ', error);
-    return ApiResponse.error(res, error, 'Error en el inicio de sesión');
+    console.error('Error en el inicio de sesión: ', error);
+    return ApiResponse.error(res, error, 'Error en el inicio de sesión.');
   }
 };

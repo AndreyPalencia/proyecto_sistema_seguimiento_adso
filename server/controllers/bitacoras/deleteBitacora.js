@@ -6,7 +6,10 @@ export const deleteBitacora = async (req, res) => {
   const idBitacora = req.params.idBitacora;
 
   if (!idBitacora) {
-    return ApiResponse.badRequest(res, 'El campo numero bitacora es requerido');
+    return ApiResponse.badRequest(
+      res,
+      'El id bitácora es requerido.'
+    );
   }
 
   try {
@@ -21,17 +24,17 @@ export const deleteBitacora = async (req, res) => {
     if (bitacoraEliminada !== null) {
       return ApiResponse.notFound(
         res,
-        'No se encontró la bitácora para actualizar'
+        'No se encontró la bitácora para actualizar.'
       );
     }
 
     return ApiResponse.success(
       res,
       undefined,
-      'Bitácora eliminada exitosamente'
+      'Bitácora eliminada exitosamente.'
     );
   } catch (error) {
-    console.error('Error en la eliminación de los datos', error);
+    console.error('Error en la eliminación de la bitácora:', error);
     return ApiResponse.error(
       res,
       undefined,

@@ -7,7 +7,7 @@ export const updateAgendamiento = async (req, res) => {
   const idAgendamiento = req.params.idAgendamiento;
 
   if (!idAgendamiento) {
-    return ApiResponse.badRequest(res, 'El id agendamiento es requerido');
+    return ApiResponse.badRequest(res, 'El id agendamiento es requerido.');
   }
 
   try {
@@ -18,7 +18,7 @@ export const updateAgendamiento = async (req, res) => {
     });
 
     if (updateRow[0] === 0) {
-      return ApiResponse.notFound(res, 'Agendamiento no encontrado');
+      return ApiResponse.notFound(res, 'Agendamiento no encontrado.');
     }
 
     const agendamientoActualizado = await Agendamiento.findByPk(idAgendamiento);
@@ -26,17 +26,17 @@ export const updateAgendamiento = async (req, res) => {
     return ApiResponse.success(
       res,
       agendamientoActualizado,
-      'Agendamiento actualizado exitosamente'
+      'Agendamiento actualizado exitosamente.'
     );
   } catch (error) {
     console.error(
-      'Error en la actualización de los datos del Agendamiento',
+      'Error en la actualización de los datos del Agendamiento:',
       error
     );
     return ApiResponse.error(
       res,
       error,
-      'Error en la actualizacion de los datos del Agendamiento'
+      'Error en la actualizacion de los datos del Agendamiento.'
     );
   }
 };

@@ -9,7 +9,7 @@ export const updateEmpresa = async (req, res) => {
   
     // Validación de id_empresa
     if (!idEmpresa) {
-        return ApiResponse.badRequest(res, 'El id_empresa es requerido');
+        return ApiResponse.badRequest(res, 'El id_empresa es requerido.');
     }
   
     try {
@@ -22,7 +22,7 @@ export const updateEmpresa = async (req, res) => {
   
       // Verificar si se actualizó algún registro
       if (updateRow[0] === 0) {
-        return ApiResponse.notFound(res, 'Empresa no encontrada');
+        return ApiResponse.notFound(res, 'Empresa no encontrada.');
       }
   
       // Obentenemos la empresa actualizada
@@ -31,15 +31,15 @@ export const updateEmpresa = async (req, res) => {
       return ApiResponse.success(
         res,
         empresaActualizada,
-        'Empresa actualizada exitosamente'
+        'Empresa actualizada exitosamente.'
       );
     } catch (error) {
-      console.error('Error en la actualización de los datos de la empresa', error);
+      console.error('Error en la actualización de los datos de la empresa:', error);
       await fileHelpers.rollbackFileOnError(req.filePath);
       return ApiResponse.error(
         res,
         error,
-        'Error en la actualizacion de los datos de la empresa'
+        'Error en la actualizacion de los datos de la empresa.'
       );
     }
   };
