@@ -39,7 +39,12 @@ Observacion.init(
       allowNull: false,
       validate: {
         isDate: true,
-        isBefore: new Date().toString(),
+        customValidator(value) {
+          const today = new Date().toISOString().split('T')[0];
+          if (value > today) {
+            throw new Error('La fecha de ultima actualización no puede ser futura.');
+          }
+        },
       },
       field: 'fecha_ultima_actualizacion',
     },

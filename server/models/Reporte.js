@@ -35,7 +35,11 @@ Reporte.init(
       allowNull: false,
       validate: {
         isDate: true,
-        isBefore: new Date().toString(),
+        isBefore(value) {
+          if (new Date(value) >= new Date()) {
+            throw new Error('La fecha de actualización no puede ser futura.');
+          }
+        },
       },
       field: 'fecha_ultima_actualizacion',
     },

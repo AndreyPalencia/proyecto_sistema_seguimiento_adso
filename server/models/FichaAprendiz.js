@@ -47,6 +47,7 @@ FichaAprendiz.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
       field: 'id_ficha_aprendiz',
     },
     idUsuario: {
@@ -90,6 +91,7 @@ FichaAprendiz.init(
     jefeInmediato: {
       type: DataTypes.STRING(45),
       allowNull: false,
+      defaultValue: 'Indefinido',
       validate: {
         len: [2, 45],
       },
