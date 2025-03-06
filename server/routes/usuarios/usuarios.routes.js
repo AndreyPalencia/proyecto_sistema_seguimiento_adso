@@ -1,7 +1,7 @@
 import express from 'express';
 import { createUploadMiddleware } from '../../config/multerConfig.js';
 
-// Importar controladores de usuarios
+//Importar controladores de usuarios
 import { createUsuario } from '../../controllers/usuarios/createUsuario.js';
 import { searchUsuarios } from '../../controllers/usuarios/searchUsuarios.js';
 import { getUsuarioById } from '../../controllers/usuarios/getUsuarioById.js';
@@ -11,9 +11,6 @@ import { updateUsuarioState } from '../../controllers/usuarios/updateUsuarioStat
 /* Rutas Usuarios */
 
 const routerUsuarios = express.Router();
-
-//Crear usuarios por archivo
-//router.post('/crearUsuarioFile', createUploadMiddleware('filesExcel'), crearUsuarioExcel);
 
 //Crear usuario
 routerUsuarios.post('/', createUploadMiddleware('firmas'), createUsuario);

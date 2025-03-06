@@ -1,7 +1,7 @@
 import express from 'express';
 import { createUploadMiddleware } from '../../config/multerConfig.js';
 
-// Importar controladores de bitacoras
+//Importar controladores de bitacoras
 import { createBitacora } from '../../controllers/bitacoras/createBitacora.js';
 import { getBitacoraById } from '../../controllers/bitacoras/getBitacoraById.js';
 import { getBitacorasByIdFichaAprendiz } from '../../controllers/bitacoras/getBitacorasByIdFichaAprendiz.js';

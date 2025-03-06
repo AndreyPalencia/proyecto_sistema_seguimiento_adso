@@ -14,19 +14,19 @@ import { resetPasswordConfirm } from '../../authentication/resetPasswordConfirm.
 
 const routerAuthentification = express.Router();
 
-// Inciar sesion
+//Inciar sesion
 routerAuthentification.post('/login', validateAuth, loginUser);
 
-// Cerrar sesion
+//Cerrar sesion
 routerAuthentification.post('/logout', logoutUser);
 
-// Cambiar Contraseña
+//Cambiar Contraseña
 routerAuthentification.patch('/change-password', changePassword);
 
-// Solicitar la recuperación de la contraseña por correo
+//Solicitar la recuperación de la contraseña por correo
 routerAuthentification.post('/reset-password/request', resetPasswordRequest);
 
-// Realizar el cambio de la contraseña através del token
+//Realizar el cambio de la contraseña através del token
 routerAuthentification.post('/reset-password/confirm', resetPasswordConfirm);
 
 export default routerAuthentification;

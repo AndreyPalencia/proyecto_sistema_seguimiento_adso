@@ -1,6 +1,6 @@
 import express from 'express';
 
-// Importar controladores de usuarios
+//Importar controladores de usuarios
 import { createAgendamiento } from '../../controllers/agendamientos/createAgendamiento.js';
 import { getAgendamientoByRol } from '../../controllers/agendamientos/getAgendamientoByRol.js';
 import { getAgendamientoById } from '../../controllers/agendamientos/getAgendamientoById.js';
@@ -12,22 +12,22 @@ import { updateAgendamientoState } from '../../controllers/agendamientos/updateA
 
 const routerAgendamientos = express.Router();
 
-// Crear un nuevo agendamiento
+//Crear un nuevo agendamiento
 routerAgendamientos.post('/', createAgendamiento);
 
-// Obtener todos los agendamientos
+//Obtener todos los agendamientos
 routerAgendamientos.post('/rol', getAgendamientoByRol);
 
-// Obtener un agendamiento por [ID]
+//Obtener un agendamiento por [ID]
 routerAgendamientos.get('/:idAgendamiento', getAgendamientoById);
 
-// Modificar un agendamiento por [ID]
+//Modificar un agendamiento por [ID]
 routerAgendamientos.put('/:idAgendamiento', updateAgendamiento);
 
-// Actualizar el estado de la visita de un agendamiento
+//Actualizar el estado de la visita de un agendamiento
 routerAgendamientos.patch('/:idAgendamiento/estado', updateAgendamientoState);
 
-// Eliminar un agendamiento por [ID]
+//Eliminar un agendamiento por [ID]
 routerAgendamientos.delete('/:idAgendamiento', deleteAgendamiento);
 
 /*Notas: Visualizacion de agendamientos por filtro del metodo de ? */
