@@ -1,7 +1,7 @@
 import models from '../../models/index.js';
 const { Bitacora } = models;
 import ApiResponse from '../../utils/apiResponse.js';
-import fileHelpers from '../../utils/fileHelpers.js';
+import { rollbackFileOnError } from '../../utils/fileHelpers.js';
 
 export const updateBitacora = async (req, res) => {
   const idBitacora = req.params.idBitacora;
@@ -37,7 +37,7 @@ export const updateBitacora = async (req, res) => {
     );
   } catch (error) {
     console.error('Error en la actualización de los datos:', error);
-    await fileHelpers.rollbackFileOnError(filePath);
+    await rollbackFileOnError(req.filePath);
     return ApiResponse.error(res, undefined, 'Error al actualizar los datos.');
   }
 };

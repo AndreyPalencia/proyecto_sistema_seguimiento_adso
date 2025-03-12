@@ -33,7 +33,7 @@ export const updateDocumento = async (req, res) => {
     );
   } catch (error) {
     console.error('Error al actualizar el documento:', error);
-    await rollbackFileOnError(filePath);
+    await rollbackFileOnError(req.filePath);
     return ApiResponse.error(
       res,
       undefined,

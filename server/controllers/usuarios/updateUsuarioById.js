@@ -2,7 +2,7 @@ import models from '../../models/index.js';
 const { Usuario } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 import encryptionUtil from '../../utils/encryptionUtil.js';
-import fileHelpers from '../../utils/fileHelpers.js';
+import { rollbackFileOnError } from '../../utils/fileHelpers.js';
 
 //Modificar un usuario por ID
 export const updateUsuarioById = async (req, res) => {
@@ -49,7 +49,7 @@ export const updateUsuarioById = async (req, res) => {
     );
   } catch (error) {
     console.error('Error en la actualización de los datos del usuario:', error);
-    await fileHelpers.rollbackFileOnError(req.filePath);
+    await rollbackFileOnError(req.filePath);
     return ApiResponse.error(
       res,
       error,

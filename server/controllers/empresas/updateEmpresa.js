@@ -35,7 +35,6 @@ export const updateEmpresa = async (req, res) => {
       );
     } catch (error) {
       console.error('Error en la actualización de los datos de la empresa:', error);
-      await fileHelpers.rollbackFileOnError(req.filePath);
       return ApiResponse.error(
         res,
         error,
