@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/base_datos.js';
 
-class Reporte extends Model {
+class ReporteGFPIF extends Model {
   /**
    * Método para definir las asociaciones entre modelos.
    */
@@ -13,7 +13,7 @@ class Reporte extends Model {
   }
 }
 
-Reporte.init(
+ReporteGFPIF.init(
   {
     idReporte: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -26,7 +26,7 @@ Reporte.init(
       allowNull: false,
       validate: {
         notEmpty: true,
-        len: [5, 40],
+        len: [5, 60],
       },
       field: 'nombre_reporte',
     },
@@ -67,4 +67,4 @@ Reporte.init(
   }
 );
 
-export default Reporte;
+export default ReporteGFPIF;

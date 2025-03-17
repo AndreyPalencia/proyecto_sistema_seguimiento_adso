@@ -27,7 +27,7 @@ class FichaAprendiz extends Model {
       foreignKey: 'idFichaAprendiz',
     });
     // Relación 1:N -> Una FichaAprendiz puede tener varios Reportes.
-    this.hasMany(models.Reporte, {
+    this.hasMany(models.ReporteGFPIF, {
       foreignKey: 'idFichaAprendiz',
     });
     // Relación 1:N -> Una FichaAprendiz puede tener varios Documentos.

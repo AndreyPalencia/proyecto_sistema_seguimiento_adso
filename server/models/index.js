@@ -5,7 +5,7 @@ import FichaAprendiz from './FichaAprendiz.js';
 import Agendamiento from './Agendamiento.js';
 import Bitacora from './Bitacora.js';
 import Documento from './Documento.js';
-import Reporte from './Reporte.js';
+import ReporteGFPIF from './ReporteGFPIF.js';
 import Notificacion from './Notificacion.js';
 import Observacion from './Observacion.js';
 
@@ -26,7 +26,7 @@ const models = {
   Agendamiento,
   Bitacora,
   Documento,
-  Reporte,
+  ReporteGFPIF,
   Notificacion,
   Observacion,
 };
