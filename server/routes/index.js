@@ -11,6 +11,7 @@ import routerFichaAprendiz from './fichaAprendiz/fichaAprendiz.routes.js';
 import routerDocumentos from './documentos/documentos.routes.js';
 import routerObservaciones from './observaciones/observaciones.routes.js';
 import routerNotificaciones from './notificiaciones/notificaciones.routes.js';
+import routerReporetesGFPIF from './reportesGFPIF/reportesGFPIF.routes.js';
 
 //Creacion de rutas
 const routes = express.Router();
@@ -25,5 +26,6 @@ routes.use('/observaciones', routerObservaciones);
 routes.use('/notificaciones', routerNotificaciones);
 routes.use('/ficha-aprendiz', routerFichaAprendiz);
 routes.use('/documentos', routerDocumentos)
+routes.use('/reportes-gfpif', routerReporetesGFPIF)
 
 export default routes;
