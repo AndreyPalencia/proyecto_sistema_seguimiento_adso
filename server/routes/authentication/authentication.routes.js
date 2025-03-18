@@ -1,7 +1,7 @@
 import express from 'express';
 
 //Importar middleware
-import { validateAuth } from '../../middleware/validateAuth.js';
+import { validateAuth } from '../../middlewares/validateAuth.js';
 
 //Importar las rutas de authentification
 import { loginUser } from '../../authentication/loginUser.js';

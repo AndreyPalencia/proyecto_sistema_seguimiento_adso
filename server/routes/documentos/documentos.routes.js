@@ -1,6 +1,6 @@
 import express from 'express';
 import { createUploadMiddleware } from '../../config/multerConfig.js';
-import { validateParamsIds } from '../../middleware/validateParamsIds.js';
+import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
 
 //Imporatar controladores de documentos
 import { createDocumento } from '../../controllers/documentos/createDocumento.js';

@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateParamsIds } from '../../middleware/validateParamsIds.js';
+import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
 
 //Importar controladores de usuarios
 import { createFichaAprendiz } from '../../controllers/fichaAprendiz/createFichaAprendiz.js';

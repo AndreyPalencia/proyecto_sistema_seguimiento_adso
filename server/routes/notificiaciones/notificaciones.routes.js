@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateParamsIds } from '../../middleware/validateParamsIds.js';
+import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
 
 //Importacion de rutas al modelo
 import { createNotificacion } from '../../controllers/notificaciones/createNotificacion.js';

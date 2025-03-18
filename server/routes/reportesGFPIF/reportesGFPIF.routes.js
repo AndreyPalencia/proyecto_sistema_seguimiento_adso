@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateParamsIds } from '../../middleware/validateParamsIds.js';
+import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
 
 //Import middleware
 import { createReporteGFPIF } from '../../controllers/reportesGFPIF/createReporteGFPIF.js';

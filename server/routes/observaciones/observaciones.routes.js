@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateParamsIds } from '../../middleware/validateParamsIds.js';
+import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
 
 //Importacion de rutas al modelo
 import { createObservacion } from '../../controllers/Observaciones/createObservacion.js';
@@ -23,12 +23,24 @@ routerObservaciones.get(
 );
 
 //Modificar una observación por [ID]
-routerObservaciones.put('/:idObservacion', validateParamsIds, updateObservacionById);
+routerObservaciones.put(
+  '/:idObservacion',
+  validateParamsIds,
+  updateObservacionById
+);
 
 //Modificar el estado de la observación por [ID]
-routerObservaciones.patch('/:idObservacion/estado', validateParamsIds, updateObservacionState);
+routerObservaciones.patch(
+  '/:idObservacion/estado',
+  validateParamsIds,
+  updateObservacionState
+);
 
 //Borrar observación por [ID]
-routerObservaciones.delete('/:idObservacion', validateParamsIds, deleteObservacion);
+routerObservaciones.delete(
+  '/:idObservacion',
+  validateParamsIds,
+  deleteObservacion
+);
 
 export default routerObservaciones;
