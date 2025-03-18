@@ -4,12 +4,7 @@ import ApiResponse from '../../utils/apiResponse.js';
 
 //Obtener Agendamiento
 export const getAgendamientoById = async (req, res) => {
-  const idAgendamiento = req.params.idAgendamiento;
-
-  if (!idAgendamiento) {
-    return ApiResponse.badRequest(res, 'El id agendamiento es requerido.');
-  }
-
+  const { idAgendamiento } = req.params;
   try {
     const agendamiento = await Agendamiento.findByPk(idAgendamiento);
 
@@ -20,6 +15,10 @@ export const getAgendamientoById = async (req, res) => {
     return ApiResponse.success(res, agendamiento, 'Agendamiento encontrado.');
   } catch (error) {
     console.error('Error en la obtener el agendamiento:', error);
-    return ApiResponse.error(res, error, 'Error en la obtener el agendamiento.');
+    return ApiResponse.error(
+      res,
+      error,
+      'Error en la obtener el agendamiento.'
+    );
   }
 };

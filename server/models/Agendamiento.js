@@ -48,7 +48,6 @@ Agendamiento.init(
       allowNull: false,
       validate: {
         isDate: true,
-        isAfter: new Date().toString(), // Fecha debe ser futura
         customValidator(value) {
           if (value >= this.getDataValue('fechaFin')) {
             throw new Error(

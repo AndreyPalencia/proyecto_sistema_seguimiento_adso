@@ -4,14 +4,10 @@ import ApiResponse from '../../utils/apiResponse.js';
 
 //Modificar un agendamiento por ID
 export const updateAgendamientoState = async (req, res) => {
-  const idAgendamiento = req.params.idAgendamiento;
+  const { idAgendamiento } = req.params;
   const { estadoVisita } = req.body;
 
-  if (!idAgendamiento) {
-    return ApiResponse.badRequest(res, 'El id agendamiento es requerido.');
-  }
-
-  if (estadoVisita === null || estadoVisita === undefined) {
+  if (!estadoVisita) {
     return ApiResponse.badRequest(
       res,
       'El estado del agendamiento es requerido.'
@@ -19,7 +15,7 @@ export const updateAgendamientoState = async (req, res) => {
   }
 
   try {
-    const updateRow = await Agendamiento.update(
+    const [updateRow] = await Agendamiento.update(
       { estadoVisita },
       {
         where: {
@@ -28,7 +24,7 @@ export const updateAgendamientoState = async (req, res) => {
       }
     );
 
-    if (updateRow[0] === 0) {
+    if (updateRow === 0) {
       return ApiResponse.notFound(
         res,
         'Agendamiento no encontrado o sin cambios.'
