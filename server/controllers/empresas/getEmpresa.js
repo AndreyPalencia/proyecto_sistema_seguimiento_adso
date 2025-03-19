@@ -4,7 +4,7 @@ import ApiResponse from '../../utils/apiResponse.js';
 
 //Visualizar empresa por ID
 export const getEmpresa = async (req, res) => {
-  const idEmpresa = req.params.idEmpresa;
+  const { idEmpresa } = req.params;
 
   // Validación de id_empresa
   if (!idEmpresa) {
@@ -16,7 +16,7 @@ export const getEmpresa = async (req, res) => {
     const empresa = await Empresa.findByPk(idEmpresa);
 
     // Verificar si la empresa existe
-    if (empresa === null) {
+    if (!empresa) {
       return ApiResponse.notFound(res, 'Empresa no encontrado.');
     }
 
@@ -24,6 +24,10 @@ export const getEmpresa = async (req, res) => {
     return ApiResponse.success(res, empresa, 'Empresa encontrada.');
   } catch (error) {
     console.error('Error en la obtener la empresa:', error);
-    return ApiResponse.error(res, error, 'Error en la obtencion de la empresa.');
+    return ApiResponse.error(
+      res,
+      error,
+      'Error en la obtencion de la empresa.'
+    );
   }
 };

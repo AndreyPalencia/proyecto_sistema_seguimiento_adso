@@ -1,4 +1,5 @@
 import express from 'express';
+import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
 
 //Importar controladores de empresas
 import { createEmpresa } from '../../controllers/empresas/createEmpresa.js';
@@ -14,12 +15,12 @@ const routerEmpresas = express.Router();
 routerEmpresas.post('/', createEmpresa);
 
 //Visualizar usuario por [ID]
-routerEmpresas.get('/:idEmpresa', getEmpresa);
+routerEmpresas.get('/:idEmpresa', validateParamsIds, getEmpresa);
 
 //Modificar usuarios por [ID]
-routerEmpresas.put('/:idEmpresa', updateEmpresa);
+routerEmpresas.put('/:idEmpresa', validateParamsIds, updateEmpresa);
 
 //Cambiar estado por [ID] del usuario
-routerEmpresas.delete('/:idEmpresa', deleteEmpresa);
+routerEmpresas.delete('/:idEmpresa', validateParamsIds, deleteEmpresa);
 
 export default routerEmpresas;

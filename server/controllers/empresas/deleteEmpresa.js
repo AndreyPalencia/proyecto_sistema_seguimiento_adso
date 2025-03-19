@@ -3,24 +3,25 @@ const { Empresa } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 
 export const deleteEmpresa = async (req, res) => {
-  const idEmpresa = req.params.idEmpresa;
+  const { idEmpresa } = req.params;
 
   // Validación de id_empresa
   if (!idEmpresa) {
     return ApiResponse.badRequest(res, 'El id_empresa es requerido.');
   }
   try {
+    const empresa = await Empresa.findByPk(idEmpresa);
+
+    if (!empresa) {
+      return ApiResponse.notFound(res, 'Empresa no encontrada.');
+    }
+
     await Empresa.destroy({
       where: {
         idEmpresa,
       },
     });
-
-    const empresa = await Empresa.findByPk(idEmpresa);
-    if (empresa === null) {
-      return ApiResponse.success(res, 'Empresa eliminada con éxito.');
-    }
-    return ApiResponse.notFound(res, 'Empresa no encontrada.');
+    return ApiResponse.success(res, 'Empresa eliminada con éxito.');
   } catch (error) {
     console.error('Error en la eliminacion de la empresa:', error);
     return ApiResponse.error(
