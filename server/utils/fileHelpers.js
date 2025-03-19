@@ -118,3 +118,24 @@ export const getFirmaPath = (firma) => {
   }
   return undefined;
 };
+
+
+/**
+ * Devuleve la ruta de un archivo apartir del nombre de la carpeta y el archivo.
+ * @param {string} folderName 
+ * @param {string} fileName 
+ * @returns Ruta del archivo si existe.
+ */
+export const getFileByName = async (folderName, fileName) => {
+  if (!folderName || !fileName) {
+    throw new Error('El nombre de la carpeta y el archivo son requeridos.');
+  }
+  const filePath = path.join(BASE_UPLOAD_PATH, folderName , fileName);
+  try {
+    await fs.promises.access(filePath, fs.constants.F_OK);
+    return filePath;
+  } catch (error) {
+    console.error('Error al obtener el archivo:', error);
+    throw new Error('Error al obtener el archivo.');
+  }
+}

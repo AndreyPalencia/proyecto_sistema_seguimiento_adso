@@ -3,14 +3,7 @@ const { Bitacora } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 
 export const getBitacorasByIdFichaAprendiz = async (req, res) => {
-  const idFichaAprendiz = req.params.idFichaAprendiz;
-
-  if (!idFichaAprendiz) {
-    return ApiResponse.badRequest(
-      res,
-      'El campo idFichaAprendiz es requerido.'
-    );
-  }
+  const { idFichaAprendiz } = req.params;
 
   try {
     const bitacoras = await Bitacora.findAll({

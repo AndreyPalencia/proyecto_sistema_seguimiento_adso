@@ -3,11 +3,7 @@ const { Bitacora } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 
 export const getBitacoraById = async (req, res) => {
-  const idBitacora = req.params.idBitacora;
-
-  if (!idBitacora) {
-    return ApiResponse.badRequest(res, 'El id bitácora es requerido.');
-  }
+  const { idBitacora } = req.params;
 
   try {
     const bitacora = await Bitacora.findByPk(idBitacora);
