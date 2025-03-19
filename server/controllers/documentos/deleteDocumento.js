@@ -1,6 +1,7 @@
 import models from '../../models/index.js';
 const { Documento } = models;
 import ApiResponse from '../../utils/apiResponse.js';
+import { deleteFileSafely, getFileByName } from '../../utils/fileHelpers.js';
 
 export const deleteDocumento = async (req, res) => {
   const { idDocumento } = req.params;
@@ -13,6 +14,10 @@ export const deleteDocumento = async (req, res) => {
     }
 
     await Documento.destroy({ where: { idDocumento } });
+
+    const documentoFile = await getFileByName('documentos', documento.nombreDocumento);
+
+    await deleteFileSafely(documentoFile);
 
     return ApiResponse.success(
       res,

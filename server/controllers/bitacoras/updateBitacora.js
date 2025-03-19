@@ -20,18 +20,18 @@ export const updateBitacora = async (req, res) => {
         idBitacora,
       },
     });
-
-    if (req.file && req.file.filename && oldFileBitacora) {
-      await deleteFileSafely(oldFileBitacora);
-    }
-
+    
     if (updateRow === 0) {
       return ApiResponse.notFound(
         res,
         'No se encontró la bitácora para actualizar.'
       );
     }
-
+    
+    if (req.file && req.file.filename && oldFileBitacora) {
+      await deleteFileSafely(oldFileBitacora);
+    }
+    
     const bitacoraActualizada = await Bitacora.findByPk(idBitacora);
 
     return ApiResponse.success(

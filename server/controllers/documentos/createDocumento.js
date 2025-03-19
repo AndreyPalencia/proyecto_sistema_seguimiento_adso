@@ -1,7 +1,7 @@
 import models from '../../models/index.js';
 const { Documento } = models;
 import ApiResponse from '../../utils/apiResponse.js';
-import { rollbackFileOnError } from '../../utils/fileHelpers.js';
+import { deleteFileSafely } from '../../utils/fileHelpers.js';
 
 export const createDocumento = async (req, res) => {
   try {
@@ -12,7 +12,9 @@ export const createDocumento = async (req, res) => {
     return ApiResponse.created(res, documento, 'Documento subido.');
   } catch (error) {
     console.error('Error en al subir el documento:', error);
-    await rollbackFileOnError(req.filePath);
+    if (req.file && req.file.filename) {
+      await deleteFileSafely(req.filePath);
+    }
     return ApiResponse.error(res, error, 'No se pudo subir el documento.');
   }
 };
