@@ -17,7 +17,7 @@ const routerFichas = express.Router();
 routerFichas.post('/', createFicha);
 
 //Visualizar una ficha por ID
-routerFichas.get('/:idFicha', getFichaById);
+routerFichas.get('/:idFicha', validateParamsIds, getFichaById);
 
 //Visualizar fichas por ID de instructor
 routerFichas.get(
@@ -27,9 +27,9 @@ routerFichas.get(
 );
 
 //Modificar una ficha por [ID]
-routerFichas.put('/:idFicha', updateFicha);
+routerFichas.put('/:idFicha', validateParamsIds, updateFicha);
 
 //Modificar el estado de una ficha por [ID]
-routerFichas.patch('/:idFicha/estado', updateFichaState);
+routerFichas.patch('/:idFicha/estado', validateParamsIds, updateFichaState);
 
 export default routerFichas;

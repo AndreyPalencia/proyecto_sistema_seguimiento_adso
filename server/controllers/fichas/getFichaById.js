@@ -4,20 +4,20 @@ import ApiResponse from '../../utils/apiResponse.js';
 
 // Obtener una ficha por ID
 export const getFichaById = async (req, res) => {
-  const idFicha = req.params.idFicha;
-
-  if (!idFicha) {
-    return ApiResponse.badRequest(res, 'No hay numero de ficha definido.');
-  }
+  const { idFicha } = req.params;
 
   try {
     const getFicha = await Ficha.findByPk(idFicha);
-    if (getFicha === null) {
+    if (!getFicha) {
       return ApiResponse.notFound(res, 'Ficha no encontrada.');
     }
     return ApiResponse.success(res, getFicha, 'Ficha obtenida con éxito.');
   } catch (error) {
     console.error('Error al obtener la ficha:', error);
-    return ApiResponse.error(res, error, 'Hubo un error al encontrar la ficha.');
+    return ApiResponse.error(
+      res,
+      error,
+      'Hubo un error al encontrar la ficha.'
+    );
   }
 };
