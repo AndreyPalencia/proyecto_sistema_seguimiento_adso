@@ -9,11 +9,10 @@ export const updateDocumento = async (req, res) => {
   try {
     const documentoFile = await Documento.findByPk(idDocumento);
 
-    const oldFileDocumento = await getFileByName(
-      'documentos',
-      documentoFile.nombreDocumento
-    );
-    
+    const oldFileDocumento = documentoFile.nombreDocumento
+      ? await getFileByName('documentos', documentoFile.nombreDocumento)
+      : null;
+
     if (req.file && req.file.filename) {
       req.body.nombreDocumento = req.file.filename;
     }
@@ -23,15 +22,15 @@ export const updateDocumento = async (req, res) => {
         idDocumento,
       },
     });
-    
+
     if (upadatedCount === 0) {
       return ApiResponse.notFound(
         res,
-        'No se encontró el documento o no hubo cambios.'
+        'La actulización no se puedo compleatar. Verifique los datos.'
       );
     }
-    
-    if (req.file && req.file.filename && oldFileDocumento) {
+
+    if (req.file?.filename && oldFileDocumento) {
       await deleteFileSafely(oldFileDocumento);
     }
     const documentoActualizado = await Documento.findByPk(idDocumento);

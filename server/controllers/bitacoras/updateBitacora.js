@@ -7,12 +7,18 @@ export const updateBitacora = async (req, res) => {
   const { idBitacora } = req.params;
 
   try {
-    const bitacora = await Bitacora.findByPk(idBitacora);
-    
-    const oldFileBitacora = await getFileByName('bitacoras', bitacora.bitacora);
+    const bitacoraFile = await Bitacora.findByPk(idBitacora);
+
+    if (!bitacoraFile) {
+      return ApiResponse.notFound(res, 'Bitacora no encontrada.');
+    }
+
+    const oldFileBitacora = bitacoraFile.nombreBitacora
+      ? await getFileByName('bitacoras', bitacoraFile.bitacora)
+      : null;
 
     if (req.file && req.file.filename) {
-      req.body.bitacora = req.file.filename; 
+      req.body.bitacora = req.file.filename;
     }
 
     const [updateRow] = await Bitacora.update(req.body, {
@@ -20,18 +26,19 @@ export const updateBitacora = async (req, res) => {
         idBitacora,
       },
     });
-    
+
     if (updateRow === 0) {
-      return ApiResponse.notFound(
+      return ApiResponse.error(
         res,
-        'No se encontró la bitácora para actualizar.'
+        undefined,
+        'La actualización no se puedo completar. Verifique los datos.'
       );
     }
-    
-    if (req.file && req.file.filename && oldFileBitacora) {
+
+    if (req.file?.filename && oldFileBitacora) {
       await deleteFileSafely(oldFileBitacora);
     }
-    
+
     const bitacoraActualizada = await Bitacora.findByPk(idBitacora);
 
     return ApiResponse.success(

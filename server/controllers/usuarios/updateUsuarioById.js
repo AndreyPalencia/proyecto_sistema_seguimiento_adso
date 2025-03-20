@@ -19,7 +19,7 @@ export const updateUsuarioById = async (req, res) => {
     }
 
     const oldFileUsuario = usuario.firma
-      ? getFileByName('firmas', usuario.firma)
+      ? await getFileByName('firmas', usuario.firma)
       : null;
 
     // Verificar si el usuario existe
@@ -43,7 +43,11 @@ export const updateUsuarioById = async (req, res) => {
 
     // Verificar si se actualizó algún registro
     if (updateRow === 0) {
-      return ApiResponse.notFound(res, 'Usuario no encontrado.');
+      return ApiResponse.error(
+        res,
+        undefined,
+        'La actualización no pudo completarse. Verifique los datos proporcionados.'
+      );
     }
 
     // Si se subió una nueva firma, eliminar la anterior
