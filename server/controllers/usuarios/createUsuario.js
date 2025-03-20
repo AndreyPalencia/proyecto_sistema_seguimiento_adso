@@ -2,7 +2,7 @@ import models from '../../models/index.js';
 const { Usuario } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 import encryptionUtil from '../../utils/encryptionUtil.js';
-import { rollbackFileOnError } from '../../utils/fileHelpers.js';
+import { deleteFileSafely } from '../../utils/fileHelpers.js';
 
 //Crear un usuario
 export const createUsuario = async (req, res) => {
@@ -24,7 +24,9 @@ export const createUsuario = async (req, res) => {
     return ApiResponse.created(res, usuario, 'Usuario creado exitosamente.');
   } catch (error) {
     console.error('Error en crear el usuario:', error);
-    await rollbackFileOnError(req.filePath);
+    if (req.file && req.file.filename) {
+      deleteFileSafely(req.filePath)
+    }
     return ApiResponse.error(res, error, 'Error en crear el usuario.');
   }
 };

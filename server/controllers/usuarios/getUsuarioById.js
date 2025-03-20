@@ -4,12 +4,7 @@ import ApiResponse from '../../utils/apiResponse.js';
 
 //Visualizar un usuario por ID
 export const getUsuarioById = async (req, res) => {
-  const idUsuario = req.params.idUsuario;
-
-  // Validación de id_usuario
-  if (!idUsuario) {
-    return ApiResponse.badRequest(res, 'El id_usuario es requerido.');
-  }
+  const { idUsuario } = req.params;
 
   try {
     // Consultar el usuario con ambos parámetros

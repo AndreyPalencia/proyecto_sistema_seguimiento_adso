@@ -1,5 +1,6 @@
 import express from 'express';
 import { createUploadMiddleware } from '../../config/multerConfig.js';
+import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
 
 //Importar controladores de usuarios
 import { createUsuario } from '../../controllers/usuarios/createUsuario.js';
@@ -19,16 +20,17 @@ routerUsuarios.post('/', createUploadMiddleware('firmas'), createUsuario);
 routerUsuarios.post('/buscar', searchUsuarios);
 
 //Visualizar usuario por [ID]
-routerUsuarios.get('/:idUsuario', getUsuarioById);
+routerUsuarios.get('/:idUsuario', validateParamsIds, getUsuarioById);
 
 //Modificar usuarios por [ID]
 routerUsuarios.put(
   '/:idUsuario',
+  validateParamsIds,
   createUploadMiddleware('firmas', true),
   updateUsuarioById
 );
 
 //Cambiar estado por [ID] del usuario
-routerUsuarios.patch('/:idUsuario/estado', updateUsuarioState);
+routerUsuarios.patch('/:idUsuario/estado', validateParamsIds, updateUsuarioState);
 
 export default routerUsuarios;

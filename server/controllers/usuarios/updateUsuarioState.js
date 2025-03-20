@@ -7,24 +7,19 @@ export const updateUsuarioState = async (req, res) => {
   const idUsuario = req.params.idUsuario;
   const { estadoUsuario } = req.body;
 
-  //Validacion del Id
-  if (!idUsuario) {
-    return ApiResponse.badRequest(res, 'Id de usuario es requerido.', 400);
-  }
-
   // Validación del estado
-  if (estadoUsuario === undefined) {
+  if (estadoUsuario == null) {
     return ApiResponse.validation(res, 'Estado del usuario es requerido.');
   }
 
   try {
-    const updateRow = await Usuario.update({estadoUsuario}, {
+    const [updateRow] = await Usuario.update({estadoUsuario}, {
       where: {
         idUsuario: idUsuario,
       },
     });
 
-    if (updateRow[0] === 0) {
+    if (updateRow === 0) {
       return ApiResponse.notFound(res, 'Usuario no encontrado o sin cambios.');
     }
 

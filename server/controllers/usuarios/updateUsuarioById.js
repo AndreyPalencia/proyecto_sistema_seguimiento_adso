@@ -2,19 +2,26 @@ import models from '../../models/index.js';
 const { Usuario } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 import encryptionUtil from '../../utils/encryptionUtil.js';
-import { rollbackFileOnError } from '../../utils/fileHelpers.js';
+import { deleteFileSafely, getFileByName } from '../../utils/fileHelpers.js';
 
 //Modificar un usuario por ID
 export const updateUsuarioById = async (req, res) => {
-  const idUsuario = req.params.idUsuario;
+  const { idUsuario } = req.params;
   const nuevosDatos = req.body;
 
-  // Validación de id_usuario
-  if (!idUsuario) {
-    return ApiResponse.badRequest(res, 'El id_usuario es requerido.');
-  }
-
   try {
+    // Buscar usuario
+    const usuario = await Usuario.findByPk(idUsuario);
+
+    // Verificar si el usuario existe
+    if (!usuario) {
+      return ApiResponse.notFound(res, 'Usuario no encontrado.');
+    }
+
+    const oldFileUsuario = usuario.firma
+      ? getFileByName('firmas', usuario.firma)
+      : null;
+
     // Verificar si el usuario existe
     if (nuevosDatos.password) {
       const passwordEncryptada = await encryptionUtil.hashPassword(
@@ -28,15 +35,20 @@ export const updateUsuarioById = async (req, res) => {
       nuevosDatos.firma = req.file.filename;
     }
 
-    const updateRow = await Usuario.update(nuevosDatos, {
+    const [updateRow] = await Usuario.update(nuevosDatos, {
       where: {
         idUsuario,
       },
     });
 
     // Verificar si se actualizó algún registro
-    if (updateRow[0] === 0) {
+    if (updateRow === 0) {
       return ApiResponse.notFound(res, 'Usuario no encontrado.');
+    }
+
+    // Si se subió una nueva firma, eliminar la anterior
+    if (req.file?.filename && oldFileUsuario) {
+      deleteFileSafely(oldFileUsuario);
     }
 
     // Obentenemos el usuarios actualizado
@@ -49,7 +61,9 @@ export const updateUsuarioById = async (req, res) => {
     );
   } catch (error) {
     console.error('Error en la actualización de los datos del usuario:', error);
-    await rollbackFileOnError(req.filePath);
+    if (req.file && req.file.filename) {
+      deleteFileSafely(req.filePath);
+    }
     return ApiResponse.error(
       res,
       error,
