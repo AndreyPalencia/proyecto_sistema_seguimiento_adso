@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import ApiResponse from '../utils/apiResponse.js';
+import { generateFileNameWithExtension } from '../utils/fileHelpers.js';
 
 // Obtener la ruta del archivo actual
 const __filename = fileURLToPath(import.meta.url);
@@ -29,9 +30,21 @@ const createStorage = (folderName) => {
       cb(null, uploadPath); // Carpeta donde se guardan los archivos
     },
     filename: function (req, file, cb) {
-      const nameUniqueId = Date.now(); //Cantidad de caracteres
+      //const nameUniqueId = Date.now(); //Cantidad de caracteres
+      //El currentUserId se agregar en el middleware de verificacion y se podra acceder a el
+      //En la mayoria a parecera como un default por el momento hasta implementar el middleware
+      //Remplazar default por anon de anonimo cuando se implemete el middleware de verificacion de token
+      const idUser = req.currentUserId || 'default';
       const fileExtension = path.extname(file.originalname); //Obtener la extecion del archivo
-      cb(null, `${nameUniqueId}${fileExtension}`); // Nombre del archivo
+      const folderPrefix = folderName.endsWith('s') ? folderName.slice(0, -1) : folderName;
+      const nameUniqueId = generateFileNameWithExtension(
+        idUser,
+        fileExtension,
+        folderPrefix
+      );
+      //console.log(fileExtension)
+      //cb(null, `${nameUniqueId}${fileExtension}`); // Nombre del archivo
+      cb(null, `${nameUniqueId}`); // Nombre del archivo
     },
   });
 };

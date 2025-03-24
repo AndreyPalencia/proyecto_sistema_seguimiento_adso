@@ -13,7 +13,7 @@ export const updateBitacora = async (req, res) => {
       return ApiResponse.notFound(res, 'Bitacora no encontrada.');
     }
 
-    const oldFileBitacora = bitacoraFile.nombreBitacora
+    const oldFileBitacora = bitacoraFile.bitacora
       ? await getFileByName('bitacoras', bitacoraFile.bitacora)
       : null;
 
