@@ -13,11 +13,14 @@ export const updateUsuarioState = async (req, res) => {
   }
 
   try {
-    const [updateRow] = await Usuario.update({estadoUsuario}, {
-      where: {
-        idUsuario: idUsuario,
-      },
-    });
+    const [updateRow] = await Usuario.update(
+      { estadoUsuario },
+      {
+        where: {
+          idUsuario: idUsuario,
+        },
+      }
+    );
 
     if (updateRow === 0) {
       return ApiResponse.notFound(res, 'Usuario no encontrado o sin cambios.');

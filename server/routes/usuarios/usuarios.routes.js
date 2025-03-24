@@ -31,6 +31,10 @@ routerUsuarios.put(
 );
 
 //Cambiar estado por [ID] del usuario
-routerUsuarios.patch('/:idUsuario/estado', validateParamsIds, updateUsuarioState);
+routerUsuarios.patch(
+  '/:idUsuario/estado',
+  validateParamsIds,
+  updateUsuarioState
+);
 
 export default routerUsuarios;

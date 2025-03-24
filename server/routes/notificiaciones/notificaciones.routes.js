@@ -14,7 +14,7 @@ const routerNotificaciones = express.Router();
 routerNotificaciones.post('/', createNotificacion);
 
 //Visualizar las notificaciones obtenida por [ID] de usuario
-routerNotificaciones.get(
+routerNotificaciones.post(
   '/:idUsuario/usuario',
   validateParamsIds,
   getNotificacionByUser
