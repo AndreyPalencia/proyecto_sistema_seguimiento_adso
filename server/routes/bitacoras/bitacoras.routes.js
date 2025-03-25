@@ -14,8 +14,22 @@ import { deleteBitacora } from '../../controllers/bitacoras/deleteBitacora.js';
 
 const routerBitcoras = express.Router();
 
+// Configuración para subida obligatoria (allowEmpty: false)
+const uploadRequired = createUploadMiddleware('bitacoras', {
+  allowedExtensions: ['.pdf', '.xlsx', '.docx', '.doc'],
+  maxFileSize: 10 * 1024 * 1024,
+  allowEmpty: false, // Requiere archivo obligatorio
+});
+
+// Configuración para permitir actualización sin archivo (allowEmpty: true)
+const uploadOptional = createUploadMiddleware('bitacoras', {
+  allowedExtensions: ['.pdf', '.xlsx', '.docx', '.doc'],
+  maxFileSize: 10 * 1024 * 1024,
+  allowEmpty: true, // Permite no subir archivo
+});
+
 //Crear bitacora
-routerBitcoras.post('/', createUploadMiddleware('bitacoras'), createBitacora);
+routerBitcoras.post('/', uploadRequired, createBitacora);
 
 //Obtener todas la bitacoras por el idFichaAprendiz
 routerBitcoras.get(
@@ -31,7 +45,7 @@ routerBitcoras.get('/:idBitacora', validateParamsIds, getBitacoraById);
 routerBitcoras.put(
   '/:idBitacora',
   validateParamsIds,
-  createUploadMiddleware('bitacoras', true),
+  uploadOptional,
   updateBitacora
 );
 

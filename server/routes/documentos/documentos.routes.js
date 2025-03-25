@@ -13,12 +13,22 @@ import { deleteDocumento } from '../../controllers/documentos/deleteDocumento.js
 
 const routerDocumentos = express.Router();
 
+// Configuración para subida obligatoria (allowEmpty: false)
+const uploadRequired = createUploadMiddleware('documentos', {
+  allowedExtensions: ['.pdf', '.xlsx', '.docx', '.doc', '.png', '.jpg', '.jpeg'],
+  maxFileSize: 10 * 1024 * 1024,
+  allowEmpty: false, // Requiere archivo obligatorio
+});
+
+// Configuración para permitir actualización sin archivo (allowEmpty: true)
+const uploadOptional = createUploadMiddleware('documentos', {
+  allowedExtensions: ['.pdf', '.xlsx', '.docx', '.doc', '.png', '.jpg', '.jpeg'],
+  maxFileSize: 10 * 1024 * 1024,
+  allowEmpty: true, // Permite no subir archivo
+});
+
 //Crear un documento
-routerDocumentos.post(
-  '/',
-  createUploadMiddleware('documentos'),
-  createDocumento
-);
+routerDocumentos.post('/', uploadRequired, createDocumento);
 
 //Obtener todos los documentos relacionados con id FichaAprendiz
 routerDocumentos.get(
@@ -31,7 +41,7 @@ routerDocumentos.get(
 routerDocumentos.put(
   '/:idDocumento',
   validateParamsIds,
-  createUploadMiddleware('documentos', true),
+  uploadOptional,
   updateDocumento
 );
 

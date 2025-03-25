@@ -13,8 +13,22 @@ import { updateUsuarioState } from '../../controllers/usuarios/updateUsuarioStat
 
 const routerUsuarios = express.Router();
 
+// Configuración para subida obligatoria (allowEmpty: false)
+const uploadRequired = createUploadMiddleware('firmas', {
+  allowedExtensions: ['.png', '.jpg', '.jpeg'],
+  maxFileSize: 4 * 1024 * 1024,
+  allowEmpty: false, // Requiere archivo obligatorio
+});
+
+// Configuración para permitir actualización sin archivo (allowEmpty: true)
+const uploadOptional = createUploadMiddleware('firmas', {
+  allowedExtensions: ['.png', '.jpg', '.jpeg'],
+  maxFileSize: 4 * 1024 * 1024,
+  allowEmpty: true, // Permite no subir archivo
+});
+
 //Crear usuario
-routerUsuarios.post('/', createUploadMiddleware('firmas'), createUsuario);
+routerUsuarios.post('/', uploadRequired, createUsuario);
 
 //Visualizar los usuarios por filtros
 routerUsuarios.post('/buscar', searchUsuarios);
@@ -26,7 +40,7 @@ routerUsuarios.get('/:idUsuario', validateParamsIds, getUsuarioById);
 routerUsuarios.put(
   '/:idUsuario',
   validateParamsIds,
-  createUploadMiddleware('firmas', true),
+  uploadOptional,
   updateUsuarioById
 );
 
