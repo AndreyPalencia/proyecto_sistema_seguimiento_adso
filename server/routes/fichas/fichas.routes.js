@@ -7,7 +7,7 @@ import { createFicha } from '../../controllers/fichas/createFicha.js';
 import { getFichaById } from '../../controllers/fichas/getFichaById.js';
 import { updateFicha } from '../../controllers/fichas/updateFicha.js';
 import { updateFichaState } from '../../controllers/fichas/updateFichaState.js';
-import { getFichasByIdInstructor } from '../../controllers/fichas/getFichasByIdInstructor.js';
+import { getFichasByStateAndInstructor } from '../../controllers/fichas/getFichasByStateAndInstructor.js';
 
 /* Rutas Fichas */
 
@@ -16,15 +16,15 @@ const routerFichas = express.Router();
 //Crear un ficha
 routerFichas.post('/', createFicha);
 
-//Visualizar una ficha por ID
-routerFichas.get('/:idFicha', validateParamsIds, getFichaById);
-
 //Visualizar fichas por ID de instructor
-routerFichas.get(
+routerFichas.post(
   '/instructor/:idInstructor',
   validateParamsIds,
-  getFichasByIdInstructor
+  getFichasByStateAndInstructor
 );
+
+//Visualizar una ficha por ID
+routerFichas.get('/:idFicha', validateParamsIds, getFichaById);
 
 //Modificar una ficha por [ID]
 routerFichas.put('/:idFicha', validateParamsIds, updateFicha);

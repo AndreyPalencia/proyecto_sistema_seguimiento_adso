@@ -1,6 +1,8 @@
 import express from 'express';
 import { createUploadMiddleware } from '../../config/multerConfig.js';
 import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
+import { validateUserCreate } from '../../middlewares/validateUserCreate.js';
+import { validateUserUpdate } from '../../middlewares/validateUserUpdate.js';
 
 //Importar controladores de usuarios
 import { createUsuario } from '../../controllers/usuarios/createUsuario.js';
@@ -28,7 +30,7 @@ const uploadOptional = createUploadMiddleware('firmas', {
 });
 
 //Crear usuario
-routerUsuarios.post('/', uploadRequired, createUsuario);
+routerUsuarios.post('/', uploadRequired, validateUserCreate, createUsuario);
 
 //Visualizar los usuarios por filtros
 routerUsuarios.post('/buscar', searchUsuarios);
@@ -41,6 +43,7 @@ routerUsuarios.put(
   '/:idUsuario',
   validateParamsIds,
   uploadOptional,
+  validateUserUpdate,
   updateUsuarioById
 );
 
