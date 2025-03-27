@@ -3,12 +3,8 @@ const { Observacion } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 
 export const updateObservacionState = async (req, res) => {
-  const idObservacion = req.params.idObservacion;
+  const { idObservacion } = req.params;
   const { mostrarObservacion } = req.body;
-
-  if (!idObservacion) {
-    return ApiResponse.badRequest(res, 'El id observación es requerido.');
-  }
 
   if (mostrarObservacion == null) {
     return ApiResponse.badRequest(

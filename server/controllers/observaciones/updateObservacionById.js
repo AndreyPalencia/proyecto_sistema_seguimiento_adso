@@ -3,12 +3,7 @@ const { Observacion } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 
 export const updateObservacionById = async (req, res) => {
-  const idObservacion = req.params.idObservacion;
-
-  if (!idObservacion) {
-    return ApiResponse.badRequest(res, 'El idFichaAprendiz es requerido.');
-  }
-
+  const { idObservacion } = req.params;
   try {
     const [updatedCount] = await Observacion.update(req.body, {
       where: { idObservacion },
