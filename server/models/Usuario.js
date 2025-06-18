@@ -39,17 +39,29 @@ Usuario.init(
       validate: {
         isIn: {
           args: [['CC', 'CE', 'TI', 'PEP', 'PPT']],
-          msg: 'TIpo de documento invalido.',
+          msg: 'Tipo de documento inválido. Debe ser CC, CE, TI, PEP o PPT.',
         },
       },
       field: 'tipo_documento',
     },
     numeroDocumento: {
       type: DataTypes.INTEGER.UNSIGNED,
-      unique: true,
+      unique: {
+        msg: 'Este número de documento ya está registrado.',
+      },
       allowNull: false,
       validate: {
-        isInt: true,
+        isInt: {
+          msg: 'El número de documento debe ser un número entero.',
+        },
+        min: {
+          args: [100000], // valor mínimo (ej. 6 dígitos)
+          msg: 'El número de documento debe tener al menos 6 dígitos.',
+        },
+        max: {
+          args: [9999999999],
+          msg: 'El número de documento no puede tener más de 10 dígitos.',
+        },
       },
       field: 'numero_documento',
     },
@@ -57,32 +69,52 @@ Usuario.init(
       type: DataTypes.STRING(125),
       allowNull: false,
       validate: {
-        notEmpty: true,
-        len: [2, 125],
+        notEmpty: {
+          msg: 'El nombre no puede estar vacío.',
+        },
+        len: {
+          args: [2, 125],
+          msg: 'El nombre debe tener entre 2 y 125 caracteres.',
+        },
       },
     },
     apellido: {
       type: DataTypes.STRING(125),
       allowNull: false,
       validate: {
-        notEmpty: true,
-        len: [2, 125],
+        notEmpty: {
+          msg: 'El apellido no puede estar vacío.',
+        },
+        len: {
+          args: [2, 125],
+          msg: 'El apellido debe tener entre 2 y 125 caracteres.',
+        },
       },
     },
     telefono: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       validate: {
-        min: 1000000, // 7 dígitos mínimo (para teléfono fijo)
-        max: 9999999999,
+        min: {
+          args: [1000000],
+          msg: 'El número de teléfono debe tener al menos 7 dígitos.',
+        },
+        max: {
+          args: [9999999999],
+          msg: 'El número de teléfono excede el límite permitido.',
+        },
       },
     },
     correoElectronico: {
       type: DataTypes.STRING(50),
-      unique: true,
+      unique: {
+        msg: 'Este correo electrónico ya está registrado.',
+      },
       allowNull: false,
       validate: {
-        isEmail: true,
+        isEmail: {
+          msg: 'El correo electrónico no tiene un formato válido.',
+        },
       },
       field: 'correo_electronico',
     },
@@ -95,14 +127,20 @@ Usuario.init(
       type: DataTypes.STRING(20),
       allowNull: false,
       validate: {
-        isIn: [['admin', 'instructor', 'aprendiz']],
+        isIn: {
+          args: [['admin', 'instructor', 'aprendiz']],
+          msg: 'El rol debe ser admin, instructor o aprendiz.',
+        },
       },
     },
     password: {
       type: DataTypes.STRING(255),
       allowNull: false,
       validate: {
-        len: [8, 255],
+        len: {
+          args: [8, 255],
+          msg: 'La contraseña debe tener al menos 8 caracteres.',
+        },
       },
     },
     estadoUsuario: {

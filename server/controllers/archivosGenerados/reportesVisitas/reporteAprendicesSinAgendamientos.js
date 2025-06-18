@@ -2,88 +2,57 @@ import models from '../../../models/index.js';
 const { FichaAprendiz, Empresa, Usuario, Agendamiento, Ficha } = models;
 import ApiResponse from '../../../utils/apiResponse.js';
 import { Op, fn, col, where } from 'sequelize';
+import PDFDocument from 'pdfKit';
 
 export const reporteAprendicesSinAgendamientos = async (req, res) => {
   try {
     const { idInstructor } = req.params;
+
     const { fechaInicio: fechaInicioReporte, fechaFin: fechaFinReporte } =
       req.body;
 
-    // Validar que las fechas estén presentes
-    if (!fechaInicioReporte || !fechaFinReporte) {
-      return ApiResponse.badRequest(
-        res,
-        'Las fechas de inicio y fin son requeridas.'
-      );
-    }
-
-    // Buscar fichas del instructor
     const fichasInstructor = await Ficha.findAll({
-      where: {
-        idInstructor: parseInt(idInstructor),
-        estadoFicha: 1,
-      },
-      attributes: {
-        exclude: ['fechaNotificacionEnvio'],
-      },
-      include: [
-        {
-          model: Usuario,
-          attributes: ['correoElectronico', 'nombre', 'apellido'],
-        },
-      ],
+      where: { idInstructor, estadoFicha: 1 },
     });
-
     if (!fichasInstructor || fichasInstructor.length === 0) {
       return ApiResponse.notFound(
         res,
-        'No se encontraron fichas activas para realizar la búsqueda.'
+        'No se encontraron fichas activias para realizar la busqueda.'
       );
     }
-
     const aprendicesSinAgendamientosRaw = await Promise.all(
       fichasInstructor.map(async (ficha) => {
-        const { idFicha, Usuario: instructor } = ficha;
-        const instructorEmail = instructor?.correoElectronico;
-        const instructorName = `${instructor?.nombre} ${instructor?.apellido}`;
-
-        // Buscar aprendices CON agendamientos en el rango de fechas
-        const aprendicesConAgendamientos = await FichaAprendiz.findAll({
-          where: { idFicha },
+        const { idFicha } = ficha;
+        const aprendicesFicha = await FichaAprendiz.findAll({
+          where: {
+            idFicha: idFicha,
+          },
           include: [
             {
               model: Agendamiento,
-              where: {
-                [Op.and]: [
-                  where(fn('DATE', col('Agendamientos.fecha_inicio')), {
-                    [Op.between]: [fechaFinReporte, fechaInicioReporte],
-                  }),
-                ],
-              },
-              attributes: [], // Solo necesitamos saber que existe
-              required: true, // INNER JOIN - solo los que tienen agendamientos
+              where: where(fn('DATE', col('fecha_inicio')), {
+                [Op.between]: [fechaFinReporte, fechaInicioReporte],
+              }),
+              attributes: [],
             },
           ],
-          attributes: ['idFichaAprendiz'],
         });
 
-        // Obtener IDs de aprendices que SÍ tienen agendamientos
-        const idsConAgendamientos = aprendicesConAgendamientos.map(
-          (a) => a.idFichaAprendiz
+        const idsConAgendamientos = aprendicesFicha.map(
+          (a) => a?.idFichaAprendiz
         );
 
-        // Buscar aprendices SIN agendamientos (los que no están en la lista anterior)
         const aprendicesSinVisitas = await FichaAprendiz.findAll({
           where: {
-            idFicha,
-            ...(idsConAgendamientos.length > 0 && {
-              idFichaAprendiz: {
-                [Op.notIn]: idsConAgendamientos,
-              },
-            }),
+            idFicha: idFicha,
+            idFichaAprendiz: {
+              [Op.notIn]: idsConAgendamientos.length
+                ? idsConAgendamientos
+                : [0],
+            },
           },
           attributes: {
-            exclude: ['idUsuario', 'idFicha', 'idEmpresa'],
+            exclude: ['idUsuario', 'idFicha', 'idEmpresa', 'idFichaAprendiz'],
           },
           include: [
             {
@@ -109,37 +78,109 @@ export const reporteAprendicesSinAgendamientos = async (req, res) => {
 
         return {
           aprendicesSinVisitas,
-          ficha: {
-            idFicha: ficha.idFicha,
-            numeroFicha: ficha.numeroFicha,
-            nombrePrograma: ficha.nombrePrograma,
-            terminoPrograma: ficha.terminoPrograma,
-            inicioEtapaProductiva: ficha.inicioEtapaProductiva,
-            finEtapaProductiva: ficha.finEtapaProductiva,
-            estadoFicha: ficha.estadoFicha,
-          },
-          infoInstructor: {
-            correoElectronico: instructorEmail,
-            nombre: instructorName,
-          },
+          idFicha,
         };
       })
     );
 
-    // Filtrar resultados que tengan al menos un aprendiz sin agendamiento
+    // Filter out entries where aprendicesSinVisitas is empty
     const aprendicesSinAgendamientos = aprendicesSinAgendamientosRaw.filter(
       (item) => item.aprendicesSinVisitas.length > 0
     );
 
-    // Si no se encontraron datos después del filtro
-    if (aprendicesSinAgendamientos.length === 0) {
-      return ApiResponse.notFound(
-        res,
-        'No se encontraron aprendices sin agendamientos en el rango de fechas indicado.'
+    ////////////////////////////////////////////////////////////////
+  
+    try {
+      const doc = new PDFDocument({
+        margin: 50,
+        size: 'A4',
+        layout: 'landscape',
+      });
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'inline; filename=reporte.pdf');
+      doc.pipe(res);
+
+      aprendicesSinAgendamientos.forEach(
+        ({ aprendicesSinVisitas }, indexFicha) => {
+          aprendicesSinVisitas.forEach((aprendiz, index) => {
+            const secciones = [
+              {
+                titulo: 'Información del Aprendiz',
+                datos: {
+                  Nombre: aprendiz.usuario?.nombre,
+                  Correo: aprendiz.usuario?.correo,
+                  Teléfono: aprendiz.usuario?.telefono,
+                },
+              },
+              {
+                titulo: 'Información de la Empresa',
+                datos: {
+                  'Nombre Empresa': aprendiz.empresa?.nombre,
+                  Dirección: aprendiz.empresa?.direccion,
+                  'Teléfono Empresa': aprendiz.empresa?.telefono,
+                },
+              },
+              {
+                titulo: 'Etapa Práctica',
+                datos: {
+                  'Fecha Inicio': aprendiz.etapa?.fechaInicio,
+                  'Fecha Fin': aprendiz.etapa?.fechaFin,
+                  Estado: aprendiz.etapa?.estado,
+                },
+              },
+            ];
+
+            secciones.forEach((sec) => {
+              if (!sec.datos || typeof sec.datos !== 'object') return;
+
+              doc
+                .font('Helvetica-Bold')
+                .fontSize(12)
+                .fillColor('black')
+                .text(sec.titulo, { align: 'left' });
+
+              doc.moveDown(0.5);
+              const yStart = doc.y;
+
+              Object.entries(sec.datos).forEach(([key, value], i) => {
+                const y = yStart + i * 20;
+
+                doc
+                  .font('Helvetica-Bold')
+                  .fontSize(10)
+                  .fillColor('#444444')
+                  .text(`${key}:`, 50, y);
+
+                doc
+                  .font('Helvetica')
+                  .fontSize(10)
+                  .fillColor('black')
+                  .text(`${value ?? 'N/A'}`, 150, y);
+              });
+
+              doc.moveDown(2);
+            });
+
+            // Add page unless it's the last entry
+            if (
+              index < aprendicesSinVisitas.length - 1 ||
+              indexFicha < aprendicesSinAgendamientos.length - 1
+            ) {
+              doc.addPage();
+            }
+          });
+        }
       );
+      
+
+      doc.end();
+    } catch (error) {
+      res.destroy(); // Cerramos la conexión si algo falla antes de doc.end()
+      console.error('Error al generar PDF:', error);
     }
 
-    return aprendicesSinAgendamientos;
+    //return ApiResponse.success(res, aprendicesSinAgendamientos, 'Okey');
   } catch (error) {
     console.error(
       'Error al generar el reporte de aprendices sin agendamientos: ',

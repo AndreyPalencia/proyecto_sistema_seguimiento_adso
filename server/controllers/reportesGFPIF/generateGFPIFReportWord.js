@@ -1,5 +1,5 @@
 import models from '../../models/index.js';
-const { ReporteGFPIF, FichaAprendiz, Ficha, Usuario } = models;
+const { ReporteGFPIF, FichaAprendiz, Ficha, Usuario, Empresa } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 import {
   BASE_UPLOAD_PATH,
@@ -26,7 +26,7 @@ import ImageModule from 'docxtemplater-image-module-free';
 const imgTransparante = path.join(
   BASE_UPLOAD_PATH,
   '..',
-  'templates/img_tranparente.png'
+  'templates/img_transparente.png'
 );
 
 //Ruta de la plantilla de Word
@@ -66,50 +66,82 @@ export const generateGFPIFReportWord = async (req, res) => {
      */
     //Obtenemos la firma de instructor a partir de subconsulta de Reporte a FichaAprendiz
     // a Ficha a Usuario
-    const instructor = await ReporteGFPIF.findOne({
-      where: { idReporte },
+
+    //Obtener la información del usuario (incluyendo la firma)
+    const infoEmpresUsuario = await FichaAprendiz.findOne({
+      where: { idFichaAprendiz },
+      attributes: [
+        'cargoEmpresa',
+        'jefeInmediato',
+        'correoElectronicoJefe',
+        'telefonoJefe',
+        'cargoJefe',
+        'alternativa',
+      ],
       include: [
         {
-          model: FichaAprendiz, //Relación con FichaAprendiz
-          as: 'FichaAprendiz', //Alias correcto según el modelo Reporte
+          model: Usuario,
+          attributes: [
+            'idUsuario',
+            'firma',
+            'nombre',
+            'apellido',
+            'numeroDocumento',
+            'correoElectronico',
+            'telefono',
+          ],
+        },
+        {
+          model: Empresa,
+          attributes: ['razonSocial', 'nit', 'direccion'],
+        },
+
+        {
+          model: Ficha, //Relación con Ficha
+          as: 'Ficha', //Alias de la relación Ficha -> FichaAprendiz
           include: [
             {
-              model: Ficha, //Relación con Ficha
-              as: 'Ficha', //Alias de la relación Ficha -> FichaAprendiz
-              include: [
-                {
-                  model: Usuario, //Relación con Usuario (Instructor)
-                  as: 'Usuario', //Alias de la relación entre Ficha y Usuario
-                  attributes: ['idUsuario', 'nombre', 'apellido', 'firma'],
-                },
-              ],
+              model: Usuario, //Relación con Usuario (Instructor)
+              as: 'Usuario', //Alias de la relación entre Ficha y Usuario
+              attributes: ['idUsuario', 'nombre', 'apellido', 'firma'],
             },
           ],
         },
       ],
     });
 
-    //Obtener la información del usuario (incluyendo la firma)
-    const usuarioAprendiz = await FichaAprendiz.findOne({
-      where: { idFichaAprendiz },
-      include: [
-        {
-          model: Usuario,
-          attributes: ['idUsuario', 'firma'],
-        },
-      ],
-    });
+    const instructor = infoEmpresUsuario?.Ficha?.Usuario;
+
+    if (!instructor) {
+      return ApiResponse.error(res, undefined, 'Instructor no encontrado.');
+    }
+
+    const usuarioAprendiz = infoEmpresUsuario?.Usuario;
+    const empresa = infoEmpresUsuario?.Empresa; // Información de la empresa como entidad
+    const relacionEmpresaAprendiz = (({
+      cargoEmpresa,
+      jefeInmediato,
+      correoElectronicoJefe,
+      telefonoJefe,
+      cargoJefe,
+      alternativa,
+    }) => ({
+      cargoEmpresa,
+      jefeInmediato,
+      correoElectronicoJefe,
+      telefonoJefe,
+      cargoJefe,
+      alternativa,
+    }))(infoEmpresUsuario);
 
     //Obtenemos la información del numero de la ficha
     const ficha = await Ficha.findByPk(idFicha, {
-      attributes: ['numeroFicha'],
+      attributes: ['numeroFicha', 'nombrePrograma'],
     });
 
     if (!ficha) {
       return ApiResponse.error(res, undefined, 'Ficha no encontrada.');
     }
-
-    const numeroFicha = ficha.numeroFicha;
 
     //Obtenemos el nombre del reporte apartir del idReporte
     const reporteInfo = await ReporteGFPIF.findOne({
@@ -123,7 +155,7 @@ export const generateGFPIFReportWord = async (req, res) => {
 
     //Ruta del archivo JSON existente para traerlo
     const rutaArchivoReporteJSON = obtenerRutaArchivoReporteJSON(
-      numeroFicha,
+      idFicha,
       reporteInfo.nombreReporte
     );
 
@@ -137,6 +169,10 @@ export const generateGFPIFReportWord = async (req, res) => {
 
     //Leer y parsear el JSON
     const reporteJSON = parsearArchivoReporteJSON(rutaArchivoReporteJSON);
+
+    if (!reporteJSON || typeof reporteJSON !== 'object') {
+      return ApiResponse.error(res, undefined, 'El archivo JSON no es válido.');
+    }
 
     //Leer la plantilla con archivo binario
     const templateFile = fs.readFileSync(templatePath, 'binary');
@@ -164,10 +200,9 @@ export const generateGFPIFReportWord = async (req, res) => {
     //console.log('Datos cargados en la plantilla:', reporteJSON);
 
     const firmaAprendizPath =
-      getFirmaPath(usuarioAprendiz?.Usuario.firma) || imgTransparante;
+      getFirmaPath(usuarioAprendiz?.firma) ?? imgTransparante;
     const FirmaInstructorPath =
-      getFirmaPath(instructor?.FichaAprendiz?.Ficha?.Usuario?.firma) ||
-      imgTransparante;
+      getFirmaPath(instructor?.firma) ?? imgTransparante;
     // console.log(
     //   'Firmas:',
     //   usuarioAprendiz?.firma,
@@ -175,9 +210,9 @@ export const generateGFPIFReportWord = async (req, res) => {
     //   FirmaInstructorPath
     // );
 
-    if (!FirmaInstructorPath || !firmaAprendizPath) {
-      return ApiResponse.error(res, undefined, 'Firmas no encontradas.');
-    }
+    // if (!FirmaInstructorPath || !firmaAprendizPath) {
+    //   return ApiResponse.error(res, undefined, 'Firmas no encontradas.');
+    // }
 
     //Fecha por default en caso de no mandarse
     const fechaGeneracion = new Date().toISOString().split('T')[0];
@@ -189,12 +224,12 @@ export const generateGFPIFReportWord = async (req, res) => {
     // Desestructuración de las propiedades principales de reporteJSON
     const {
       infoGeneral = {},
-      infoAprendiz = {},
-      infoEmpresa = {},
+      // infoAprendiz = {},
+      // infoEmpresa = {},
       infoPlaneacion = {},
       infoSeguimiento = {},
       evaluacionFinal = {},
-      infoInstructor = {},
+      // infoInstructor = {},
     } = reporteJSON;
 
     //Desestructuración de las propiedades dentro de infoPlaneación
@@ -224,24 +259,29 @@ export const generateGFPIFReportWord = async (req, res) => {
       //Información General
       Regional: infoGeneral.regional || 'No especificado',
       Centroformacion: infoGeneral.centroFormacion || 'No especificado',
-      ProgramaFormacion: infoGeneral.programaFormacion || 'No especificado',
-      NumeroFicha: infoGeneral.numeroFicha || 'No especificado',
+      ProgramaFormacion: ficha.nombrePrograma || 'No especificado',
+      NumeroFicha: ficha.numeroFicha || 'No especificado',
 
       //Información General -> Datos del Aprendiz
-      NombreAprendiz: infoAprendiz.nombreAprendiz || 'No especificado',
+      NombreAprendiz:
+        `${usuarioAprendiz.nombre} ${usuarioAprendiz.apellido}` ||
+        'No especificado',
       IdentificacionAprendiz:
-        infoAprendiz.identificacionAprendiz || 'No especificado',
-      TelefonoAprendiz: infoAprendiz.telefonoAprendiz || 'No especificado',
-      EmailAprendiz: infoAprendiz.emailAprendiz || 'No especificado',
+        usuarioAprendiz.numeroDocumento || 'No especificado',
+      TelefonoAprendiz: usuarioAprendiz.telefono || 'No especificado',
+      AlternativaAprendiz:
+        relacionEmpresaAprendiz.alternativa || 'No especificado',
+      EmailAprendiz: usuarioAprendiz.correoElectronico || 'No especificado',
 
       //Información General -> Ente conformador
-      RazonSocial: infoEmpresa.razonSocial || 'No especificado',
-      NitEmpresa: infoEmpresa.nitEmpresa || 'No especificado',
-      DireccionEmpresa: infoEmpresa.direccionEmpresa || 'No especificado',
-      JefeInmediato: infoEmpresa.jefeInmediato || 'No especificado',
-      CargoJefe: infoEmpresa.cargoJefe || 'No especificado',
-      TelefonoJefe: infoEmpresa.telefonoJefe || 'No especificado',
-      EmailJefe: infoEmpresa.emailJefe || 'No especificado',
+      RazonSocial: empresa.razonSocial || 'No especificado',
+      NitEmpresa: empresa.nit || 'No especificado',
+      DireccionEmpresa: empresa.direccion || 'No especificado',
+      JefeInmediato: relacionEmpresaAprendiz.jefeInmediato || 'No especificado',
+      CargoJefe: relacionEmpresaAprendiz.cargoJefe || 'No especificado',
+      TelefonoJefe: relacionEmpresaAprendiz.telefonoJefe || 'No especificado',
+      EmailJefe:
+        relacionEmpresaAprendiz.correoElectronicoJefe || 'No especificado',
 
       //Planeación Etapa Productiva
       InfoPlaneacion: actividadesDesarrolladas.map((celdaItem) => ({
@@ -371,17 +411,19 @@ export const generateGFPIFReportWord = async (req, res) => {
         evaluacionFinal.fechaGeneracionInforme || fechaGeneracion,
 
       //Agregar la firma de forma Global y nombres
-      NombreInstructorSeguimiento: infoInstructor.nombreInstructor,
+      NombreInstructorSeguimiento:
+        ` ${instructor.nombre}  ${instructor.apellido}` || '',
       FirmaAprendiz: firmaAprendizPath,
       FirmaInstructor: FirmaInstructorPath,
     });
 
+    const nombreRerportAprendiz = `${ficha.numeroFicha}_${usuarioAprendiz.nombre}_${usuarioAprendiz.apellido}`;
     //Generamos el nombre del documento docx
     const nombreReporteFormatoDOCX = generateFileNameWithExtension(
       idFichaAprendiz,
       'docx',
       'reporte_GFPI_F_023',
-      numeroFicha
+      nombreRerportAprendiz
     );
 
     //Obtener el documento generado y convertilo en un formato binario compatible con node.js
@@ -410,7 +452,7 @@ export const generateGFPIFReportWord = async (req, res) => {
     //   'Reporte Word generado exitosamente.'
     // );
 
-    return {bufferDocumentoWord, nombreReporteFormatoDOCX};
+    return { bufferDocumentoWord, nombreReporteFormatoDOCX };
   } catch (error) {
     console.error('Error en crear el reporte Word:', error);
     return ApiResponse.error(res, error, 'Error al generar el reporte Word.');

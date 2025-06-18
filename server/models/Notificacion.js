@@ -25,7 +25,7 @@ Notificacion.init(
       type: DataTypes.STRING(50),
       allowNull: false,
       validate: {
-        isIn: [['Alerta', 'Información', 'Error', 'Éxito', 'Solicitud']],
+        isIn: [['Alerta', 'Informacion', 'Error', 'Exito', 'Solicitud']],
       },
     },
     titulo: {
@@ -61,6 +61,7 @@ Notificacion.init(
     estado: {
       type: DataTypes.STRING(45),
       allowNull: true,
+      defaultValue: 'NoLeida',
       validate: {
         isIn: [['Leida', 'NoLeida', 'Archivada']],
       },

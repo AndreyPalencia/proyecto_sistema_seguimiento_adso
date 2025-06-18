@@ -25,21 +25,35 @@ Bitacora.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       validate: {
-        min: 1,
+        min: {
+          args: [1],
+          msg: 'El número de bitácora debe ser mayor o igual a 1.',
+        },
+        notNull: {
+          msg: 'El número de bitácora es obligatorio.',
+        },
       },
       field: 'numero_bitacora',
     },
     observacion: {
       type: DataTypes.TEXT,
       validate: {
-        len: [0, 1000], // Máximo 1000 caracteres
+        len: {
+          args: [0, 1000],
+          msg: 'La observación no debe superar los 1000 caracteres.',
+        },
       },
     },
     bitacora: {
       type: DataTypes.STRING(255),
       allowNull: false,
       validate: {
-        notEmpty: false,
+        notEmpty: {
+          msg: 'La bitácora no puede estar vacía.',
+        },
+        notNull: {
+          msg: 'El nombre del archivo de bitácora es obligatorio.',
+        },
       },
     },
     estadoBitacora: {
@@ -51,11 +65,16 @@ Bitacora.init(
       type: DataTypes.DATE,
       allowNull: false,
       validate: {
-        isDate: true,
+        isDate: {
+          msg: 'La fecha de actualización debe ser una fecha válida.',
+        },
         isBefore(value) {
           if (new Date(value) >= new Date()) {
             throw new Error('La fecha de actualización no puede ser futura.');
           }
+        },
+        notNull: {
+          msg: 'La fecha de actualización es obligatoria.',
         },
       },
       field: 'fecha_ultima_actualizacion',
@@ -63,6 +82,14 @@ Bitacora.init(
     idFichaAprendiz: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'El ID de ficha aprendiz es obligatorio.',
+        },
+        isInt: {
+          msg: 'El ID de ficha aprendiz debe ser un número entero.',
+        },
+      },
       field: 'id_ficha_aprendiz',
     },
   },
@@ -74,5 +101,6 @@ Bitacora.init(
     paranoid: false,
   }
 );
+
 
 export default Bitacora;

@@ -20,14 +20,16 @@ const DEFAULT_ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.pdf', '.xlsx'];
  * @param {number} maxFileSize - Tamaño máximo de archivo permitido
  * @returns {Error} Error procesado
  */
-const handleMulterError = (error, maxFileSize) => {
+const handleMulterError = (error, maxFileSize, allowedExtensions) => {
   const errorMessages = {
     LIMIT_FILE_SIZE: `El archivo excede el tamaño máximo de ${
       maxFileSize / (1024 * 1024)
     } MB`,
     LIMIT_PART_COUNT: 'Se excedió el número máximo de partes en la subida',
     LIMIT_FILE_COUNT: 'Se excedió el número máximo de archivos',
-    LIMIT_UNEXPECTED_FILE: 'Tipo de archivo inesperado',
+    LIMIT_UNEXPECTED_FILE: `Tipo de archivo inesperado. Se espera los siguiente tipos de archivos${allowedExtensions.join(
+      ', '
+    )}`,
     LIMIT_FIELD_KEY: 'Clave de campo no válida',
     LIMIT_FIELD_VALUE: 'Valor de campo no válido',
     LIMIT_FIELD_COUNT: 'Número máximo de campos excedido',
@@ -96,10 +98,9 @@ const configureFileFilter = (customExtensions) => {
     const fileExtension = path.extname(file.originalname).toLowerCase();
 
     if (!allowedExtensions.includes(fileExtension)) {
-      return cb(
-        new Error(`Solo se permiten archivos: ${allowedExtensions.join(', ')}`),
-        false
-      );
+      // MAL: return cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE'))
+      // BIEN:
+      return cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE'), false);
     }
 
     cb(null, true);
@@ -134,25 +135,30 @@ export const createUploadMiddleware = (folderName, options = {}) => {
     fileFilter: configureFileFilter(allowedExtensions),
   }).single('archivo');
 
-  return async (req, res, next) => {
-    try {
-      //Se le pasan la req y res para que multer ejecute la subida del archivo
-      await new Promise((resolve, reject) => {
-        upload(req, res, (error) => {
-          //if (error) return reject(error);
-          if (error) return reject(handleMulterError(error, maxFileSize));
-          resolve();
+  return (req, res, next) => {
+    upload(req, res, (error) => {
+      if (error) {
+        const processedError = handleMulterError(
+          error,
+          maxFileSize,
+          allowedExtensions
+        );
+        console.log(error);
+        return res.status(400).json({
+          success: false,
+          message: processedError.message || 'Error al procesar el archivo',
+          error: {
+            details: processedError.storageErrors || [],
+          },
         });
-      });
-      //Si no se sube ningun archivo y no se permite que sea vacio se retorna un error
-      if (!req.file && !allowEmpty) {
-        return ApiResponse.badRequest(res, 'No se ha subido ningun archivo.');
       }
-      //Agregar la propiedad filePath al req
+
+      if (!req.file && !allowEmpty) {
+        return ApiResponse.badRequest(res, 'No se ha subido ningún archivo.');
+      }
+
       req.filePath = req.file?.path;
       next();
-    } catch (error) {
-      return ApiResponse.error(res, error, 'Error al subir el archivo');
-    }
+    });
   };
 };

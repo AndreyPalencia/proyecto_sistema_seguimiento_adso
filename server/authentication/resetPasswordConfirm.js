@@ -6,6 +6,8 @@ import ApiResponse from '../utils/apiResponse.js';
 import encryptionUtil from '../utils/encryptionUtil.js';
 const { SECRET_JWT_KEY } = process.env;
 
+/**Modificar para extar el token */
+
 export const resetPasswordConfirm = async (req, res) => {
   const { token, newPassword } = req.body;
   try {

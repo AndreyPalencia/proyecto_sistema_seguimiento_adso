@@ -35,7 +35,7 @@ routerArchivosGenerados.post(
   downloadReporteMaps
 );
 
-//Generar el zip para descargar todo la información 
+//Generar el zip para descargar todo la información
 //de los aprendices de un ficha por ficha [ID]
 routerArchivosGenerados.get(
   '/descargar-zip-ficha/:idFicha',

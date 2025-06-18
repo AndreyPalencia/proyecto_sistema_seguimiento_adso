@@ -9,6 +9,7 @@ import { Drawer, Box } from '@mui/material';
  *   Es obligatorio para las variantes `persistent` y `permanent`.
  * - `position` (string): Se establece en `"relative"` para ajustarse
  *   al contenedor del Drawer. En dispositivos móviles, este ajuste se ignora.
+ * - `isCollapsed` (boolean): Indica si el Drawer está colapsado para mostra solo iconos.
  *
  * Características:
  * -  se utiliza para evitar que `drawerWidth`
@@ -20,15 +21,19 @@ import { Drawer, Box } from '@mui/material';
  */
 
 export const CustomDrawer = styled(Drawer, {
-  shouldForwardProp: (prop) => prop !== 'drawerWidth',
-})(({ theme, drawerWidth }) => ({
-  width: drawerWidth,
+  shouldForwardProp: (prop) =>  prop !== 'drawerWidth' && prop !== 'isCollapsed',
+})(({ theme, drawerWidth, isCollapsed }) => ({
+  width: isCollapsed ? 88: drawerWidth ,
   flexShrink: 0,
   '& .MuiDrawer-paper': {
-    width: drawerWidth,
+    width: isCollapsed ? 88: drawerWidth ,
     position: 'relative',
     backgroundColor: theme.palette.background.default,
   },
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.standard,
+  }),
   '& .css-o140if-MuiPaper-root-MuiDrawer-paper': {
     borderRight: 0,
   },

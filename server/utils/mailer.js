@@ -32,7 +32,7 @@ export const sendEmail = async (to, subject, text, html) => {
       html,
     });
 
-    console.log('Correo enviado', infoEmail);
+    //console.log('Correo enviado', infoEmail);
     return { success: true, info: infoEmail };
   } catch (error) {
     console.error('Error al enviar el correo', error);

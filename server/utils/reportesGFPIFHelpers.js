@@ -1,32 +1,36 @@
 import fs from 'fs';
 import path from 'path';
+import { mkdir, writeFile } from 'fs/promises';
 
 import {
   BASE_UPLOAD_PATH,
   generateFileNameWithExtension,
 } from './fileHelpers.js';
 
+import { generarReporteGFPIFWord } from './generarReporteGFPIFWord.js';
+
 /**
  * Genera la ruta del archivo JSON para el reporte
- * @param {number} numeroFicha - Número de la ficha del aprendiz.
+ * @param {number} idFicha - Número de la ficha del aprendiz.
  * @param {number} idAprendiz - Id del aprendiz.
  * @return {object} { rutaReporteJSON, nombreReporteJSON } - Retorna el la ruta de reporte, como su nombre.
  */
-export const generarRutaReporteJSON = (idAprendiz, numeroFicha) => {
-  if (!numeroFicha) throw new Error('IdFicha es requerido');
+export const generarRutaReporteJSON = (idAprendiz, idFicha) => {
+  if (!idFicha) throw new Error('IdFicha es requerido');
   if (!idAprendiz) throw new Error('idAprendiz es requerido');
 
   const nombreReporteJSON = generateFileNameWithExtension(
     idAprendiz,
     'json',
-    'reporte_aprendiz'
+    'reporte_aprendiz',
+    idFicha
   );
 
   //Definir la carpeta donde se guardará el reporte
   const carpetaFicha = path.join(
     BASE_UPLOAD_PATH,
     'fichas',
-    `ficha_${numeroFicha}`
+    `ficha_${idFicha}`
   );
 
   //Valida la existencia de la carpetaFicha
@@ -59,15 +63,15 @@ export const guardarReporteArchivoJSON = (rutaReporteJSON, reporteJSON) => {
 
 /**
  * Obtener la ruta del archivo JSON guardo en upload.
- * @param {number} numeroFicha - Número de ficha del aprendiz.
+ * @param {number} idFicha - Número de ficha del aprendiz.
  * @param {string} nombreReporte  - Nombre del reporte que esta en base de datos.
  * @returns {rutaArchivo} - Retrona la ruta del archivo del reporte JSON.
  */
-export const obtenerRutaArchivoReporteJSON = (numeroFicha, nombreReporte) => {
+export const obtenerRutaArchivoReporteJSON = (idFicha, nombreReporte) => {
   const rutaArchivo = path.join(
     BASE_UPLOAD_PATH,
     'fichas',
-    `ficha_${numeroFicha}`,
+    `ficha_${idFicha}`,
     nombreReporte
   );
   return rutaArchivo;
@@ -97,4 +101,83 @@ export const parsearArchivoReporteJSON = (rutaArchivoReporteJSON) => {
     console.error('Error al leer el archivo JSON:', error);
     throw new Error(`Error al leer el archivo JSON: ${error.message}`);
   }
+};
+
+export const generarFilesReportesGFPIF = async (
+  folderAprendiz,
+  idFicha,
+  idFichaAprendiz,
+  Reportes
+) => {
+  if (!folderAprendiz || !idFicha || !idFichaAprendiz) {
+    return {
+      success: false,
+      message:
+        'Faltan datos obligatorios: folderAprendiz, idFicha o idFichaAprendiz.',
+    };
+  }
+
+  if (!Array.isArray(Reportes) || Reportes.length === 0) {
+    return {
+      success: false,
+      message: 'La lista de reportes es inválida o está vacía.',
+    };
+  }
+
+  const folderReportes = path.join(folderAprendiz, 'REPORTESGFPIF');
+  await mkdir(folderReportes, { recursive: true });
+
+  const errores = [];
+
+  for (const reporte of Reportes) {
+    try {
+      //console.log(idFicha, idFichaAprendiz, reporte?.idReporte, 'Test');
+
+      const result = await generarReporteGFPIFWord(
+        idFicha,
+        idFichaAprendiz,
+        reporte?.idReporte
+      );
+
+      if (
+        !result ||
+        result.error ||
+        !result.bufferDocumentoWord ||
+        !result.nombreReporteFormatoDOCX
+      ) {
+        const errorMsg = `Reporte inválido: ${reporte?.idReporte}`;
+        console.warn(errorMsg);
+        errores.push({
+          idReporte: reporte?.idReporte,
+          error: result?.error || 'Formato inválido',
+        });
+        continue;
+      }
+
+      const pathReporte = path.join(
+        folderReportes,
+        result.nombreReporteFormatoDOCX
+      );
+
+      await writeFile(pathReporte, result.bufferDocumentoWord);
+      //console.log(`Reporte generado: ${pathReporte}`);
+    } catch (err) {
+      const errorMsg = `Error al generar el reporte ${reporte?.idReporte}: ${err.message}`;
+      console.error(errorMsg);
+      errores.push({ idReporte: reporte?.idReporte, error: err.message });
+    }
+  }
+
+  if (errores.length > 0) {
+    return {
+      success: false,
+      message: 'Algunos reportes no se generaron correctamente.',
+      errores,
+    };
+  }
+
+  return {
+    success: true,
+    message: 'Todos los reportes fueron generados correctamente.',
+  };
 };

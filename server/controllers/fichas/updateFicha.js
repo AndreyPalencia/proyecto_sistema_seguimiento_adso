@@ -8,6 +8,7 @@ export const updateFicha = async (req, res) => {
   try {
     const [updateRow] = await Ficha.update(req.body, {
       where: { idFicha: idFicha },
+      individualHooks: true,
     });
     if (updateRow === 0) {
       return ApiResponse.notFound(res, 'No se encontró la ficha.');

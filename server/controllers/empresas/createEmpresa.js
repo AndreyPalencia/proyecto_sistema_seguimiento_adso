@@ -6,6 +6,9 @@ import ApiResponse from '../../utils/apiResponse.js';
 
 export const createEmpresa = async (req, res) => {
   try {
+    if (req.body.correoElectronico) {
+      req.body.correoElectronico = req.body.correoElectronico.toLowerCase();
+    }
     const empresa = await Empresa.create(req.body);
 
     return ApiResponse.created(res, empresa, 'Empresa creada correctamente.');

@@ -19,13 +19,13 @@ export const deleteReporteGFPIF = async (req, res) => {
           model: FichaAprendiz,
           as: 'FichaAprendiz', // Alias de la relación en Sequelize
           attributes: ['idFicha'],
-          include: [
-            {
-              model: Ficha,
-              as: 'Ficha',
-              attributes: ['numeroFicha'],
-            },
-          ],
+          // include: [
+          //   {
+          //     model: Ficha,
+          //     as: 'Ficha',
+          //     attributes: ['numeroFicha'],
+          //   },
+          // ],
         },
       ],
     });
@@ -37,11 +37,11 @@ export const deleteReporteGFPIF = async (req, res) => {
         'Reporte no encontrado.'
       );
     }
-    const numeroFicha = reporteGFPIF?.FichaAprendiz?.Ficha?.numeroFicha;
+    const idFicha = reporteGFPIF?.FichaAprendiz?.idFicha;
     const nombreReporte = reporteGFPIF?.nombreReporte;
 
     //Verificar que la ficha existe y obtener número de ficha
-    if (!numeroFicha) {
+    if (!idFicha) {
       return ApiResponse.error(
         res,
         { idReporte },
@@ -53,11 +53,11 @@ export const deleteReporteGFPIF = async (req, res) => {
     const rutaReporte = path.join(
       BASE_UPLOAD_PATH,
       'fichas',
-      `ficha_${numeroFicha}`,
+      `ficha_${idFicha}`,
       `${nombreReporte}`
     );
 
-    await ReporteGFPIF.destroy({where: {idReporte}});
+    await ReporteGFPIF.destroy({ where: { idReporte } });
 
     // Verificar si el archivo existe antes de eliminarlo
     if (fs.existsSync(rutaReporte)) {

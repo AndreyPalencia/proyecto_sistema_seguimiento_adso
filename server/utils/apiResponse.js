@@ -13,7 +13,7 @@ class ApiResponse {
   static success(
     res,
     data = null,
-    message = 'Operación exitos',
+    message = 'Operación exitosa',
     statusCode = 200
   ) {
     return res.status(statusCode).json({
@@ -104,6 +104,14 @@ class ApiResponse {
    */
   static badRequest(res, message = 'Solicitud incorrecta') {
     return this.error(res, null, message, 400);
+  }
+
+  static conflict(res, data = null, message = 'Conflicto') {
+    return res.status(409).json({
+      success: false,
+      message,
+      data,
+    });
   }
 }
 

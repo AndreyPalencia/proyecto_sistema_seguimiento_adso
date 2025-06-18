@@ -212,28 +212,49 @@ export const downloadReporteMaps = async (req, res) => {
     //   y += 25;
     // }
 
-    // Add map image
-    if (y + 300 > availableHeight) {
-      doc.addPage();
-      y = marginTop;
-    }
+    // Add a new page before the image to avoid overlapping or cut-off
 
+
+    const imageOriginalWidth = 800;
+    const imageOriginalHeight = 600;
+    const imageAspectRatio = imageOriginalWidth / imageOriginalHeight;
+    
+    const minBottomMargin = 40; // << raise bottom margin from default
+    const imageMaxWidth = availableWidth;
+    const imageMaxHeight = doc.page.height - y - minBottomMargin;
+    
+    // Calculate optimal size with preserved aspect ratio
+    let imageWidth = imageMaxWidth;
+    let imageHeight = imageWidth / imageAspectRatio;
+    
+    // If height overflows, scale down
+    if (imageHeight > imageMaxHeight) {
+      imageHeight = imageMaxHeight;
+      imageWidth = imageHeight * imageAspectRatio;
+    }
+    
+    const imageX = xStart + (availableWidth - imageWidth) / 2;
+    
+    // Draw title
     doc
       .font('Helvetica-Bold')
       .fontSize(14)
       .text('Mapa de Ruta Optimizada', xStart, y, {
         align: 'center',
       });
-
+    
     y += 20;
-
+    
+    // Draw image centered
     doc.image(mapImageResponse.data, {
-      x: xStart + (availableWidth - 500) / 2,
+      x: imageX,
       y: y,
-      width: 500,
+      width: imageWidth,
+      height: imageHeight,
     });
-
-    y += 320;
+    
+    y += imageHeight + 20; // you can increase this if needed
+    
 
     // New page for appointments table
     doc.addPage();

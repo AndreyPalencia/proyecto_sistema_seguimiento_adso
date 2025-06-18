@@ -1,31 +1,45 @@
 import models from '../../models/index.js';
+import { sendWelcomeEmailToSAEP } from '../../services/mailerService.js';
 const { Usuario } = models;
 import ApiResponse from '../../utils/apiResponse.js';
-import encryptionUtil from '../../utils/encryptionUtil.js';
+import encryptionUtil, {
+  generateSecurePassword,
+} from '../../utils/encryptionUtil.js';
 import { deleteFileSafely } from '../../utils/fileHelpers.js';
 
 //Crear un usuario
 export const createUsuario = async (req, res) => {
   try {
-    // Encriptar la contraseña antes de crear el usuario
-    const passwordEncryptada = await encryptionUtil.hashPassword(
-      req.body.password
-    );
-    req.body.password = passwordEncryptada;
+    //console.log('Middleware ejecutado - req.file:', req.file);
 
-    // Si se subió un archivo (firma), añadirlo al cuerpo de la solicitud
-    if (req.file && req.file.filename) {
+    // 1. Usar la contraseña si viene en el body, o generar una
+    let password = req.body.password || generateSecurePassword();
+    //console.log('Contraseña recibida o generada:', password);
+
+    // 2. Encriptar la contraseña
+    const passwordEncriptada = await encryptionUtil.hashPassword(password);
+    req.body.password = passwordEncriptada;
+
+    // 3. Adjuntar archivo si fue cargado
+    if (req.file?.filename) {
       req.body.firma = req.file.filename;
     }
 
-    // Crear el usuario con la contraseña encriptada y la firma (si existe)
+    // Normalizar el correo
+    if (req.body.correoElectronico) {
+      req.body.correoElectronico = req.body.correoElectronico.toLowerCase();
+    }
+
+    // 4. Crear el usuario
     const usuario = await Usuario.create(req.body);
+
+    await sendWelcomeEmailToSAEP(usuario, password);
 
     return ApiResponse.created(res, usuario, 'Usuario creado exitosamente.');
   } catch (error) {
     console.error('Error en crear el usuario:', error);
-    if (req.file && req.file.filename) {
-      deleteFileSafely(req.filePath)
+    if (req.file?.filename) {
+      deleteFileSafely(req.filePath);
     }
     return ApiResponse.error(res, error, 'Error en crear el usuario.');
   }

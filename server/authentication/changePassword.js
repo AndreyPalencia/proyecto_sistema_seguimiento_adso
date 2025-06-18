@@ -7,13 +7,15 @@ const { SECRET_JWT_KEY } = process.env;
 
 export const changePassword = async (req, res) => {
   const token = req.cookies.acceso_token;
-  const { password, newPassword } = req.body;
+  const { currentPassword, newPassword } = req.body;
 
-  if (!password || !newPassword)
+  if (!currentPassword || !newPassword)
     return ApiResponse.badRequest(
       res,
       'Se deben proporcionar la contraseña actual y la nueva contraseña.'
     );
+
+  if (!token) return ApiResponse.badRequest(res, 'Token requerido.');
 
   try {
     //Obtengo los datos de cookiees
@@ -24,7 +26,7 @@ export const changePassword = async (req, res) => {
     if (!usuario) return ApiResponse.notFound(res, 'Usuario no encontrado.');
 
     const verifyPassword = await encryptionUtil.comparePassword(
-      password,
+      currentPassword,
       usuario.password
     );
 

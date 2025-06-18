@@ -12,10 +12,11 @@ export const getDocumentosByIdFichaAprendiz = async (req, res) => {
       },
     });
 
-    if (!documentos.length) {
+    if (documentos.length === 0) {
       return ApiResponse.notFound(
         res,
-        'No se encontraron documentos relacionados al id FichaAprendiz.'
+        [],
+        'No se encontraron documentos relacionados al aprendiz.'
       );
     }
 

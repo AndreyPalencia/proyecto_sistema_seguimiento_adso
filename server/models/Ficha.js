@@ -28,12 +28,19 @@ Ficha.init(
     },
     numeroFicha: {
       type: DataTypes.INTEGER.UNSIGNED,
-      unique: true,
+      unique: {
+        msg: 'El número de ficha debe ser único.',
+      },
       allowNull: false,
       field: 'numero_ficha',
       validate: {
-        isNumeric: true,
-        len: [7, 10], // Formato SENA: 7 dígitos minimo
+        isNumeric: {
+          msg: 'El número de ficha debe contener solo números.',
+        },
+        len: {
+          args: [7, 10],
+          msg: 'El número de ficha debe tener entre 7 y 10 dígitos.',
+        },
       },
     },
     nombrePrograma: {
@@ -41,8 +48,13 @@ Ficha.init(
       allowNull: false,
       field: 'nombre_programa',
       validate: {
-        notEmpty: true,
-        len: [5, 50],
+        notEmpty: {
+          msg: 'El nombre del programa no puede estar vacío.',
+        },
+        len: {
+          args: [5, 50],
+          msg: 'El nombre del programa debe tener entre 5 y 50 caracteres.',
+        },
       },
     },
     terminoPrograma: {
@@ -50,9 +62,12 @@ Ficha.init(
       allowNull: false,
       field: 'termino_programa',
       validate: {
-        isIn: [
-          ['Tecnologo', 'Tecnico', 'Auxiliar', 'Operario', 'Especializacion'],
-        ],
+        isIn: {
+          args: [
+            ['Tecnologo', 'Tecnico', 'Auxiliar', 'Operario', 'Especializacion'],
+          ],
+          msg: 'El término del programa debe ser uno de: Tecnologo, Tecnico, Auxiliar, Operario o Especializacion.',
+        },
       },
     },
     estadoFicha: {
@@ -66,13 +81,8 @@ Ficha.init(
       allowNull: false,
       field: 'inicio_etapa_productiva',
       validate: {
-        isDate: true,
-        customValidator(value) {
-          if (value >= this.getDataValue('finEtapaProductiva')) {
-            throw new Error(
-              'La fecha de inicio debe ser anterior a la fecha de fin'
-            );
-          }
+        isDate: {
+          msg: 'La fecha de inicio debe tener un formato válido (YYYY-MM-DD).',
         },
       },
     },
@@ -81,13 +91,8 @@ Ficha.init(
       allowNull: false,
       field: 'fin_etapa_productiva',
       validate: {
-        isDate: true,
-        customValidator(value) {
-          if (value <= this.getDataValue('inicioEtapaProductiva')) {
-            throw new Error(
-              'La fecha de fin debe ser posterior a la fecha de inicio'
-            );
-          }
+        isDate: {
+          msg: 'La fecha de fin debe tener un formato válido (YYYY-MM-DD).',
         },
       },
     },
@@ -96,6 +101,13 @@ Ficha.init(
       allowNull: false,
       field: 'id_instructor',
     },
+    fechaNotificacionEnvio: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+      comment:
+        'Fecha en la que se notificó al aprendiz que los archivos fueron enviados a administración',
+      field: 'fecha_notificacion_envio',
+    },
   },
   {
     sequelize,
@@ -103,7 +115,46 @@ Ficha.init(
     tableName: 'ficha',
     timestamps: false,
     paranoid: false,
+    hooks: {
+      beforeSave: async (ficha, options) => {
+        //console.log('📌 Entró al hook beforeSave');
+
+        const existingFicha = await Ficha.findOne({
+          where: {
+            numeroFicha: ficha.numeroFicha,
+            idFicha: { [sequelize.Sequelize.Op.ne]: ficha.idFicha },
+          },
+        });
+
+        if (existingFicha) {
+          //console.log('⚠️ Número de ficha duplicado detectado');
+          throw new Error('Ya existe una ficha con este número.');
+        }
+
+        const inicio = ficha.getDataValue('inicioEtapaProductiva');
+        const fin = ficha.getDataValue('finEtapaProductiva');
+
+        //console.log('📅 Fecha inicio:', inicio);
+        //console.log('📅 Fecha fin:', fin);
+
+        if (inicio && fin) {
+          const dInicio = new Date(inicio);
+          const dFin = new Date(fin);
+
+          //console.log('🧮 Comparando fechas...');
+          if (dInicio.getTime() >= dFin.getTime()) {
+            //console.log('❌ Fecha inválida: inicio >= fin');
+            throw new Error(
+              'La fecha de inicio debe ser anterior a la fecha de fin.'
+            );
+          } else {
+            //console.log('✅ Fecha válida: inicio < fin');
+          }
+        }
+      },
+    },
   }
 );
 
+// (optional) If you also want to validate on update
 export default Ficha;

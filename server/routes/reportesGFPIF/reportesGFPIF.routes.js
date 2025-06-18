@@ -6,13 +6,14 @@ import { createReporteGFPIF } from '../../controllers/reportesGFPIF/createReport
 import { getReportesGFPIFByAprendiz } from '../../controllers/reportesGFPIF/getReportesGFPIFByAprendiz.js';
 import { updateReporteGFPIF } from '../../controllers/reportesGFPIF/updateReporteGFPIF.js';
 import { deleteReporteGFPIF } from '../../controllers/reportesGFPIF/deleteReporteGFPIF.js';
-import {generateAndDownloadGFPIFReportWord} from '../../controllers/reportesGFPIF/generateAndDownloadGFPIFReportWord.js';
+import { generateAndDownloadGFPIFReportWord } from '../../controllers/reportesGFPIF/generateAndDownloadGFPIFReportWord.js';
+import { getReporteGFPIFById } from '../../controllers/reportesGFPIF/getReporteGFPIFById.js';
 /* Rutas Reportes */
 const routerReporetesGFPIF = express.Router();
 
 //Crear un reporte
 routerReporetesGFPIF.post(
-  '/ficha/:idFicha/ficha-aprendiz/:idFichaAprendiz/',
+  '/ficha-aprendiz/:idFichaAprendiz/',
   validateParamsIds,
   createReporteGFPIF
 );
@@ -29,6 +30,13 @@ routerReporetesGFPIF.get(
   '/ficha-aprendiz/:idFichaAprendiz/',
   validateParamsIds,
   getReportesGFPIFByAprendiz
+);
+
+//Ver reporte GFPIF por idReporte
+routerReporetesGFPIF.get(
+  '/reporte/:idReporte/',
+  validateParamsIds,
+  getReporteGFPIFById
 );
 
 //Modificar reporte GFPIF JSON por idReporte

@@ -1,0 +1,46 @@
+.icon-section-info {
+  font-size: 'small';
+  color: #1C1B1F;
+  background-color: white;
+}
+
+.typography-title-info {
+  font-weight: bold;
+  font-size: 30px;
+  text-align: start;
+}
+
+.box-main-info {
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Estilos del calendario de FullCalendar */
+.fc-button {
+  background-color: #00304D !important;
+  color: white;
+  border: none;
+}
+
+.fc-button-active {
+  background-color: #1565c0 !important;
+  border: none;
+}
+
+.fc-toolbar-title {
+  text-transform: capitalize;
+}
+
+.fc-button:focus,
+.fc-button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.fc-day-today {
+  background-color: #1565c033 !important;
+  /* fondo para el día actual */
+  /* border: 2px solid #664ef023 !important; */
+}

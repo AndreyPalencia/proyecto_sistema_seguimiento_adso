@@ -13,6 +13,10 @@ export const updateEmpresa = async (req, res) => {
   }
 
   try {
+    if (req.body.correoElectronico) {
+      req.body.correoElectronico = req.body.correoElectronico.toLowerCase();
+    }
+    
     const [updateRow] = await Empresa.update(nuevosDatos, {
       where: {
         idEmpresa,

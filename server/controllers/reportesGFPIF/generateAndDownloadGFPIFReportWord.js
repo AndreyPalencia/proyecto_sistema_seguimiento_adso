@@ -3,22 +3,24 @@ import { generateGFPIFReportWord } from './generateGFPIFReportWord.js';
 
 export const generateAndDownloadGFPIFReportWord = async (req, res) => {
   try {
-    //Generar el reporte en formato Word por medio de un buffer
+    // Generate the Word report and get buffer + filename
     const { bufferDocumentoWord, nombreReporteFormatoDOCX } =
       await generateGFPIFReportWord(req, res);
 
-    // Configurar encabezados para la descarga
+    // Set headers for download
     res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     );
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename="${nombreReporteFormatoDOCX}"`
+      `attachment; filename*=UTF-8''${encodeURIComponent(
+        nombreReporteFormatoDOCX
+      )}`
     );
 
-    // Enviar el archivo como respuesta
-    return res.send(bufferDocumentoWord);
+    // Send file buffer as response
+    return res.status(200).send(bufferDocumentoWord);
   } catch (error) {
     console.error('Error en la descarga del reporte Word:', error);
     return ApiResponse.error(

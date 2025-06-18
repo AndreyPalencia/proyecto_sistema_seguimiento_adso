@@ -4,10 +4,15 @@ import ApiResponse from '../../utils/apiResponse.js';
 
 export const getObservacionesByFichaAprendiz = async (req, res) => {
   const { idFichaAprendiz } = req.params;
+  const { rol } = req.user;
 
   try {
+    const hasAcess = rol === 'aprendiz';
     const observaciones = await Observacion.findAll({
-      where: { idFichaAprendiz },
+      where: {
+        idFichaAprendiz,
+        ...(hasAcess ? { mostrarObservacion: 1 } : {}),
+      },
     });
 
     if (!observaciones.length) {

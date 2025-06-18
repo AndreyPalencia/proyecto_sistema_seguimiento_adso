@@ -13,6 +13,7 @@ class Empresa extends Model {
   }
 }
 
+
 Empresa.init(
   {
     idEmpresa: {
@@ -24,12 +25,16 @@ Empresa.init(
     nit: {
       type: DataTypes.STRING(18),
       allowNull: false,
-      unique: true,
+      unique: {
+        msg: 'El NIT ya está registrado.',
+      },
       validate: {
-        notEmpty: true,
+        notEmpty: {
+          msg: 'El NIT no puede estar vacío.',
+        },
         is: {
           args: /^[0-9]{9,15}-[A-Za-z0-9]$/,
-          msg: 'El NIT no tiene el formato válido',
+          msg: 'El NIT no tiene el formato válido (Ej: 123456789-X).',
         },
       },
     },
@@ -37,8 +42,13 @@ Empresa.init(
       type: DataTypes.STRING(25),
       allowNull: false,
       validate: {
-        notEmpty: true,
-        len: [3, 25],
+        notEmpty: {
+          msg: 'La razón social no puede estar vacía.',
+        },
+        len: {
+          args: [3, 25],
+          msg: 'La razón social debe tener entre 3 y 25 caracteres.',
+        },
       },
       field: 'razon_social',
     },
@@ -46,16 +56,29 @@ Empresa.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       validate: {
-        isNumeric: true,
-        min: 1000000, // 7 dígitos mínimo (para teléfono fijo)
-        max: 9999999999,
+        isNumeric: {
+          msg: 'El teléfono solo debe contener números.',
+        },
+        min: {
+          args: [1000000],
+          msg: 'El teléfono debe tener al menos 7 dígitos.',
+        },
+        max: {
+          args: [9999999999],
+          msg: 'El teléfono no puede tener más de 10 dígitos.',
+        },
       },
     },
     correoElectronico: {
       type: DataTypes.STRING(50),
       allowNull: false,
       validate: {
-        isEmail: true,
+        notEmpty: {
+          msg: 'El correo electrónico no puede estar vacío.',
+        },
+        isEmail: {
+          msg: 'El correo electrónico no tiene un formato válido.',
+        },
       },
       field: 'correo_electronico',
     },
@@ -63,8 +86,13 @@ Empresa.init(
       type: DataTypes.STRING(150),
       allowNull: false,
       validate: {
-        notEmpty: true,
-        len: [5, 150],
+        notEmpty: {
+          msg: 'La dirección no puede estar vacía.',
+        },
+        len: {
+          args: [5, 150],
+          msg: 'La dirección debe tener entre 5 y 150 caracteres.',
+        },
       },
     },
   },
@@ -78,3 +106,4 @@ Empresa.init(
 );
 
 export default Empresa;
+

@@ -1,5 +1,6 @@
 import pkg from 'bcryptjs';
 const { hash, compare } = pkg;
+import { randomBytes } from 'crypto';
 
 const encryptionUtil = {
   //Encriptacion de la contrasenia
@@ -23,6 +24,10 @@ const encryptionUtil = {
       return false;
     }
   },
+};
+
+export const generateSecurePassword = (length = 12) => {
+  return randomBytes(length).toString('base64').slice(0, length);
 };
 
 export default encryptionUtil;

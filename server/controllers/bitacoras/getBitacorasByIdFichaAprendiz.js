@@ -10,11 +10,13 @@ export const getBitacorasByIdFichaAprendiz = async (req, res) => {
       where: {
         idFichaAprendiz,
       },
+      order: [['numeroBitacora']],
     });
 
     if (bitacoras.length === 0) {
       return ApiResponse.notFound(
         res,
+        [],
         'No se encontraron bitácoras realcionadas al idFichaAprendiz.'
       );
     }

@@ -12,6 +12,9 @@ import routerDocumentos from './documentos/documentos.routes.js';
 import routerObservaciones from './observaciones/observaciones.routes.js';
 import routerNotificaciones from './notificiaciones/notificaciones.routes.js';
 import routerReporetesGFPIF from './reportesGFPIF/reportesGFPIF.routes.js';
+import routerArchivosGenerados from './archivosGenerados/archivosGenerados.js';
+
+import verifyToken from '../middlewares/verifyToken.js';
 
 //Creacion de rutas
 const routes = express.Router();
@@ -23,9 +26,18 @@ routes.use('/agendamientos', routerAgendamientos);
 routes.use('/bitacoras', routerBitcoras);
 routes.use('/empresas', routerEmpresas);
 routes.use('/observaciones', routerObservaciones);
-routes.use('/notificaciones', routerNotificaciones);
+routes.use('/notificaciones', verifyToken(['*']), routerNotificaciones);
 routes.use('/ficha-aprendiz', routerFichaAprendiz);
-routes.use('/documentos', routerDocumentos)
-routes.use('/reportes-gfpif', routerReporetesGFPIF)
+routes.use('/documentos', routerDocumentos);
+routes.use(
+  '/reportes-gfpif',
+  verifyToken(['admin', 'instructor']),
+  routerReporetesGFPIF
+);
+routes.use(
+  '/archivos-generados',
+  verifyToken(['admin', 'instructor']),
+  routerArchivosGenerados
+);
 
 export default routes;

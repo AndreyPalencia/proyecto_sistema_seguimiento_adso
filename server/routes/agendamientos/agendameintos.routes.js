@@ -1,9 +1,11 @@
 import express from 'express';
+
 import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
+import verifyToken from '../../middlewares/verifyToken.js';
 
 //Importar controladores de usuarios
 import { createAgendamiento } from '../../controllers/agendamientos/createAgendamiento.js';
-import { getAgendamientoByRol } from '../../controllers/agendamientos/getAgendamientoByRol.js';
+import { getAgendamientoByRolFicha } from '../../controllers/agendamientos/getAgendamientoByRolFicha.js';
 import { getAgendamientoById } from '../../controllers/agendamientos/getAgendamientoById.js';
 import { updateAgendamiento } from '../../controllers/agendamientos/updateAgendamiento.js';
 import { deleteAgendamiento } from '../../controllers/agendamientos/deleteAgendamiento.js';
@@ -14,17 +16,20 @@ import { updateAgendamientoState } from '../../controllers/agendamientos/updateA
 const routerAgendamientos = express.Router();
 
 //Crear un nuevo agendamiento
-routerAgendamientos.post('/', createAgendamiento);
+routerAgendamientos.post('/', verifyToken(['*']), createAgendamiento);
 
-//Obtener todos los agendamientos
-routerAgendamientos.post('/rol', 
-    validateParamsIds, 
-    getAgendamientoByRol
+//Obtener todos los agendamientos por el rol
+routerAgendamientos.post(
+  '/rol',
+  verifyToken(['*']),
+  validateParamsIds,
+  getAgendamientoByRolFicha
 );
 
 //Obtener un agendamiento por [ID]
 routerAgendamientos.get(
   '/:idAgendamiento',
+  verifyToken(['*']),
   validateParamsIds,
   getAgendamientoById
 );
@@ -32,6 +37,7 @@ routerAgendamientos.get(
 //Modificar un agendamiento por [ID]
 routerAgendamientos.put(
   '/:idAgendamiento',
+  verifyToken(['admin', 'instructor']),
   validateParamsIds,
   updateAgendamiento
 );
@@ -39,6 +45,7 @@ routerAgendamientos.put(
 //Actualizar el estado de la visita de un agendamiento
 routerAgendamientos.patch(
   '/:idAgendamiento/estado',
+  verifyToken(['admin', 'instructor']),
   validateParamsIds,
   updateAgendamientoState
 );
@@ -46,6 +53,7 @@ routerAgendamientos.patch(
 //Eliminar un agendamiento por [ID]
 routerAgendamientos.delete(
   '/:idAgendamiento',
+  verifyToken(['admin', 'instructor']),
   validateParamsIds,
   deleteAgendamiento
 );

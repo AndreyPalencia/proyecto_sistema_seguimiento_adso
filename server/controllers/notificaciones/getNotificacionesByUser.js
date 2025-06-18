@@ -4,8 +4,8 @@ import ApiResponse from '../../utils/apiResponse.js';
 import { Op } from 'sequelize';
 
 export const getNotificacionByUser = async (req, res) => {
-    const { idUsuario } = req.params; // El middleware ya lo valida
-    const { estados } = req.body;
+  const { idUsuario } = req.params; // El middleware ya lo valida
+  const { estados } = req.body;
   try {
     // Usar el nombre correcto del campo en la base de datos
     let filtros = { id_usuario: idUsuario };
@@ -16,7 +16,10 @@ export const getNotificacionByUser = async (req, res) => {
     }
 
     // Consultar las notificaciones con los filtros correctos
-    const notificaciones = await Notificacion.findAll({ where: filtros });
+    const notificaciones = await Notificacion.findAll({
+      where: filtros,
+      order: [['fechaCreacion', 'DESC']],
+    });
     if (!notificaciones.length) {
       return ApiResponse.notFound(
         res,

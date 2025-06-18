@@ -21,7 +21,7 @@ export const deleteBitacora = async (req, res) => {
       },
     });
 
-    const bitacoraFile = await getFileByName('bitacoras',bitacoraEliminada.nombreArchivo);
+    const bitacoraFile = await getFileByName('bitacoras',bitacoraEliminada.bitacora);
 
     await deleteFileSafely(bitacoraFile);
     

@@ -1,9 +1,9 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme } from '@mui/material/styles';
 
 /*
-* createTheme define un tema personalizado con colores principales y secundarios.
-* ThemeProvider: aplica ese tema a todos los componentes que se encuentran dentro de él.
-*/
+ * createTheme define un tema personalizado con colores principales y secundarios.
+ * ThemeProvider: aplica ese tema a todos los componentes que se encuentran dentro de él.
+ */
 
 const theme = createTheme({
   palette: {
@@ -29,6 +29,7 @@ const theme = createTheme({
     background: {
       default: '#FFFFFF', // Blanco
       paper: '#F7F7F7', // Blanco papel
+      paperDos: '#F5F5F5',
       black: '#000000', // Negro
     },
     divider: '#E0E0E0', // Color de los divisores
@@ -45,8 +46,37 @@ const theme = createTheme({
         disableElevation: true, // Desactiva la sombra en todos los botones
       },
     },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected': {
+            backgroundColor: '#E8F5E9',
+            borderRadius: '4px',
+            color: '#39A900',
+            '& .MuiListItemIcon-root': {
+              color: '#39A900',
+            },
+          },
+          '&.Mui-selected:hover': {
+            backgroundColor: '#D0EDD8',
+          },
+          '&:hover:not(.Mui-selected)': {
+            backgroundColor: '#f0f0f0',
+          },
+        },
+      },
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.standard,
+          }),
+        }),
+      },
+    },
   },
 });
 
 export default theme;
-

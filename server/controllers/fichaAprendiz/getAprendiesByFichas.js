@@ -15,16 +15,9 @@ export const getAprendiesByFichas = async (req, res) => {
       ],
     });
 
-    if (!aprendicesFicha || aprendicesFicha.length === 0) {
-      return ApiResponse.notFound(
-        res,
-        'No se encontraron aprendices relacionados con la ficha.'
-      );
-    }
-
     return ApiResponse.success(
       res,
-      aprendicesFicha,
+      aprendicesFicha || [],
       'Estudiantes encontrados.'
     );
   } catch (error) {

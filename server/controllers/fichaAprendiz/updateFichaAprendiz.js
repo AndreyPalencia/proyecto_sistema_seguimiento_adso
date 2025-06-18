@@ -7,6 +7,10 @@ export const updateFichaAprendiz = async (req, res) => {
   const nuevosDatos = req.body;
 
   try {
+    if (req.body.correoElectronicoJefe) {
+      req.body.correoElectronicoJefe =
+        req.body.correoElectronicoJefe.toLowerCase();
+    }
     const [updatedCount] = await FichaAprendiz.update(nuevosDatos, {
       where: { idFichaAprendiz },
     });

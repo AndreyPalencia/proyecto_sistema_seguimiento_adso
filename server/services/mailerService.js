@@ -26,7 +26,11 @@ export const sendWelcomeEmailToSAEP = async (usuario, passwordPlano) => {
     Inicia sesión en: ${FRONTEND_URL}
   `;
 
-  return sendEmail(usuario.correoElectronico, subject, text, html);
+  try {
+    await sendEmail(usuario.correoElectronico, subject, text, html);
+  } catch (err) {
+    console.error('Error al enviar correo de bienvenida:', err.message);
+  }
 };
 
 export const sendFichaAddedEmail = async (
@@ -83,7 +87,11 @@ export const sendFichaAddedEmail = async (
     Para más detalles, por favor accede a la plataforma: ${FRONTEND_URL}
     `;
 
-  return sendEmail(usuario.correoElectronico, subject, text, html);
+  try {
+    await sendEmail(usuario.correoElectronico, subject, text, html);
+  } catch (err) {
+    console.error('Error al enviar correo de ficha asignada:', err.message);
+  }
 };
 
 export const sendSolicitudAgendamientoEmail = async (
@@ -169,5 +177,12 @@ export const sendSolicitudAgendamientoEmail = async (
   //console.log(Instructor.correoElectronico, subject, text, html);
 
   // Enviar correo al instructor
-  return sendEmail(Instructor.correoElectronico, subject, text, html);
+  try {
+    await sendEmail(Instructor.correoElectronico, subject, text, html);
+  } catch (err) {
+    console.error(
+      'Error al enviar correo de solicitud de agendamiento:',
+      err.message
+    );
+  }
 };

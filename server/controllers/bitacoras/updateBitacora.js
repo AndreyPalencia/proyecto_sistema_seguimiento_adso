@@ -7,6 +7,8 @@ export const updateBitacora = async (req, res) => {
   const { idBitacora } = req.params;
 
   try {
+
+    console.log(req.body)
     const bitacoraFile = await Bitacora.findByPk(idBitacora);
 
     if (!bitacoraFile) {

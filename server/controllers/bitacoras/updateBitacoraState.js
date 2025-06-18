@@ -8,7 +8,10 @@ export const updateBitacoraState = async (req, res) => {
   const { estadoBitacora } = req.body;
 
   if (estadoBitacora == null) {
-    return ApiResponse.badRequest(res, 'El estado de la bitacora es requerido.');
+    return ApiResponse.badRequest(
+      res,
+      'El estado de la bitacora es requerido.'
+    );
   }
 
   try {
@@ -20,7 +23,7 @@ export const updateBitacoraState = async (req, res) => {
     );
 
     if (updateRow === 0) {
-      return ApiResponse.notFound(res, 'Bitacora no encontrada.');
+      return ApiResponse.notFound(res, 'La bitácora no hacido modificada.');
     }
 
     return ApiResponse.success(

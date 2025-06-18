@@ -15,12 +15,21 @@ export const updateUsuarioById = async (req, res) => {
 
     // Verificar si el usuario existe
     if (!usuario) {
+      if (req.file) deleteFileSafely(req.file.path);
       return ApiResponse.notFound(res, 'Usuario no encontrado.');
     }
 
     const oldFileUsuario = usuario.firma
       ? await getFileByName('firmas', usuario.firma)
       : null;
+
+    if(usuario.numeroDocumento === nuevosDatos.numeroDocumento) {
+      delete nuevosDatos.numeroDocumento
+    } 
+
+    if (usuario.correoElectronico === nuevosDatos.correoElectronico) {
+      delete nuevosDatos.correoElectronico;
+    } 
 
     // Verificar si el usuario existe
     if (nuevosDatos.password) {
@@ -34,6 +43,11 @@ export const updateUsuarioById = async (req, res) => {
     if (req.file && req.file.filename) {
       nuevosDatos.firma = req.file.filename;
     }
+
+    if (req.body.correoElectronico) {
+      req.body.correoElectronico = req.body.correoElectronico.toLowerCase();
+    }
+
 
     const [updateRow] = await Usuario.update(nuevosDatos, {
       where: {
@@ -52,7 +66,7 @@ export const updateUsuarioById = async (req, res) => {
 
     // Si se subió una nueva firma, eliminar la anterior
     if (req.file?.filename && oldFileUsuario) {
-      deleteFileSafely(oldFileUsuario);
+      await deleteFileSafely(oldFileUsuario);
     }
 
     // Obentenemos el usuarios actualizado
@@ -66,7 +80,7 @@ export const updateUsuarioById = async (req, res) => {
   } catch (error) {
     console.error('Error en la actualización de los datos del usuario:', error);
     if (req.file && req.file.filename) {
-      deleteFileSafely(req.filePath);
+      await deleteFileSafely(req.filePath);
     }
     return ApiResponse.error(
       res,

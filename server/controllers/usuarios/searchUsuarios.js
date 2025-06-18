@@ -1,7 +1,8 @@
 import models from '../../models/index.js';
 const { Usuario } = models;
 import ApiResponse from '../../utils/apiResponse.js';
-import { Op } from 'sequelize';
+// ✅ Correct
+import { Op, where, cast, col } from 'sequelize';
 
 // Obtener usuarios -> Agregar clasulas para rol instructro para no buscar en fichas no le corresponda
 export const searchUsuarios = async (req, res) => {
@@ -18,11 +19,7 @@ export const searchUsuarios = async (req, res) => {
     const filtros = {};
 
     if (estadoUsuario !== undefined) {
-      filtros.estadoUsuario = estadoUsuario;
-    }
-
-    if (numeroDocumento) {
-      filtros.numeroDocumento = numeroDocumento;
+      filtros.estadoUsuario = parseInt(estadoUsuario);
     }
 
     if (nombre) {
@@ -34,21 +31,39 @@ export const searchUsuarios = async (req, res) => {
     }
 
     if (correoElectronico) {
-      filtros.correoElectronico = correoElectronico;
+      filtros.correoElectronico = { [Op.like]: `%${correoElectronico}%` };
     }
 
-    // Validar si no se pasaron filtros
-    if (Object.keys(filtros).length === 0) {
+    const condiciones = [];
+
+    if (numeroDocumento) {
+      condiciones.push(
+        where(cast(col('numero_documento'), 'TEXT'), {
+          [Op.like]: `${numeroDocumento}%`,
+        })
+      );
+    }
+
+    if (Object.keys(filtros).length === 0 && condiciones.length === 0) {
       return ApiResponse.validation(
         res,
         'No se proporcionaron parámetros de búsqueda.'
       );
     }
 
-    const usuarios = await Usuario.findAll({ where: filtros });
+    const usuarios = await Usuario.findAll({
+      where: {
+        ...filtros,
+        ...(condiciones.length > 0 ? { [Op.and]: condiciones } : {}),
+      },
+    });
 
     if (usuarios.length === 0) {
-      return ApiResponse.notFound(res, 'No se encontro Usuarios relacionados.');
+      return ApiResponse.success(
+        res,
+        [],
+        'No se encontro Usuarios relacionados.'
+      );
     }
 
     return ApiResponse.success(

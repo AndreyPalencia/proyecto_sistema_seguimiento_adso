@@ -10,7 +10,7 @@ export const deleteDocumento = async (req, res) => {
     const documento = await Documento.findByPk(idDocumento);
 
     if (!documento) {
-      return ApiResponse.notFound(res, 'No se encontró el docuemento.');
+      return ApiResponse.notFound(res, 'No se encontró el documento.');
     }
 
     await Documento.destroy({ where: { idDocumento } });

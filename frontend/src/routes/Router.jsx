@@ -1,29 +1,53 @@
-import { createBrowserRouter } from 'react-router-dom';
-import DashboardLayout from '../layout/DashboardLayout.jsx';
-import TestColors from '../style/TestColors.jsx';
+import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
+import { lazy } from 'react';
 
+//Importacion de rutas de los diferentes roles de usuario
+import authRoutes from './authRoutes';
+import instructorRoutes from './instructorRoutes';
+import aprendizRoutes from './aprendizRoutes';
+import adminRoutes from './adminRoutes.jsx';
 
-/**
- * Configuración de rutas utilizando React Router v7.
- *
- * - `createBrowserRouter`: Crea un objeto de rutas para
- * gestionar la navegación de la aplicación.
- * - `path`: Define las rutas de la aplicación.
- * - `element`: Especifica el componente que se renderiza para cada ruta.
- *
- */
+const AuthLayout = lazy(() => import('../layout/AuthLayout.jsx'));
+const DashboardLayout = lazy(() => import('../layout/DashboardLayout.jsx'));
+const PrivateRouteLayout = lazy(() =>
+  import('../components/ProtectedRoute/PrivateRouteLayout.jsx')
+);
+const NotFound = lazy(() => import('../pages/NotFound.jsx'));
 
 const Router = createBrowserRouter([
   {
-    path: '/',
-    element: <DashboardLayout />,
-    children: [
-      {
-        path: 'TestColor',
-        element: <TestColors />,
-      }
-    ],
+    path: '/auth',
+    element: <AuthLayout />,
+    children: authRoutes,
   },
+  {
+    path: '/instructor/:idInstructor',
+    element: (
+      <PrivateRouteLayout allowedRoles={['admin', 'instructor']}>
+        <DashboardLayout />
+      </PrivateRouteLayout>
+    ),
+    children: instructorRoutes,
+  },
+  {
+    path: '/aprendiz/:idAprendiz',
+    element: (
+      <PrivateRouteLayout allowedRoles={['admin', 'aprendiz']}>
+        <DashboardLayout />
+      </PrivateRouteLayout>
+    ),
+    children: aprendizRoutes,
+  },
+  {
+    path: 'admin',
+    element: (
+      <PrivateRouteLayout allowedRoles={['admin']}>
+        <DashboardLayout />
+      </PrivateRouteLayout>
+    ),
+    children: adminRoutes,
+  },
+  { path: '*', element: <NotFound /> },
 ]);
 
 export default Router;

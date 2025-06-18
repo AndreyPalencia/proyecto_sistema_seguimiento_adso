@@ -6,13 +6,15 @@ import encryptionUtil from '../utils/encryptionUtil.js';
 const { SECRET_JWT_KEY } = process.env;
 
 export const loginUser = async (req, res) => {
-  const { password, numeroDocumento, tipoDocumento } = req.body;
+  console.log('Hola')
+  const { password, numeroDocumento, tipoDocumento, rol } = req.body;
 
   try {
     const usuarioEncontrado = await Usuario.findOne({
       where: {
         numeroDocumento,
         tipoDocumento,
+        rol,
       },
     });
 
@@ -35,6 +37,14 @@ export const loginUser = async (req, res) => {
       );
     }
 
+    if (usuarioEncontrado.estadoUsuario !== true) {
+      return ApiResponse.notFound(
+        res,
+        `Actualmente, su cuenta de usuario está inactiva. Por favor, 
+        contacte al administrador/instructor para más información.`
+      );
+    }
+
     const token = jwt.sign(
       {
         idUsuario: usuarioEncontrado.idUsuario,
@@ -53,6 +63,7 @@ export const loginUser = async (req, res) => {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict', //None
         maxAge: 1000 * 60 * 60,
+        // maxAge: 3000,
       })
       .status(200)
       .send({ success: true, message: 'Inicio de sesion Autorizado.' });

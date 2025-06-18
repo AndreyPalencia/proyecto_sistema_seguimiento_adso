@@ -47,8 +47,11 @@ ReporteGFPIF.init(
       type: DataTypes.STRING(30),
       allowNull: false,
       validate: {
-        notEmpty: true,
-        len: [7, 30],
+        len: [2, 30],
+        isIn: {
+          args: [['Parcial', 'Final']],
+          msg: 'El Tipo de reporet debe ser uno de: Parcial o Final ',
+        },
       },
       field: 'tipo_reporte',
     },
@@ -61,7 +64,7 @@ ReporteGFPIF.init(
   {
     sequelize,
     modelName: 'Reporte',
-    tableName: 'reporte',
+    tableName: 'reporte_gfipf',
     timestamps: false,
     paranoid: false,
   }

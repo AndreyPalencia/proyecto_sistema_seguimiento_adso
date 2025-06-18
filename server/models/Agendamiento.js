@@ -28,21 +28,20 @@ Agendamiento.init(
     },
     herramientaReunion: {
       type: DataTypes.STRING(30),
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      defaultValue: 'Herramienta predeterminada',
+      allowNull: true,
       field: 'herramienta_reunion',
     },
     enlaceReunion: {
       type: DataTypes.STRING(255),
-      allowNull: false,
+      allowNull: true,
+      defaultValue: 'http://ejemplo.com.co',
       validate: {
-        notEmpty: true,
-        isUrl: true,
+        //isUrl: true,
       },
       field: 'enlace_reunion',
     },
+
     fechaInicio: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -78,7 +77,14 @@ Agendamiento.init(
       allowNull: false,
       validate: {
         isIn: [
-          ['Programada', 'Realizada', 'Cancelada', 'Reprogramada', 'Pendiente'],
+          [
+            'Programada',
+            'Realizada',
+            'Cancelada',
+            'Reprogramada',
+            'Pendiente',
+            'Solicitud',
+          ],
         ],
       },
       field: 'estado_visita',
@@ -117,6 +123,52 @@ Agendamiento.init(
     tableName: 'agendamiento',
     timestamps: false,
     paranoid: false,
+    hooks: {
+      beforeCreate: (agendamiento, options) => {
+        // Validate the 'tipoVisita' field for Virtual visit
+        if (
+          agendamiento.tipoVisita === 'Virtual' &&
+          !agendamiento.enlaceReunion
+        ) {
+          throw new Error(
+            'El tipo de visita Virtual debe tener un enlace de reunión'
+          );
+        }
+        // Validate the 'herramientaReunion' field
+        if (
+          agendamiento.tipoVisita === 'Virtual' &&
+          agendamiento.herramientaReunion.trim() === ''
+        ) {
+          throw new Error('El campo herramientaReunion es obligatorio');
+        }
+      },
+
+      // After creating a new Agendamiento, you can send a notification, log, etc.
+      // afterCreate: async (agendamiento, options) => {
+      //   console.log('Nuevo agendamiento creado:', agendamiento);
+      //   // Additional actions like sending notifications can be added here
+      // },
+
+      // Before updating, you can add any logic before updating an Agendamiento
+      beforeUpdate: (agendamiento, options) => {
+        // Validate the 'tipoVisita' field for Virtual visit
+        if (
+          agendamiento.tipoVisita === 'Virtual' &&
+          !agendamiento.enlaceReunion
+        ) {
+          throw new Error(
+            'El tipo de visita Virtual debe tener un enlace de reunión'
+          );
+        }
+        // Validate the 'herramientaReunion' field
+        if (
+          agendamiento.tipoVisita === 'Virtual' &&
+          agendamiento.herramientaReunion.trim() === ''
+        ) {
+          throw new Error('El campo herramientaReunion es obligatorio');
+        }
+      },
+    },
   }
 );
 
