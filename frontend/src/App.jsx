@@ -1,6 +1,6 @@
 import { RouterProvider } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from './style/theme.jsx';
+import theme from './style/Theme.jsx';
 import CssBaseline from '@mui/material/CssBaseline';
 import Router from './routes/Router';
 import { AuthProvider } from './context/AuthContext.jsx';
