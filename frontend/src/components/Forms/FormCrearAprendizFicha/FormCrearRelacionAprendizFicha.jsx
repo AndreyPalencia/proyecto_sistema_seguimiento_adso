@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   formCrearFichaAprendiz,
   alternativas,
-} from '../../../schemas/formFIchaAprendizSchema';
+} from '../../../schemas/formFichaAprendizSchema';
 
 const FormCrearRelacionAprendizFicha = ({
   onClose,
