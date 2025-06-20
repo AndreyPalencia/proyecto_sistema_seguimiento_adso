@@ -29,7 +29,7 @@ export const downloadReporteFichaAprendices = async (req, res) => {
       datosReporte;
 
     const doc = new PDFDocument({
-      size: 'LETTER',
+      size: 'LEGAL',
       layout: 'landscape',
       margin: 30,
     });

@@ -64,9 +64,9 @@ Ficha.init(
       validate: {
         isIn: {
           args: [
-            ['Tecnologo', 'Tecnico', 'Auxiliar', 'Operario', 'Especializacion'],
+            ['Tecnólogo', 'Técnico', 'Auxiliar', 'Operario', 'Especialización'],
           ],
-          msg: 'El término del programa debe ser uno de: Tecnologo, Tecnico, Auxiliar, Operario o Especializacion.',
+          msg: 'El término del programa debe ser uno de: Tecnólogo, Técnico, Auxiliar, Operario o Especialización.',
         },
       },
     },

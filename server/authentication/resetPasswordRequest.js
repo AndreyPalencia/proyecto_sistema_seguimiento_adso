@@ -62,6 +62,10 @@ export const resetPasswordRequest = async (req, res) => {
     );
   } catch (error) {
     console.error('Error en el proceso de recuperación:', error);
-    return ApiResponse.error(res, error, 'Error en el proceso de recuperación.');
+    return ApiResponse.error(
+      res,
+      error,
+      'Error en el proceso de recuperación.'
+    );
   }
 };

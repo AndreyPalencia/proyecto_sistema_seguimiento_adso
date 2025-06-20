@@ -1,5 +1,5 @@
 import models from '../../models/index.js';
-const { Agendamiento } = models;
+const { Agendamiento, FichaAprendiz, Ficha } = models;
 import ApiResponse from '../../utils/apiResponse.js';
 
 //Obtener todos los Agendamientos
@@ -16,7 +16,23 @@ export const getAgendamientoByRol = async (req, res) => {
     }
     const agendamientosObtenidos = await Agendamiento.findAll({
       where: filtros,
+      include: [
+        {
+          model: FichaAprendiz,
+          attributes: [], // no incluir campos del aprendiz
+          required: true,
+          include: [
+            {
+              model: Ficha,
+              attributes: [], // no incluir campos de la ficha
+              where: { estadoFicha: 1 }, // solo fichas activas
+              required: true,
+            },
+          ],
+        },
+      ],
     });
+
     if (agendamientosObtenidos.length === 0) {
       return ApiResponse.notFound(res, 'No se encontraron agendamientos.');
     }

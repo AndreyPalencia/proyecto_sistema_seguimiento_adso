@@ -7,6 +7,11 @@ export const getFichasByStateAndAprendiz = async (req, res) => {
   const { idAprendiz } = req.params;
   const { estadoFicha } = req.body;
 
+  let filtros = { };
+  if (estadoFicha) {
+    filtros.estadoFicha = estadoFicha;
+  }
+
   try {
     const fichasAprendiz = await FichaAprendiz.findAll({
       where: {
@@ -15,9 +20,7 @@ export const getFichasByStateAndAprendiz = async (req, res) => {
       include: [
         {
           model: Ficha,
-          where: {
-            estadoFicha: parseInt(estadoFicha), // <-- Filtro aplicado directamente
-          },
+          where: filtros, 
           attributes: [
             'idFicha',
             'estadoFicha',

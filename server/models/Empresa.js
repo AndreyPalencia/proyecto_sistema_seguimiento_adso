@@ -33,8 +33,8 @@ Empresa.init(
           msg: 'El NIT no puede estar vacío.',
         },
         is: {
-          args: /^[0-9]{9,15}-[A-Za-z0-9]$/,
-          msg: 'El NIT no tiene el formato válido (Ej: 123456789-X).',
+          args: /^\d{1,9}-\d{1}$/, // ✅ 1 a 9 dígitos, guion, 1 dígito
+          msg: 'El NIT no tiene el formato válido (Ej: 123456789-0).',
         },
       },
     },
