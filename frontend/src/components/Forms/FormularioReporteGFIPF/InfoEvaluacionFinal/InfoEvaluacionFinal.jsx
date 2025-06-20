@@ -5,7 +5,7 @@ import { Box, Typography } from '@mui/material';
 import { useWatch } from 'react-hook-form';
 
 import TextAreaField from '../../../FormFields/TextAreaField';
-import RadioGroupField from '../../../FormFields/RadioGroupField.JSX';
+import RadioGroupField from '../../../FormFields/RadioGroupField';
 import InputField from '../../../FormFields/InputField';
 
 const EvaluacionDesempeno = ({ control, setValue, watch, isEdit = false }) => {
