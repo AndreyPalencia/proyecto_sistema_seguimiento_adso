@@ -122,6 +122,13 @@ const EditarAgendamiento = ({
     );
   };
 
+  console.log(fichas);
+  const fichaSeleccionada = useMemo(() => {
+    return fichas.find((ficha) => ficha.idFicha === idFichaSeleccionada);
+  }, [idFichaSeleccionada, fichas]);
+
+  const fichaInactiva = fichaSeleccionada?.estadoFicha === false;
+
   /**
    * Envía el formulario dependiendo de la acción del botón (Guardar o Eliminar).
    *
@@ -226,6 +233,7 @@ const EditarAgendamiento = ({
             menuOptions={fichas || ''}
             valueKey="idFicha"
             labelKey="nombre"
+            disabled={true}
           />
           <SelectField
             select
@@ -237,24 +245,25 @@ const EditarAgendamiento = ({
             }
             valueKey="idFichaAprendiz"
             labelKey="nombre"
-            disabled={!idFichaSeleccionada} // Deshabilitar si no hay ficha seleccionada
+            disabled={!idFichaSeleccionada || fichaInactiva}
           />
+
           {tipoVisita === 'Virtual' && (
             <FormularioReunion
               control={control}
-              required={false}
-              disabled={false}
+              required={true}
+              disabled={fichaInactiva}
             />
           )}
           <FormularioFechas
             control={control}
             required={true}
-            disabled={false}
+            disabled={fichaInactiva}
           />
           <FormularioEstadoTipo
             control={control}
             required={true}
-            disabled={false}
+            disabled={fichaInactiva}
           />
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
@@ -270,6 +279,7 @@ const EditarAgendamiento = ({
               variant="contained"
               color="primary"
               name="Guardar"
+              disabled={fichaInactiva}
             >
               Actualizar
             </Button>
@@ -280,6 +290,7 @@ const EditarAgendamiento = ({
               onClick={() =>
                 handleDeleteAgendamiento(getValues('idAgendamiento'))
               }
+              disabled={fichaInactiva}
             >
               Eliminar
             </Button>

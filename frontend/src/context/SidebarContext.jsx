@@ -7,8 +7,8 @@ import {
 } from 'react';
 
 /**
- * `SidebarContext`	
- * 
+ * `SidebarContext`
+ *
  * Contexto para gestionar la visibilidad del sidebar y su estado.
  * Proporciona funciones para alternar la visibilidad, gestionar la pila de vistas/sidebar,
  * y manejar los IDs seleccionados.
@@ -43,15 +43,42 @@ export const SidebarProvider = ({ children }) => {
 
   /**
    * Función que agrega una nueva vista al stack del sidebar.
+   * Valida que la vista no exista ya en el stack para evitar duplicados.
    * Si la vista es un array, se agrega cada elemento al stack.
    * Si no, se agrega la vista directamente.
    *
-   * @param {void}
+   * @param {string|Array} view - Vista o array de vistas a agregar
+   * @returns {void}
    */
   const pushSidebarView = useCallback((view) => {
-    setSidebarStack((prev) =>
-      Array.isArray(prev) ? [...prev, view] : [prev, view]
-    );
+    setSidebarStack((prev) => {
+      // Asegurar que prev sea un array
+      const currentStack = Array.isArray(prev) ? prev : [prev];
+
+      // Si view es un array, procesar cada elemento
+      if (Array.isArray(view)) {
+        const newViews = view.filter((v) => !currentStack.includes(v));
+        if (newViews.length === 0) {
+          console.warn('Todas las vistas ya existen en el stack:', view);
+          return currentStack;
+        }
+        return [...currentStack, ...newViews];
+      }
+
+      // Si es una vista simple, verificar que no exista
+      if (currentStack.includes(view)) {
+        console.warn(`La vista '${view}' ya existe en el stack:`, currentStack);
+        return currentStack;
+      }
+
+      // Validar que la vista no sea vacía o inválida
+      if (!view || typeof view !== 'string') {
+        console.warn('Vista inválida:', view);
+        return currentStack;
+      }
+
+      return [...currentStack, view];
+    });
   }, []);
 
   /**
@@ -62,9 +89,17 @@ export const SidebarProvider = ({ children }) => {
    * @return {void}
    */
   const popSidebarView = useCallback(() => {
-    setSidebarStack((prev) =>
-      Array.isArray(prev) && prev.length > 1 ? prev.slice(0, -1) : ['main']
-    );
+    setSidebarStack((prev) => {
+      const currentStack = Array.isArray(prev) ? prev : [prev];
+
+      // Mantener al menos 'main' en el stack
+      if (currentStack.length > 1) {
+        return currentStack.slice(0, -1);
+      } else {
+        console.warn('No se puede quitar la vista principal del stack');
+        return ['main'];
+      }
+    });
   }, []);
 
   /**
@@ -77,12 +112,17 @@ export const SidebarProvider = ({ children }) => {
    * @return {void}
    */
   const setIds = useCallback((key, value) => {
-    setSelectedIds((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    //console.log('🏷️ setIds llamado:', { key, value });
+    setSelectedIds((prev) => {
+      const newState = {
+        ...prev,
+        [key]: value,
+      };
+      //console.log('🏷️ selectedIds anterior:', prev);
+      //console.log('🏷️ selectedIds nuevo:', newState);
+      return newState;
+    });
   }, []);
-
   /**
    * Función que obtiene el id de referencia seleccionado por clave
    * y lo elimina del objeto de ids seleccionados.
@@ -96,7 +136,7 @@ export const SidebarProvider = ({ children }) => {
       const { [key]: _, ...rest } = prev;
       return rest;
     });
-  });
+  }, []);
 
   /**
    * Función que elimina todos los ids de referencia seleccionados.
@@ -124,7 +164,7 @@ export const SidebarProvider = ({ children }) => {
       });
       return newIds;
     });
-  });
+  }, []);
 
   /**
    * Función que restablece el stack del sidebar a su vista principal ('main').
@@ -135,6 +175,67 @@ export const SidebarProvider = ({ children }) => {
     setSidebarStack(['main']);
     clearAllIds(); // Limpiar los IDs cuando se reinicia el sidebar
   }, [clearAllIds]);
+
+  // Funciones de utilidad nuevas
+  /**
+   * Verifica si una vista existe en el stack
+   * @param {string} view - Vista a verificar
+   * @returns {boolean} - True si la vista existe en el stack
+   */
+  const isViewInStack = useCallback(
+    (view) => {
+      return sidebarStack.includes(view);
+    },
+    [sidebarStack]
+  );
+
+  /**
+   * Obtiene la vista actual (última en el stack)
+   * @returns {string} - Vista actual
+   */
+  const getCurrentView = useCallback(() => {
+    return sidebarStack[sidebarStack.length - 1] || 'main';
+  }, [sidebarStack]);
+
+  /**
+   * Obtiene la vista anterior (penúltima en el stack)
+   * @returns {string} - Vista anterior o 'main' si no hay anterior
+   */
+  const getPreviousView = useCallback(() => {
+    return sidebarStack[sidebarStack.length - 2] || 'main';
+  }, [sidebarStack]);
+
+  /**
+   * Obtiene la profundidad del stack
+   * @returns {number} - Número de vistas en el stack
+   */
+  const getStackDepth = useCallback(() => {
+    return sidebarStack.length;
+  }, [sidebarStack]);
+
+  /**
+   * Navega a una vista específica de manera inteligente
+   * - Si no existe, la agrega
+   * - Si existe pero no es la actual, navega hacia atrás hasta ella
+   * - Si es la actual, no hace nada
+   * @param {string} targetView - Vista objetivo
+   */
+  const navigateToView = useCallback(
+    (targetView) => {
+      const currentIndex = sidebarStack.indexOf(targetView);
+
+      if (currentIndex === -1) {
+        // La vista no está en el stack, agregarla
+        pushSidebarView(targetView);
+      } else if (currentIndex < sidebarStack.length - 1) {
+        // La vista está en el stack pero no es la actual, navegar hacia atrás hasta ella
+        const viewsToRemove = sidebarStack.length - 1 - currentIndex;
+        setSidebarStack((prev) => prev.slice(0, currentIndex + 1));
+      }
+      // Si es la vista actual, no hacer nada
+    },
+    [sidebarStack, pushSidebarView]
+  );
 
   const contextValue = useMemo(
     () => ({
@@ -149,6 +250,12 @@ export const SidebarProvider = ({ children }) => {
       clearId,
       clearIds,
       clearAllIds,
+      // Nuevas funciones de utilidad
+      isViewInStack,
+      getCurrentView,
+      getPreviousView,
+      getStackDepth,
+      navigateToView,
     }),
     [
       isSidebarVisible,
@@ -162,6 +269,11 @@ export const SidebarProvider = ({ children }) => {
       clearId,
       clearIds,
       clearAllIds,
+      isViewInStack,
+      getCurrentView,
+      getPreviousView,
+      getStackDepth,
+      navigateToView,
     ]
   );
 
@@ -191,6 +303,11 @@ export const SidebarProvider = ({ children }) => {
  * @property {Function} clearId - Función para eliminar un ID de referencia seleccionado.
  * @property {Function} clearIds - Función para eliminar varios IDs de referencia seleccionados.
  * @property {Function} clearAllIds - Función para eliminar todos los IDs de referencia seleccionados.
+ * @property {Function} isViewInStack - Función para verificar si una vista existe en el stack.
+ * @property {Function} getCurrentView - Función para obtener la vista actual.
+ * @property {Function} getPreviousView - Función para obtener la vista anterior.
+ * @property {Function} getStackDepth - Función para obtener la profundidad del stack.
+ * @property {Function} navigateToView - Función para navegar a una vista específica de manera inteligente.
  * @throws {Error} Lanza un error si se usa fuera de `SidebarProvider`.
  */
 

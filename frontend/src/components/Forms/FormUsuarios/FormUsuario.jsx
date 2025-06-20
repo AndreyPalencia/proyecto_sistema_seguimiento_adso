@@ -7,6 +7,7 @@ import { Button, Box, Stack } from '@mui/material';
 import InputField from '../../FormFields/InputField';
 import SelectField from '../../FormFields/SelectField';
 import UploadFileField from '../../FormFields/UploadFileField';
+import FullScreenLoader from '../../Feedback/FullScreenLoader';
 
 import { useCrearUsuario } from '../../../hook/usuarios/useCrearUsuario';
 import { useModificarUsuario } from '../../../hook/usuarios/useModificarUsuario';
@@ -29,7 +30,12 @@ const FormUsuario = ({
   idUsuario = null,
   children,
 }) => {
-  const { handleSubmit, control, reset } = useForm({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isValid },
+  } = useForm({
     resolver: zodResolver(formUsuarios),
     defaultValues: {
       tipoDocumento: '',
@@ -46,7 +52,7 @@ const FormUsuario = ({
 
   const { roleUsuario } = useAuth();
 
-  const { fetchCrearUsuario } = useCrearUsuario();
+  const { fetchCrearUsuario, loading: loadingCrearUsuario} = useCrearUsuario();
 
   const { editarUsuario, loading } = useModificarUsuario();
 
@@ -55,8 +61,6 @@ const FormUsuario = ({
   const { showAlert } = useAlert();
 
   const [originalUsuario, setOriginalUsuario] = useState(null);
-
-
 
   const onSubmit = async (data) => {
     if (isEdit) {
@@ -85,7 +89,7 @@ const FormUsuario = ({
       reset(); // Reset only on creation
     }
   };
-  
+
   useEffect(() => {
     reset((prev) => ({
       ...prev,
@@ -117,6 +121,7 @@ const FormUsuario = ({
         console.log(error);
       })}
     >
+      <FullScreenLoader open={loadingCrearUsuario}  />
       <Box sx={{ width: '100%', padding: '20px 10px 5px 0' }}>
         <Box sx={{ mb: 2 }}>
           <SelectField
@@ -197,20 +202,18 @@ const FormUsuario = ({
       <Stack
         spacing={2}
         direction="row"
-        sx={{ gap: '10px', justifyContent: 'space-between' }}
+        sx={{ gap: '10px', justifyContent: 'flex-end' }}
       >
-        {!children ? (
-          <Button
-            type="submit"
-            color="primary"
-            variant="contained"
-            sx={{ margin: '2rem 0 1rem 0' }}
-          >
-            {isEdit ? 'Actualizar Usuario' : 'Guardar Usuario'}
-          </Button>
-        ) : (
-          children
-        )}
+        {children}
+        <Button
+          type="submit"
+          color="primary"
+          variant="contained"
+          sx={{ margin: '2rem 0 1rem 0' }}
+          disabled={!isValid}
+        >
+          {isEdit ? 'Actualizar Usuario' : 'Guardar Usuario'}
+        </Button>
       </Stack>
     </form>
   );

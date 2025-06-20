@@ -7,39 +7,145 @@ import {
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import { useSidebar } from '../../../context/SidebarContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 
 /**
  * `SubmenuBackButton`
- * 
- * Componentes que navega hacia atrás en el sidebar y en la URL.
- * 
- * @param {Object} props - Propiedades del componente.
- * @param {string} props.to - Ruta a la que navegar.
- * @param {boolean} props.isCollapsed - Indica si el sidebar está colapsado.
- * @param {Array} [props.clearIdKeys=[]] - Claves de IDs a limpiar al navegar.
- * 
- * @returns {JSX.Element} Un botón de Material UI con un icono de "volver" y texto opcional, que al hacer clic limpia los IDs y navega a la ruta proporcionada.
+ *
+ * Botón que retrocede una vista en el Sidebar y sincroniza la ruta correspondiente.
+ *
+ * @param {Object} props
+ * @param {boolean} props.isCollapsed - Si el sidebar está colapsado
  */
-const SubmenuBackButton = ({ to, isCollapsed, clearIdKeys = [] }) => {
-  //Obtenemos del contexto del sidebar la función para limpiar los ids y la función de quitar de la pila del sidebar un submenú
-  const { clearIds, popSidebarView } = useSidebar();
-  //Obtenemos la función para navegar entre rutas
+const SubmenuBackButton = ({ isCollapsed }) => {
+  const { clearId, popSidebarView, selectedIds, sidebarStack } = useSidebar();
+  const { roleUsuario, idUsuario } = useAuth();
   const navigate = useNavigate();
 
+  // Configuración de mapeo de vistas a IDs
+  const VIEW_ID_MAP = {
+    fichaInstructor: 'idFicha',
+    ficha: 'idFicha',
+    aprendizAdmin: 'idAprendiz',
+    fichasAprendiz: 'idFicha', // 👈 NUEVO
+
+    mainInstructor: 'idInstructorAdmin',
+  };
+
+  // Configuración de rutas por rol para la vista 'main'
+  const MAIN_ROUTES_BY_ROLE = {
+    admin: '/admin',
+    instructor: (idUsuario) => `/instructor/${idUsuario}/fichas`,
+    aprendiz: (idUsuario) => `/aprendiz/${idUsuario}/fichas`,
+    default: '/',
+  };
+
   /**
-   * Función para manejar el clic en el botón de volver.
-   * Limpia los IDs y navega a la ruta especificada.
-   * 
-   * @param {React.EventHandler} e - Evento de clic.
-   * @returns {void}
+   * Genera la ruta correspondiente según la vista y los IDs seleccionados
+   * @param {string} view - Vista actual
+   * @param {Object} ids - IDs seleccionados
+   * @returns {string} - Ruta generada
+   */
+  const generateRoute = (view, ids) => {
+    const { idFicha, idAprendiz, idInstructorAdmin } = ids;
+
+    // Casos específicos de vistas
+    const viewRoutes = {
+      mainInstructor: () => `/admin/rol/instructor/${idInstructorAdmin}/fichas`,
+      fichaInstructor: () =>
+        `/admin/rol/instructor/${idInstructorAdmin}/fichas`,
+      ficha: () => `/ficha/${idFicha}/aprendices`,
+      // fichaAprendiz: () =>
+      //   `/admin/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendices`,
+      main: () => getMainRoute(),
+    };
+
+    // Ejecuta la función correspondiente o retorna ruta por defecto
+    const routeGenerator = viewRoutes[view];
+    return routeGenerator ? routeGenerator() : '/';
+  };
+
+  /**
+   * Obtiene la ruta principal según el rol del usuario
+   * @returns {string} - Ruta principal
+   */
+  const getMainRoute = () => {
+    if (roleUsuario === 'instructor') {
+      return MAIN_ROUTES_BY_ROLE.instructor(idUsuario);
+    }
+    if (roleUsuario === 'aprendiz') {
+      return MAIN_ROUTES_BY_ROLE.aprendiz(idUsuario);
+    }
+
+    return MAIN_ROUTES_BY_ROLE[roleUsuario] || MAIN_ROUTES_BY_ROLE.default;
+  };
+
+  /**
+   * Limpia el ID asociado a la vista actual
+   * @param {string} currentView - Vista actual
+   */
+  const clearViewId = (currentView) => {
+    const idKey = VIEW_ID_MAP[currentView];
+    if (idKey) {
+      clearId(idKey);
+    }
+  };
+
+  /**
+   * Obtiene la vista anterior del stack
+   * @param {Array} stack - Stack de vistas
+   * @returns {string} - Vista anterior o 'main' por defecto
+   */
+  const getPreviousView = (stack) => {
+    const prevView = stack[stack.length - 2];
+
+    if (roleUsuario === 'aprendiz') {
+      if (prevView === 'fichasAprendiz' || prevView === 'ficha') {
+        return 'main'; // fuerza ruta main para aprendiz
+      }
+    }
+
+    return prevView || 'main';
+  };
+
+  /**
+   * Maneja el click del botón de retroceso
+   * @param {Event} e - Evento del click
    */
   const handleClick = (e) => {
     e.preventDefault();
-    if (clearIdKeys.length > 0) {
-      clearIds(clearIdKeys);
+
+    try {
+      const stackCopy = [...sidebarStack];
+      const currentView = stackCopy[stackCopy.length - 1];
+      const prevView = getPreviousView(stackCopy);
+
+      // Validación: no hacer nada si no hay vista actual
+      if (!currentView) {
+        console.warn('No hay vista actual en el stack');
+        return;
+      }
+
+      // Limpia el ID asociado a la vista actual
+      clearViewId(currentView);
+
+      // Quita la vista actual del stack
+      popSidebarView();
+
+      // Genera y navega a la ruta correspondiente
+      const targetRoute = generateRoute(prevView, selectedIds);
+
+      if (targetRoute) {
+        navigate(targetRoute);
+      } else {
+        console.warn(`No se pudo generar ruta para la vista: ${prevView}`);
+        navigate('/'); // Fallback a la ruta raíz
+      }
+    } catch (error) {
+      console.error('Error al manejar el retroceso:', error);
+      // En caso de error, navegar a una ruta segura
+      navigate('/');
     }
-    popSidebarView();
-    navigate(to);
   };
 
   return (

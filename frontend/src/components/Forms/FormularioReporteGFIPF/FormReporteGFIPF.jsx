@@ -27,6 +27,7 @@ import InfoPlaneacion from './InfoEtapProductiva/InfoPlaneacion/InfoPlaneacion';
 import SeguimientoActitudinalesComportamentales from './InfoEtapProductiva/InfoSeguimiento/SeguimientoActitudinalesComportamentales';
 import SeguimientoTecnico from './InfoEtapProductiva/InfoSeguimiento/SeguimientoTecnico';
 import EvaluacionDesempeno from './InfoEvaluacionFinal/InfoEvaluacionFinal';
+import FullScreenLoader from '../../Feedback/FullScreenLoader';
 
 import { useObtenerReporteGFPIFAprendiz } from '../../../hook/reportesGFPIF/useObtenerReporteGFPIFAprendiz';
 import { formatErrorsForAlertGFIPF } from '../../../utils/utils';
@@ -73,6 +74,7 @@ const FormReporteGFIPF = ({
   children,
   isAnimationProgress = false,
   isMultiple = false,
+  loadingSave = false,
 }) => {
   // Estado para manejar el índice de la pestaña seleccionada
   const [selectedTab, setSelectedTab] = useState(0);
@@ -202,6 +204,7 @@ const FormReporteGFIPF = ({
     !loading && (
       <FormProvider {...methods}>
         <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
+          <FullScreenLoader open={loadingSave} />
           <DialogTitle>
             <Box
               display="flex"

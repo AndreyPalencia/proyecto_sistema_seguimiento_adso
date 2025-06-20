@@ -65,7 +65,7 @@ const AprendizFichas = () => {
   const obtenerFichas = async () => {
     try {
       // Llamada al servicio para obtener las fichas del instructor
-      const fichasList = await getFichasByIdAprendizAndState(idAprendiz, 1);
+      const fichasList = await getFichasByIdAprendizAndState(idAprendiz);
       // Actualiza el estado con las fichas obtenidas
       setFichas(fichasList);
     } catch (error) {

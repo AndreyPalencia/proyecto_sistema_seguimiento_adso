@@ -28,6 +28,7 @@ import { useSocketNotifications } from '../hook/socket/useSocketNotifications';
  * - Muestra el `Sidebar` en pantallas grandes y lo oculta en dispositivos móviles.
  * - Llama al componente `RouteLoader` para ejecutar un hook que verifica la ruta actual y carga datos necesarios
  *   antes de renderizar el contenido asociado a esa ruta.
+ * - Footer sticky que se mantiene abajo cuando hay poco contenido, pero sigue el scroll cuando hay mucho contenido.
  *
  * @returns {JSX.Element} - Devuelve la disposición del `DashboardLayout` con el `Header`, `Sidebar` y el contenido principal.
  */
@@ -89,10 +90,32 @@ const DashboardLayout = () => {
                 boxSizing: 'border-box',
                 height: '100%',
                 overflow: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
               }}
             >
-              <RouteLoader />
-              <Outlet />
+              {/* Contenedor del contenido principal que crece */}
+              <Box sx={{ flex: '1 0 auto' }}>
+                <RouteLoader />
+                <Outlet />
+              </Box>
+
+              {/* Footer sticky */}
+              <Box
+                component="footer"
+                sx={{
+                  marginTop: '2rem',
+                  padding: '1rem 0',
+                  borderTop: '1px solid #e0e0e0',
+                  textAlign: 'center',
+                  color: 'text.secondary',
+                  fontSize: '0.875rem',
+                  flexShrink: 0,
+                }}
+              >
+                © {new Date().getFullYear()} SAEP. Sistema de Seguimiento al
+                Aprendiz en Etapa Práctica - SAEP.
+              </Box>
             </Box>
           </Grid>
         </Grid>

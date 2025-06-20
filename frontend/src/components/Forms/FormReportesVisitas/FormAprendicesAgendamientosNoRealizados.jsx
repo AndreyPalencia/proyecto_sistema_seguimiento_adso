@@ -27,7 +27,9 @@ import {
 } from '../../../utils/utils';
 
 const FormAprendicesAgendamientosNoRealizados = ({ open, onClose }) => {
-  const { idInstructor } = useParams();
+  const { idInstructor, idInstructorAdmin } = useParams();
+
+  let idInstructorConsultas = idInstructor || idInstructorAdmin;
   const { control, handleSubmit, reset, watch } = useForm({
     resolver: zodResolver(formReporteConFiltroOpcional),
     defaultValues: {
@@ -47,7 +49,10 @@ const FormAprendicesAgendamientosNoRealizados = ({ open, onClose }) => {
       ? { ignoreDateFilter: true }
       : formData;
     try {
-      await descargarReporteAprendicesVisitasNoRealizados(idInstructor, datos);
+      await descargarReporteAprendicesVisitasNoRealizados(
+        idInstructorConsultas,
+        datos
+      );
       onClose();
     } catch (error) {
       console.error(`Ocurrio un errror en la descarga del reporte:`, error);

@@ -1,3 +1,7 @@
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAlert } from '../../context/AlertContext';
+
 import {
   Typography,
   DialogContent,
@@ -13,9 +17,6 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAlert } from '../../context/AlertContext';
 
 import { resetearPassword } from '../../services/Auth';
 
@@ -25,10 +26,17 @@ import { formRecuperarPassword } from '../../schemas/formPassword';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
+import CircularProgress from '@mui/material/CircularProgress';
+
+
 const ResetearPassword = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { token } = useParams();
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const { showAlert } = useAlert();
 
@@ -47,6 +55,7 @@ const ResetearPassword = () => {
 
   const handleResetearPassword = async (formData) => {
     try {
+      setLoading(true);
       const response = await resetearPassword(formData);
       if (!response.success) {
         showAlert({
@@ -70,6 +79,8 @@ const ResetearPassword = () => {
         variant: 'standard',
         severity: 'error',
       });
+
+      setLoading(false);
     }
   };
 
@@ -165,7 +176,16 @@ const ResetearPassword = () => {
                     },
                   }}
                 >
-                  Enviar
+                  {loading ? (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        color: '#fff', // Cambia el color del loader
+                      }}
+                    />
+                  ) : (
+                    'Enviar'
+                  )}
                 </Button>
               </Grid>
 

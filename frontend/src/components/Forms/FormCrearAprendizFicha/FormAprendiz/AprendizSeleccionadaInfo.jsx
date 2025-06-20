@@ -152,9 +152,20 @@ const AprendizSeleccionadaInfo = ({
           gap: 2,
           mt: 4,
           mb: 4,
-          justifyContent: 'space-between',
+          justifyContent: 'flex-end',
         }}
       >
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => {
+            handleMostrarCrearAprendiz();
+            setAprendiz(null);
+          }}
+          sx={{ margin: '2rem 0 1rem 0' }}
+        >
+          Crear Aprendiz
+        </Button>
         <Button
           variant="contained"
           color="primary"
@@ -166,18 +177,6 @@ const AprendizSeleccionadaInfo = ({
           sx={{ margin: '2rem 0 1rem 0' }}
         >
           Buscar aprendiz
-        </Button>
-
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => {
-            handleMostrarCrearAprendiz();
-            setAprendiz(null);
-          }}
-          sx={{ margin: '2rem 0 1rem 0' }}
-        >
-          Crear Aprendiz
         </Button>
       </Stack>
     </Box>

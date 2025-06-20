@@ -29,12 +29,20 @@ const FormCrearAprendizFicha = ({ idFicha, open, onClose, onSuccess }) => {
   const { idAprendiz, idEmpresa, setFichaSeleccionada, resetearTodo } =
     useAprendizFicha();
 
-  const { clearSelection } = useCheckbox();
+  const { selectedId, clearSelection } = useCheckbox();
+
 
   // Manejador de cambio de pestaña con bloqueo
   const handleTabChange = (event, newValue) => {
     // Evitar navegación si el aprendiz aún no ha sido creado
     setSelectedTab(newValue);
+    if(selectedTab === 1 && !idEmpresa ) {
+      clearSelection();
+    }
+
+    if (selectedTab === 0 && !idAprendiz) {
+      clearSelection();
+    }
   };
 
   useEffect(() => {
@@ -63,7 +71,13 @@ const FormCrearAprendizFicha = ({ idFicha, open, onClose, onSuccess }) => {
             Agregar Usuario:
           </Typography>
           <Tooltip title="Cerrar formulario">
-            <IconButton onClick={onClose}>
+            <IconButton
+              onClick={() => {
+                onClose();
+                clearSelection();
+                resetearTodo();
+              }}
+            >
               <CloseOutlinedIcon />
             </IconButton>
           </Tooltip>
@@ -91,23 +105,23 @@ const FormCrearAprendizFicha = ({ idFicha, open, onClose, onSuccess }) => {
         )}
 
         {/* Tab 1: Seleccionar empresa (solo si idAprendiz existe) */}
-        {selectedTab ===1 && (
+        {selectedTab === 1 && (
           <Box sx={{ paddingTop: '10px' }}>
             {/* Aquí puedes poner el componente para seleccionar empresa */}
             <FormEmpresaAprendiz />
           </Box>
         )}
         {selectedTab === 2 && ( // && idAprendiz && (
-            <Box sx={{ paddingTop: '10px' }}>
-              {/* Aquí puedes poner el componente para seleccionar empresa */}
-              <FormCrearRelacionAprendizFicha
-                onClose={onClose}
-                onSuccess={onSuccess}
-                defaultValues={formRelacionData}
-                onFormChange={setFormRelacionData}
-              />
-            </Box>
-          )}
+          <Box sx={{ paddingTop: '10px' }}>
+            {/* Aquí puedes poner el componente para seleccionar empresa */}
+            <FormCrearRelacionAprendizFicha
+              onClose={onClose}
+              onSuccess={onSuccess}
+              defaultValues={formRelacionData}
+              onFormChange={setFormRelacionData}
+            />
+          </Box>
+        )}
       </DialogContent>
     </Dialog>
   );

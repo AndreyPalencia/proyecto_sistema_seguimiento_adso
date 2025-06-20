@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Box, Button, ButtonGroup, Typography } from '@mui/material';
+import { Box, Button, ButtonGroup, Stack, Typography } from '@mui/material';
 
 import { useAprendizFicha } from '../../../context/AprendizFichaContext';
 
@@ -7,6 +7,7 @@ import { useCrearFichaAprendiz } from '../../../hook/fichaAprendiz/useCrearFicha
 
 import InputField from '../../FormFields/InputField';
 import SelectField from '../../FormFields/SelectField';
+import FullScreenLoader from '../../Feedback/FullScreenLoader';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,10 +24,18 @@ const FormCrearRelacionAprendizFicha = ({
 }) => {
   const { idAprendiz, idFicha, idEmpresa, resetearTodo } = useAprendizFicha();
 
-  const { fetchCrearAprendizFicha } = useCrearFichaAprendiz();
+  const { loading, fetchCrearAprendizFicha } = useCrearFichaAprendiz();
 
-  const { control, handleSubmit, getValues, reset, watch } = useForm({
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    reset,
+    watch,
+    formState: { isValid },
+  } = useForm({
     resolver: zodResolver(formCrearFichaAprendiz),
+    mode: 'onChange',
     defaultValues: {
       idUsuario: '',
       idFicha: '',
@@ -81,6 +90,7 @@ const FormCrearRelacionAprendizFicha = ({
         console.error(error);
       })}
     >
+      <FullScreenLoader open={loading} />
       <Box
         sx={{
           //minHeight: '672px',
@@ -98,14 +108,14 @@ const FormCrearRelacionAprendizFicha = ({
           sx={{
             display: 'flex',
             flexWrap: 'wrap',
-            gap: 3, // Increased gap for spacing
+            gap: 2.5, // Increased gap for spacing
             mb: 1, // Margin-bottom for the section
             pb: 2,
             pt: 3,
           }}
         >
           {/* Cargo alternativo en la empresa */}
-          <Box sx={{ flexBasis: '45%', minWidth: '280px', mb: 2 }}>
+          <Box sx={{ flexBasis: '49%', minWidth: '280px', mb: 2 }}>
             <SelectField
               name="alternativa"
               label="Alternativa de contrato"
@@ -117,7 +127,7 @@ const FormCrearRelacionAprendizFicha = ({
             />
           </Box>
 
-          <Box sx={{ flexBasis: '45%', minWidth: '280px', mb: 2 }}>
+          <Box sx={{ flexBasis: '48.5%', minWidth: '280px', mb: 2 }}>
             <InputField
               name="cargoEmpresa"
               label="Cargo en la empresa"
@@ -126,7 +136,7 @@ const FormCrearRelacionAprendizFicha = ({
             />
           </Box>
 
-          <Box sx={{ flexBasis: '45%', minWidth: '280px', mb: 2 }}>
+          <Box sx={{ flexBasis: '49%', minWidth: '280px', mb: 2 }}>
             <InputField
               name="jefeInmediato"
               label="Jefe Inmediato"
@@ -135,7 +145,7 @@ const FormCrearRelacionAprendizFicha = ({
             />
           </Box>
 
-          <Box sx={{ flexBasis: '45%', minWidth: '280px', mb: 2 }}>
+          <Box sx={{ flexBasis: '49%', minWidth: '280px', mb: 2 }}>
             <InputField
               name="cargoJefe"
               control={control}
@@ -144,7 +154,7 @@ const FormCrearRelacionAprendizFicha = ({
             />
           </Box>
 
-          <Box sx={{ flexBasis: '45%', minWidth: '280px', mb: 2 }}>
+          <Box sx={{ flexBasis: '49%', minWidth: '280px', mb: 2 }}>
             <InputField
               name="correoElectronicoJefe"
               control={control}
@@ -153,7 +163,7 @@ const FormCrearRelacionAprendizFicha = ({
             />
           </Box>
 
-          <Box sx={{ flexBasis: '45%', minWidth: '280px', mb: 2 }}>
+          <Box sx={{ flexBasis: '49%', minWidth: '280px', mb: 2 }}>
             <InputField
               type="number"
               name="telefonoJefe"
@@ -164,11 +174,21 @@ const FormCrearRelacionAprendizFicha = ({
           </Box>
           {/* Action button */}
 
-          <ButtonGroup variant="outlined" sx={{ width: '100%' }}>
-            <Button type="submit" variant="contained" color="primary">
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent="flex-end"
+            sx={{ width: '100%' }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={!isValid}
+            >
               Guardar
             </Button>
-          </ButtonGroup>
+          </Stack>
         </Box>
       </Box>
     </form>

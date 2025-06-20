@@ -33,7 +33,9 @@ import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
  */
 
 const CalendarioFichas = () => {
-  const { idInstructor } = useParams();
+  const { idInstructor, idInstructorAdmin } = useParams();
+
+  let idInstructorConsultas = idInstructor || idInstructorAdmin;
   const { contentHeight } = useLayout();
 
   const [estadoSelecionado, setEstadoSelecionado] = useState('Calendario');
@@ -72,7 +74,7 @@ const CalendarioFichas = () => {
     agregarEvento,
     actualizarEvento,
     buscarEventoPorPropiedad,
-  } = useAgendamientoCalendar({ idInstructor });
+  } = useAgendamientoCalendar({ idInstructorConsultas });
 
   const eventosSolicitados = buscarEventoPorPropiedad(
     'estadoVisita',
@@ -86,7 +88,9 @@ const CalendarioFichas = () => {
         display: 'flex',
         justifyContent: 'space-around',
         flexDirection: 'column',
-        height: contentHeight - 10, // <-- set height dynamically here
+        height:
+          contentHeight -
+          `${estadoSelecionado === 'Listado de Solicitudes' ? 120 : 20}`, // <-- set height dynamically here
         gap: '5px',
         mt: '10px',
       }}
@@ -169,7 +173,7 @@ const CalendarioFichas = () => {
             eventos={eventosFormateados}
             onSelect={handleDateSelect}
             onEventClick={handleEventClick}
-            height={contentHeight - 120}
+            height={contentHeight - 110}
           />
         )}
 
@@ -177,7 +181,7 @@ const CalendarioFichas = () => {
           <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
             <ListaAgendamientosSolicitados
               eventosSolicitados={eventosSolicitados}
-              idInstructor={idInstructor}
+              idInstructor={idInstructorConsultas}
               agendamientoSeleccionado={agendamientoSeleccionado}
               handleAgendamientoSeleccionado={setAgendamientoSeleccionado}
               actualizarEventoCalendario={actualizarEvento}
@@ -190,7 +194,7 @@ const CalendarioFichas = () => {
 
       {fechaSeleccionada && (
         <CrearAgendamiento
-          idInstructor={idInstructor}
+          idInstructor={idInstructorConsultas}
           fechaSeleccionada={fechaSeleccionada}
           handleFechaSeleccionada={setFechaSeleccionada}
           agregarEventosCalendario={agregarEvento}
@@ -199,7 +203,7 @@ const CalendarioFichas = () => {
 
       {agendamientoSeleccionado && (
         <EditarAgendamiento
-          idInstructor={idInstructor}
+          idInstructor={idInstructorConsultas}
           agendamientoSeleccionado={agendamientoSeleccionado}
           handleAgendamientoSeleccionado={setAgendamientoSeleccionado}
           actualizarEventoCalendario={actualizarEvento}

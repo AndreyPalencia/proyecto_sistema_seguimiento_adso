@@ -12,16 +12,14 @@ const useCrearFichaAprendiz = () => {
       showAlert({
         message: 'Se creó la relación ficha-aprendiz exitosamente.',
         severity: 'info',
-        variant: 'standard'
+        variant: 'standard',
       });
       return fichaAprendiz;
     } catch (error) {
       //console.log(error, 'response')
       if (error?.status === 409) {
         showAlert({
-          message: `Conflicto: ${
-            error.message || 'Ya existe la relación.'
-          }`,
+          message: `Conflicto: ${error.message || 'Ya existe la relación.'}`,
           severity: 'warning',
         });
       } else {

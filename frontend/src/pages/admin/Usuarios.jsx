@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useActionsButtonsContext } from '../../context/ActionsButtonsContext';
 import { useNavigate } from 'react-router-dom';
+import { useSidebar } from '../../context/SidebarContext';
 
 import {
   Box,
@@ -33,6 +34,8 @@ const Usuarios = () => {
 
   // Obtiene funciones del contexto para manejar botones de acción
   const { updateActionsButtons } = useActionsButtonsContext();
+
+  const { pushSidebarView, setIds, sidebarStack } = useSidebar();
 
   const [openCrearUsuario, setCrearUsuario] = useState(false);
 
@@ -91,8 +94,12 @@ const Usuarios = () => {
       return [
         {
           icon: OpenInNewIcon,
-          action: (idUsuario) => {
-            navegation(`/admin/rol/instructor/${idUsuario}/fichas`);
+          action: (idInstructorAdmin) => {
+            if (!sidebarStack.includes('mainInstructor')) {
+              setIds('idInstructorAdmin', idInstructorAdmin);
+              navegation(`/admin/rol/instructor/${idInstructorAdmin}/fichas`);
+              //pushSidebarView('mainInstructor'); // Esto abre el submenu en el sidebar
+            }
           },
           tooltip: 'Abir fichas en seguimiento',
           position: 'left',
@@ -251,16 +258,7 @@ const Usuarios = () => {
               }}
               isEdit
               idUsuario={selectIdUsuario}
-            >
-              <Button
-                type="submit"
-                color="primary"
-                variant="contained"
-                sx={{ margin: '2rem 0 1rem 0' }}
-              >
-                Guardar
-              </Button>
-            </FormUsuario>
+            />
           </DialogContent>
         </Dialog>
       }

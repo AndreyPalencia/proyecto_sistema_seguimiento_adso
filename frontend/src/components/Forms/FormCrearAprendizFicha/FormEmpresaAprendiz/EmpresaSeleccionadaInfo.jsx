@@ -122,20 +122,10 @@ const EmpresaSeleccionadaInfo = ({
       <Stack
         spacing={2}
         direction="row"
-        justifyContent="space-between"
+        justifyContent="flex-end"
         variant="outlined"
         sx={{ display: 'flex', gap: 2, mt: 4, mb: 4 }}
       >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            handleEmpresaSeleccionado();
-            setEmpresaSeleccionada(null);
-          }}
-        >
-          Buscar Empresa
-        </Button>
         <Button
           variant="outlined"
           color="secondary"
@@ -145,6 +135,16 @@ const EmpresaSeleccionadaInfo = ({
           }}
         >
           Crear Empresa
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            handleEmpresaSeleccionado();
+            setEmpresaSeleccionada(null);
+          }}
+        >
+          Buscar Empresa
         </Button>
       </Stack>
     </Box>

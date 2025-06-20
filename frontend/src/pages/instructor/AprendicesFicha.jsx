@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useActionsButtonsContext } from '../../context/ActionsButtonsContext';
 import { useAprendices } from '../../context/AprendicesContext';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 import {
   Box,
@@ -55,7 +56,9 @@ function formatearFecha(fechaStr) {
 
 const AprendicesFichas = () => {
   //Obtenemos el idFicha de los parámetros de la URL
-  const { idFicha, idInstructor } = useParams();
+  const { idFicha, idInstructor, idInstructorAdmin } = useParams();
+
+  let idInstructorConsulta = idInstructor || idInstructorAdmin;
   //Obtenemos idUsuario y roleUsuario del contexto de autenticación
   const [openCrearReporte, setCrearReporte] = useState(false);
 
@@ -75,6 +78,8 @@ const AprendicesFichas = () => {
   const [reloadAprendices, setReloadAprendices] = useState(false);
 
   const { setIds } = useSidebar();
+
+  const { roleUsuario } = useAuth();
 
   const { ficha, loading: loadingFicha } = useFichaById(idFicha);
   const { descargarDocumentosFicha } = useDescargarDocumentosFicha();
@@ -99,9 +104,14 @@ const AprendicesFichas = () => {
     // Establecer el ID del aprendiz seleccionado
     setIds('idAprendiz', idAprendiz);
     // Navegar a la página del aprendiz
-    navigate(
-      `/instructor/${idInstructor}/ficha/${idFicha}/aprendiz/${idAprendiz}/seguimiento`
-    );
+    if (roleUsuario === 'admin')
+      navigate(
+        `/admin/rol/instructor/${idInstructorConsulta}/ficha/${idFicha}/aprendiz/${idAprendiz}/seguimiento`
+      );
+    else
+      navigate(
+        `/instructor/${idInstructorConsulta}/ficha/${idFicha}/aprendiz/${idAprendiz}/seguimiento`
+      );
   };
 
   const handleReporteAprendiz = (idAprendiz) => {
@@ -149,7 +159,7 @@ const AprendicesFichas = () => {
       position: 'left',
       action: (idAprendiz) => {
         navigate(
-          `/instructor/${idInstructor}/ficha/${idFicha}/aprendiz/${idAprendiz}/info`
+          `/instructor/${idInstructorConsulta}/ficha/${idFicha}/aprendiz/${idAprendiz}/info`
         );
       },
       tooltip: 'Editar',

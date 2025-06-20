@@ -15,9 +15,10 @@ const FormCrearEmpresa = ({ handleVolverBuscar }) => {
   const {
     handleSubmit,
     control,
-    formState: { isSubmitting },
+    formState: { isValid },
   } = useForm({
     resolver: zodResolver(formCrearEmpresa),
+    mode: 'onChange',
     defaultValues: {
       razonSocial: '',
       nit: '',
@@ -72,6 +73,7 @@ const FormCrearEmpresa = ({ handleVolverBuscar }) => {
               label="NIT de la empresa"
               control={control}
               required
+              
             />
           </Box>
           <Box sx={{ mb: 2 }}>
@@ -104,24 +106,24 @@ const FormCrearEmpresa = ({ handleVolverBuscar }) => {
             direction="row"
             spacing={2}
             variant="outlined"
-            sx={{ gap: '10px', justifyContent: 'space-between' }}
+            sx={{ gap: '10px', justifyContent: 'flex-end' }}
           >
             <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={isSubmitting}
-              sx={{ margin: '2rem 0 1rem 0' }}
-            >
-              Guardar
-            </Button>
-            <Button
               variant="outlined"
-              color='secondary'
+              color="secondary"
               onClick={handleVolverBuscar}
               sx={{ margin: '2rem 0 1rem 0' }}
             >
               Buscar Empresa
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={!isValid}
+              sx={{ margin: '2rem 0 1rem 0' }}
+            >
+              Guardar
             </Button>
           </Stack>
         </Box>

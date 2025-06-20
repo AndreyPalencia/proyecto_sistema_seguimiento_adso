@@ -6,6 +6,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Stack,
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import InputField from '../../../components/FormFields/InputField';
@@ -37,7 +38,7 @@ const FormCrearEmpresa = ({ open, onClose, onSave }) => {
 
         <DialogContent dividers>
           <Grid container spacing={4} sx={{ alignItems: 'center' }}>
-            <Grid   sx={{ width: '100%' }}>
+            <Grid sx={{ width: '100%' }}>
               <InputField
                 name="razonSocial"
                 label="Nombre de la empresa"
@@ -46,7 +47,7 @@ const FormCrearEmpresa = ({ open, onClose, onSave }) => {
               />
             </Grid>
 
-            <Grid   sx={{ width: '100%' }}>
+            <Grid sx={{ width: '100%' }}>
               <InputField
                 name="nit"
                 label="NIT de la empresa"
@@ -55,7 +56,7 @@ const FormCrearEmpresa = ({ open, onClose, onSave }) => {
               />
             </Grid>
 
-            <Grid   sx={{ width: '100%' }}>
+            <Grid sx={{ width: '100%' }}>
               <InputField
                 name="direccion"
                 label="Dirección de la empresa"
@@ -64,7 +65,7 @@ const FormCrearEmpresa = ({ open, onClose, onSave }) => {
               />
             </Grid>
 
-            <Grid   sx={{ width: '100%' }}>
+            <Grid sx={{ width: '100%' }}>
               <InputField
                 name="telefono"
                 label="Teléfono de la empresa"
@@ -74,7 +75,7 @@ const FormCrearEmpresa = ({ open, onClose, onSave }) => {
               />
             </Grid>
 
-            <Grid   sx={{ width: '100%' }}>
+            <Grid sx={{ width: '100%' }}>
               <InputField
                 name="correoElectronico"
                 label="Correo electrónico de la empresa"
@@ -87,17 +88,25 @@ const FormCrearEmpresa = ({ open, onClose, onSave }) => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={onClose} color="secondary">
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={isSubmitting}
+          <Stack
+            justifyContent="flex-end"
+            spacing={2}
+            sx={{ px: 2, pb: '18px' }}
+            direction="row"
           >
-            Guardar
-          </Button>
+            <Button onClick={onClose} color="secondary" variant="outlined">
+              Cancelar
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              Guardar
+            </Button>
+          </Stack>
+         
         </DialogActions>
       </form>
     </Dialog>

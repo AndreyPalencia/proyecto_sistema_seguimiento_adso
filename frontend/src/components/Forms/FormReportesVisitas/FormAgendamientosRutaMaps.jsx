@@ -23,7 +23,9 @@ import { formBusquedaPorFecha } from '../../../schemas/formReporteVisitas';
 import { getTodayUtcFromBogota } from '../../../utils/utils';
 
 const FormAgendamientosRutaMaps = ({ open, onClose }) => {
-  const { idInstructor } = useParams();
+  const { idInstructor, idInstructorAdmin } = useParams();
+
+  let idInstructorConsultas = idInstructor || idInstructorAdmin;
   const { control, handleSubmit, reset, watch } = useForm({
     resolver: zodResolver(formBusquedaPorFecha),
     defaultValues: {
@@ -35,7 +37,10 @@ const FormAgendamientosRutaMaps = ({ open, onClose }) => {
 
   const OnSubmit = async (formData) => {
     try {
-      await descargarReporteRutaAgendamientosMaps(idInstructor, formData);
+      await descargarReporteRutaAgendamientosMaps(
+        idInstructorConsultas,
+        formData
+      );
       onClose();
     } catch (error) {
       console.error(`Ocurrio un errror en la descarga del reporte:`, error);

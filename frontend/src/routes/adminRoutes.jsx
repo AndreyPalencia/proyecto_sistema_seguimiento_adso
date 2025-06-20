@@ -57,45 +57,51 @@ const adminRoutes = [
 
   /** Gestión de fichas */
   {
-    path: 'rol/instructor/:idInstructor/fichas',
+    path: 'rol/instructor/:idInstructorAdmin/fichas',
     element: <FichasInstructor />,
   },
-  { path: 'rol/instructor/calendario-fichas', element: <CalendarioFichas /> },
-  { path: 'rol/instructor/ficha/:idFicha/info', element: <FichaDetalles /> },
   {
-    path: 'rol/instructor/ficha/:idFicha/calendario-ficha',
+    path: 'rol/instructor/:idInstructorAdmin/calendario-fichas',
+    element: <CalendarioFichas />,
+  },
+  {
+    path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/info',
+    element: <FichaDetalles />,
+  },
+  {
+    path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/calendario-ficha',
     element: <CalendarioByFicha />,
   },
 
   /** Gestión de aprendices de una ficha */
   {
-    path: 'rol/instructor/ficha/:idFicha/aprendices',
+    path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/aprendices',
     element: <AprendicesFicha />,
   },
   {
-    path: 'rol/instructor/ficha/:idFicha/aprendiz/:idAprendiz/info',
+    path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/aprendiz/:idAprendiz/info',
     element: <AprendizDetalles />,
   },
   {
-    path: 'rol/instructor/ficha/:idFicha/aprendiz/:idAprendiz/empresa',
+    path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/aprendiz/:idAprendiz/empresa',
     element: <EmpresaAprendiz />,
   },
   {
-    path: 'rol/instructor/ficha/:idFicha/aprendiz/:idAprendiz/observaciones',
+    path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/aprendiz/:idAprendiz/observaciones',
     element: <ObservacionesInstructor />,
   },
   {
-    path: 'rol/instructor/ficha/:idFicha/aprendiz/:idAprendiz/seguimiento',
+    path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/aprendiz/:idAprendiz/seguimiento',
     element: <SegumientoAprendiz />,
   },
   {
-    path: 'rol/instructor/ficha/:idFicha/aprendiz/:idAprendiz/reportes-gfpi-f',
+    path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/aprendiz/:idAprendiz/reportes-gfpi-f',
     element: <ReportesInstructorGFPIF />,
   },
 
   /** Reportes */
   {
-    path: 'rol/instructor/reporte-general-ficha',
+    path: 'rol/instructor/:idInstructorAdmin/reporte-general-ficha',
     element: <ReporteGeneralFichas />,
   },
 ];

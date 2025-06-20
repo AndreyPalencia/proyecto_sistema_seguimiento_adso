@@ -1,7 +1,8 @@
-    import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useActionsButtonsContext } from '../../context/ActionsButtonsContext';
 import { useSidebar } from '../../context/SidebarContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 import { Typography } from '@mui/material';
 
@@ -32,12 +33,17 @@ import { TbReport } from 'react-icons/tb';
  */
 const FichasInstructor = () => {
   // Obtiene el ID del instructor desde los parámetros de la URL
-  const { idInstructor } = useParams();
+  const { idInstructor, idInstructorAdmin } = useParams();
+
+  let idInstructorConsultas = idInstructor || idInstructorAdmin;
+  const { roleUsuario } = useAuth();
 
   // Hook de navegación para redirigir a otras rutas
   const navegacion = useNavigate();
 
-  const { loading, fichas, refetchFichas } = useObtenerFichas(idInstructor);
+  const { loading, fichas, refetchFichas } = useObtenerFichas(
+    idInstructorConsultas
+  );
 
   // Obtiene funciones del contexto para manejar botones de acción
   const { updateActionsButtons } = useActionsButtonsContext();
@@ -95,8 +101,15 @@ const FichasInstructor = () => {
       color: ' #39A900',
       position: 'left',
       action: (idFicha) => {
-        navegacion(`/instructor/${idInstructor}/ficha/${idFicha}/aprendices`);
-        handleClickAprendiz(idFicha); // Llama a la función para manejar el clic en el aprendiz
+        if (roleUsuario === 'admin')
+          navegacion(
+            `/admin/rol/instructor/${idInstructorConsultas}/ficha/${idFicha}/aprendices`
+          );
+        else
+          navegacion(
+            `/instructor/${idInstructorConsultas}/ficha/${idFicha}/aprendices`
+          );
+        //handleClickAprendiz(idFicha); // Llama a la función para manejar el clic en el aprendiz
       },
       tooltip: 'Abrir',
       id: 'MainGrid',
@@ -106,7 +119,9 @@ const FichasInstructor = () => {
       color: ' #29737D',
       position: 'center',
       action: (idFicha) => {
-        navegacion(`/instructor/${idInstructor}/ficha/${idFicha}/info`);
+        navegacion(
+          `/instructor/${idInstructorConsultas}/ficha/${idFicha}/info`
+        );
       },
       tooltip: 'Editar',
     },

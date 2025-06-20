@@ -13,18 +13,10 @@ const FormCrearAprendiz = ({ handleVolverBuscar }) => {
     <>
       <FormUsuario rolDefault="aprendiz" onSuccess={onSuccess}>
         <Button
-          type="submit"
-          color="primary"
-          variant="contained"
-          sx={{ margin: '2rem 0 1rem 0' }}
-        >
-          Guardar
-        </Button>
-        <Button
           variant="outlined"
           color="secondary"
           onClick={handleVolverBuscar}
-          sx={{ margin: '2rem 0 1rem 0' }}
+          sx={{ margin: '0' }}
         >
           Buscar Aprendiz
         </Button>

@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Stack,
 } from '@mui/material';
 
 import { useEffect } from 'react';
@@ -92,12 +93,19 @@ const FormEditarObservacion = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} color="secondary">
-            Cancelar
-          </Button>
-          <Button variant="contained" color="primary" type="submit">
-            Actualizar
-          </Button>
+          <Stack
+            justifyContent="space-between"
+            spacing={2}
+            sx={{ px: 2, pb: '18px' }}
+            direction="row"
+          >
+            <Button onClick={onClose} color="secondary" variant="outlined">
+              Cancelar
+            </Button>
+            <Button variant="contained" color="primary" type="submit">
+              Actulizar
+            </Button>
+          </Stack>
         </DialogActions>
       </form>
     </Dialog>

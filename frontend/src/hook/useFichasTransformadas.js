@@ -18,9 +18,9 @@ import { getFichasByIdInstructorAndState } from '../services/Fichas.js';
  *
  * @example
  * const { fichas, loading, error } = useFichasTransformadas({ idInstructor: '123' });
- * console.log(fichas); // [{ idFicha: 45, nombre: '2545521 - Tecnologo en Confecciones' }]
+ * console.log(fichas); // [{ idFicha: 45, nombre: '2545521 - Tecnólogo en Confecciones' }]
  */
-export const useFichasTransformadas = ({ idInstructor }) => {
+export const useFichasTransformadas = ({ idInstructor, estadoFicha }) => {
   //Estado para almacenar las fichas activas, carga y error
   const [fichasBD, setFichasBD] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,13 +33,16 @@ export const useFichasTransformadas = ({ idInstructor }) => {
    *
    * Actualiza el estado de `fichaBD` con los datos obtenidos, y maneja el estado
    * de carga y posibles errores.
-   * 
+   *
    * @returns {Promise<void>}
    */
   const obtenerFichas = async () => {
     setLoading(true); // Inicia el estado de carga
     try {
-      const fichas = await getFichasByIdInstructorAndState(idInstructor, 1);
+      const fichas = await getFichasByIdInstructorAndState(
+        idInstructor,
+        estadoFicha
+      );
       setFichasBD(fichas);
       //console.log('Fichas filtradas por instructor:', fichas);
     } catch (err) {
@@ -61,6 +64,7 @@ export const useFichasTransformadas = ({ idInstructor }) => {
     return fichasBD.map((ficha) => ({
       idFicha: ficha.idFicha,
       nombre: `${ficha.numeroFicha} - ${ficha.nombrePrograma}`,
+      estadoFicha: ficha.estadoFicha,
     }));
   }, [fichasBD]);
 

@@ -37,7 +37,8 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
 
   //Determinar si este item es Aprendiz, para mostra el submenú a nivel del menú de ficha
   const isAprendiz = item === 'aprendiz';
-  const isInstructorAdmin = item === 'mainInstructor';
+  const isAprendizAdmin = item === 'aprendizAdmin';
+ // const isInstructorAdmin = item === 'mainInstructor';
 
   //Determinar si la ruta actual coincide con la ruta del ítem
   const isActive = location.pathname.includes(config[item]?.path);
@@ -46,8 +47,8 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
   const menuItemsAprendiz = sidebarMenus[roleUsuario]?.['aprendiz'] || [];
 
   //Obtener el array de elementos del menú instructor del rol del admin
-  const menuItemsInstructorAdmin =
-    sidebarMenus[roleUsuario]?.['mainInstructor'] || [];
+  const menuItemsAprendizAdmin =
+    sidebarMenus[roleUsuario]?.['aprendizAdmin'] || [];
 
   //Cuando se selecciona un aprendiz, se debe abrir automáticamente el submenú
   useEffect(() => {
@@ -55,15 +56,15 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
       setOpenSubMenu(true);
     }
 
-    if (isInstructorAdmin && selectedIds.idInstructor) {
+    if (isAprendizAdmin && selectedIds.idInstructorAdmin) {
       setOpenSubMenu(true);
     }
-  }, [selectedIds.idAprendiz]);
+  }, [selectedIds.idAprendiz, selectedIds.idInstructorAdmin]);
 
   //Determinar si la ruta actual incluye '/aprendiz/'
   //Esto es para manejar el caso en que se navega directamente a una ruta de aprendiz
   const isAprendizRoute = location.pathname.includes('/aprendiz/');
-  const isInstructorAdminRoute = location.pathname.includes('/instructor/');
+  const isInstructorAdminRoute = location.pathname.includes('/rol/instructor/');
 
   // Manejar clic en el ítem
   const handleClick = () => {
@@ -72,7 +73,7 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
 
   return (
     <div key={item}>
-      {item !== 'aprendiz' && item !== 'mainInstructor' && (
+      {item !== 'aprendiz' && item !== 'aprendizAdmin' && (
         <ListItem>
           {/* {console.log('item', item)} */}
           {/* {console.log('sidebarStack', sidebarStack)} */}
@@ -133,8 +134,8 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
         </>
       )}
 
-      {item === 'mainInstructor' &&
-        (selectedIds.idInstructor || isInstructorAdminRoute) && (
+      {item === 'aprendizAdmin' &&
+        (selectedIds.idInstructorAdmin || isInstructorAdminRoute) && selectedIds.idAprendiz  && (
           <>
             <ListItem>
               <ListItemButton
@@ -154,7 +155,7 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
             </ListItem>
             <Collapse in={openSubMenu} timeout="auto" unmountOnExit>
               <List component="div">
-                {menuItemsInstructorAdmin.map((subItem) => (
+                {menuItemsAprendizAdmin.map((subItem) => (
                   <ListItemButton
                     key={config[subItem]?.label}
                     data-list="Nada2"

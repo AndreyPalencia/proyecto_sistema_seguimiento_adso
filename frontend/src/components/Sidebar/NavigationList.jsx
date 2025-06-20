@@ -110,17 +110,13 @@ const NavigationList = ({ isCollapsed }) => {
       <Divider />
 
       {/* Mostrar botón para volver si estamos en un submenú */}
-      {estaEnSubmenu && (
-        <SubmenuBackButton isCollapsed={isCollapsed} to={'fichas'} />
-      )}
+      {estaEnSubmenu && <SubmenuBackButton isCollapsed={isCollapsed} />}
 
       {/* Listar elementos del menú para la vista actual */}
       <List>
         {menuItems.map((item) => (
           <SidebarItem
-            key={`${config[item]?.label}-${
-              config[item]?.path 
-            }`} // ahora es seguro
+            key={`${config[item]?.label}-${config[item]?.path}`} // ahora es seguro
             item={item}
             config={config}
             location={location}

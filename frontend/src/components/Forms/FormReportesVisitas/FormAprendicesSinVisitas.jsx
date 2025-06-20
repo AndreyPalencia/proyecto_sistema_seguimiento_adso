@@ -26,7 +26,10 @@ import {
 } from '../../../utils/utils';
 
 const FormAprendicesSinVisitas = ({ open, onClose }) => {
-  const { idInstructor } = useParams();
+  const { idInstructor, idInstructorAdmin } = useParams();
+
+  let idInstructorConsultas = idInstructor || idInstructorAdmin;
+
   const { control, handleSubmit, reset } = useForm({
     resolver: zodResolver(formReporteVisitas),
     defaultValues: {
@@ -40,7 +43,10 @@ const FormAprendicesSinVisitas = ({ open, onClose }) => {
   const OnSubmit = async (formData) => {
     console.log(formData);
     try {
-      await descargarReporteAprendicesSinVisitas(idInstructor, formData);
+      await descargarReporteAprendicesSinVisitas(
+        idInstructorConsultas,
+        formData
+      );
     } catch (error) {
       console.error(`Ocurrio un errror en la descarga del reporte: ${error}`);
       showAlert({

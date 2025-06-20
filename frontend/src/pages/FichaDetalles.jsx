@@ -137,11 +137,11 @@ const FichaDetalles = () => {
           titulo="Término del programa"
           item={ficha.terminoPrograma}
           menuOpciones={[
-            'Tecnologo',
-            'Tecnico',
+            'Tecnólogo',
+            'Técnico',
             'Auxiliar',
             'Operario',
-            'Especializacion',
+            'Especialización',
           ]}
           isArrayOptions
           inputLabel={true}

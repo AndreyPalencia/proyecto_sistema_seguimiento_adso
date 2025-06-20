@@ -1,13 +1,12 @@
 import { z } from 'zod';
 
-
 const terminoProgramaEnum = [
-  'Tecnologo',
-  'Tecnico',
+  'Tecnólogo',
+  'Técnico',
   'Auxiliar',
   'Operario',
-  'Especializacion',
-]
+  'Especialización',
+];
 
 export const formCrearFicha = z
   .object({

@@ -39,14 +39,13 @@ const CalendarioByFicha = () => {
           mt: '20px',
         }}
       >
-
         <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
           <CalendarioBase
             calendarRef={calendarioRef}
             eventos={eventosFormateados}
             onSelect={handleDateSelect}
             onEventClick={handleEventClick}
-            height={contentHeight - 120}
+            height={contentHeight - 50}
           />
         </Box>
         {fechaSeleccionada && (

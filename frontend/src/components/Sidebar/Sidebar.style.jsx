@@ -21,14 +21,18 @@ import { Drawer, Box } from '@mui/material';
  */
 
 export const CustomDrawer = styled(Drawer, {
-  shouldForwardProp: (prop) =>  prop !== 'drawerWidth' && prop !== 'isCollapsed',
+  shouldForwardProp: (prop) => prop !== 'drawerWidth' && prop !== 'isCollapsed',
 })(({ theme, drawerWidth, isCollapsed }) => ({
-  width: isCollapsed ? 88: drawerWidth ,
+  width: isCollapsed ? 88 : drawerWidth,
   flexShrink: 0,
   '& .MuiDrawer-paper': {
-    width: isCollapsed ? 88: drawerWidth ,
+    width: isCollapsed ? 88 : drawerWidth,
     position: 'relative',
     backgroundColor: theme.palette.background.default,
+    borderRight: 0,
+    height: '100vh', // ✅ para que Sidebar ocupe toda la pantalla
+    display: 'flex', // ✅ permite que SidebarContent se expanda
+    flexDirection: 'column',
   },
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,

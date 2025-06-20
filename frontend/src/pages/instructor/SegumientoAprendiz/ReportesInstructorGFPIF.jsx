@@ -174,6 +174,7 @@ const ReportesInstructorGFPIF = () => {
               onEditarReporte={handleModificarReporte}
               idReporte={reporteSelecionado}
               isEdit={openEditarReporte}
+              loadingSave={loadingEditarReporte}
             />
           )}
         </>

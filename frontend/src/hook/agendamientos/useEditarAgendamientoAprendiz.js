@@ -20,6 +20,15 @@ const useEditarAgendamientoAprendiz = () => {
       //return agendameintoActualizado;
     } catch (error) {
       console.error('Error al editar el agendamiento:', error);
+      if (error.status === 404) {
+        showAlert({
+          message: `No se realizaron ningún cambio al agendamiento.`,
+          severity: 'warning',
+          variant: 'standard'
+        });
+        return;
+      }
+
       showAlert({
         message: `Error al actualizar el agendamiento. ${error.message}`,
         severity: 'error',

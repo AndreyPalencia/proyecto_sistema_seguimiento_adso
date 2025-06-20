@@ -133,11 +133,25 @@ const FormSearchEmpresa = ({
             'Dirección',
           ]}
         />
-        <Stack direction='row' spacing={2} variant="outlined" sx={{ gap: '10px', justifyContent: 'space-between', mt: '24px' }}>
+        <Stack
+          direction="row"
+          spacing={2}
+          variant="outlined"
+          sx={{ gap: '10px', justifyContent: 'flex-end', mt: '24px' }}
+        >
+          <Button
+            variant="outlined"
+            color="secondary"
+            disabled={empresaSelecionada} // solo se puede crear si no hay una empresa seleccionada
+            onClick={handleMostrarCrearEmpresa}
+            sx={{ margin: '2rem 0 1rem 0' }}
+          >
+            Crear Empresa
+          </Button>
           <Button
             variant="contained"
-            color='primary'
-            disabled={!selectedId}
+            color="primary"
+            disabled={selectedId === null}
             onClick={() => {
               selecionarEmpresa();
               handleEmpresaSeleccionado(); // <-- activa que se seleccionó
@@ -146,16 +160,6 @@ const FormSearchEmpresa = ({
             sx={{ margin: '2rem 0 1rem 0' }}
           >
             Seleccionar Empresa
-          </Button>
-
-          <Button
-            variant="outlined"
-            color='secondary'
-            disabled={empresaSelecionada} // solo se puede crear si no hay una empresa seleccionada
-            onClick={handleMostrarCrearEmpresa}
-            sx={{ margin: '2rem 0 1rem 0' }}
-          >
-            Crear Empresa
           </Button>
         </Stack>
       </Box>

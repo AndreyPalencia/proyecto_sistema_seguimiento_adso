@@ -164,8 +164,17 @@ const FormSearchAprendiz = ({
         <Stack
           spacing={2}
           direction="row"
-          sx={{ gap: '10px', justifyContent: 'space-between', mt: '24px' }}
+          sx={{ gap: '10px', justifyContent: 'flex-end', mt: '24px' }}
         >
+          <Button
+            variant="outlined"
+            color="secondary"
+            disabled={aprendizSeleccionado}
+            onClick={handleMostrarCrearAprendiz}
+            sx={{ margin: '2rem 0 1rem 0' }}
+          >
+            Crear Aprendiz
+          </Button>
           <Button
             type="submit"
             color="primary"
@@ -179,15 +188,6 @@ const FormSearchAprendiz = ({
             sx={{ margin: '2rem 0 1rem 0' }}
           >
             Seleccionar Aprendiz
-          </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            disabled={aprendizSeleccionado}
-            onClick={handleMostrarCrearAprendiz}
-            sx={{ margin: '2rem 0 1rem 0' }}
-          >
-            Crear Aprendiz
           </Button>
         </Stack>
       </Box>

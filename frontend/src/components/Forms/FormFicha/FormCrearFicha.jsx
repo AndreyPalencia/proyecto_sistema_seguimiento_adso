@@ -62,7 +62,7 @@ const FormCrearFicha = ({ open, onClose, onSave }) => {
     reset({
       numeroFicha: '',
       nombrePrograma: '',
-      terminoPrograma: 'Tecnologo',
+      terminoPrograma: 'Tecnólogo',
       estadoFicha: true,
       inicioEtapaProductiva: getTodayUtcFromBogota(),
       finEtapaProductiva: getDatePlusMonthsFromBogota(6),
@@ -113,11 +113,11 @@ const FormCrearFicha = ({ open, onClose, onSave }) => {
                 isArrayOptions
                 fullWidth
                 menuOptions={[
-                  'Tecnologo',
-                  'Tecnico',
+                  'Tecnólogo',
+                  'Técnico',
                   'Auxiliar',
                   'Operario',
-                  'Especializacion',
+                  'Especialización',
                 ]}
               />
             </Box>
@@ -157,7 +157,7 @@ const FormCrearFicha = ({ open, onClose, onSave }) => {
           </Box>
         </DialogContent>
 
-        <DialogActions >
+        <DialogActions>
           <Stack direction="row" spacing={2} sx={{ px: 2, pb: '15px' }}>
             <Button onClick={onClose} color="secondary" variant="outlined">
               Cancelar

@@ -14,8 +14,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import formReporteGeneralFichas from '../schemas/formReporteGeneralFichas';
 
 const ReporteGeneralFichas = () => {
-  const { idInstructor } = useParams();
-  const { fichas } = useFichasTransformadas({ idInstructor });
+  const { idInstructor, idInstructorAdmin } = useParams();
+
+  let idInstructorConsultas = idInstructor || idInstructorAdmin;
+  
+  const { fichas } = useFichasTransformadas({ idInstructor: idInstructorConsultas , estadoFicha: 1 });
 
   const { showAlert } = useAlert();
 
@@ -54,7 +57,7 @@ const ReporteGeneralFichas = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data, 'data');
+    //console.log(data, 'data');
     try {
       await descarReporteFichaGeneral(data);
     } catch (error) {
@@ -68,7 +71,7 @@ const ReporteGeneralFichas = () => {
   };
 
   return (
-    <Box sx={{ py: '35px' }}>
+    <Box sx={{ pt: '35px', pb: '0px' }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Campo de búsqueda */}
         <Box

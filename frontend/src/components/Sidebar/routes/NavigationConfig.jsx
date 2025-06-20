@@ -1,11 +1,22 @@
 import { BaseIcons } from './BaseIcons';
 
+import { useSidebar } from '../../../context/SidebarContext';
+
 //Mapeo de navegación con sus respectivos iconos, labels y paths
 export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
   const idFicha = selectedIds.idFicha;
   const idAprendiz = selectedIds.idAprendiz;
+  const idInstructorAdmin = selectedIds.idInstructorAdmin;
 
-  //console.log('navigationConfig:', { userId, role, selectedIds, clearId });
+  const { sidebarStack } = useSidebar();
+
+  // console.log('navigationConfig:', {
+  //   userId,
+  //   role,
+  //   selectedIds,
+  //   clearId,
+  //   sidebarStack,
+  // });
 
   return {
     home: {
@@ -17,6 +28,7 @@ export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
       icon: BaseIcons.groups,
       label: 'Usuarios',
       path: `/${role}/usuarios`,
+      onClick: () => clearId?.('idInstructorAdmin'),
     },
     perfil: {
       icon: BaseIcons.person,
@@ -28,10 +40,15 @@ export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
       label: 'Fichas',
       path: `/${role}/${userId}/fichas`,
     },
+    fichasAprendiz: {
+      icon: BaseIcons.dashboard,
+      label: 'Fichas',
+      path: `/${role}/${userId}/fichas`,
+    },
     fichasAdmin: {
       icon: BaseIcons.dashboard,
       label: 'Fichas',
-      path: `/${role}/fichas`,
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/fichas`,
     },
     aprendices: {
       icon: BaseIcons.groupsIcon,
@@ -39,25 +56,55 @@ export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
       path: `/${role}/${userId}/ficha/${idFicha}/aprendices`,
       onClick: () => clearId?.('idAprendiz'),
     },
+    aprendicesAdmin: {
+      icon: BaseIcons.groupsIcon,
+      label: 'Aprendices',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendices`,
+      onClick: () => clearId?.('idAprendiz'),
+    },
     infoFicha: {
       icon: BaseIcons.info,
       label: 'Información Ficha',
       path: `/${role}/${userId}/ficha/${idFicha}/info`,
+      onClick: () => clearId?.('idAprendiz'),
+    },
+    infoFichaAdmin: {
+      icon: BaseIcons.info,
+      label: 'Información Ficha',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/info`,
+      onClick: () => clearId?.('idAprendiz'),
     },
     calendarioFicha: {
       icon: BaseIcons.event,
       label: 'Calendario Ficha',
       path: `/${role}/${userId}/ficha/${idFicha}/calendario-ficha`,
+      onClick: () => clearId?.('idAprendiz'),
+    },
+    calendarioFichaAdmin: {
+      icon: BaseIcons.event,
+      label: 'Calendario Ficha',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/calendario-ficha`,
+      onClick: () => clearId?.('idAprendiz'),
     },
     calendarioGeneral: {
       icon: BaseIcons.calendar,
       label: 'Calendario',
       path: `/${role}/${userId}/calendario-fichas`,
     },
+    calendarioGeneralAdmin: {
+      icon: BaseIcons.calendar,
+      label: 'Calendario',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/calendario-fichas`,
+    },
     infoAprendiz: {
       icon: BaseIcons.manage,
       label: 'Aprendiz',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/info`,
+    },
+    infoAprendizAdmin: {
+      icon: BaseIcons.manage,
+      label: 'Aprendiz',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/info`,
     },
     visitas: {
       icon: BaseIcons.today,
@@ -69,6 +116,11 @@ export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
       label: 'Seguimiento',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/seguimiento`,
     },
+    seguimientoAdmin: {
+      icon: BaseIcons.analytics,
+      label: 'Seguimiento',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/seguimiento`,
+    },
     seguimientoAprendiz: {
       icon: BaseIcons.analytics,
       label: 'Seguimiento',
@@ -78,6 +130,11 @@ export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
       icon: BaseIcons.search,
       label: 'Observaciones',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/observaciones`,
+    },
+    observacionesAdmin: {
+      icon: BaseIcons.search,
+      label: 'Observaciones',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/observaciones`,
     },
     observacionesAprendiz: {
       icon: BaseIcons.search,
@@ -89,10 +146,20 @@ export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
       label: 'Reportes',
       path: `/${role}/${userId}/reporte-general-ficha`,
     },
+    reportesAdmin: {
+      icon: BaseIcons.doc,
+      label: 'Reportes',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/reporte-general-ficha`,
+    },
     reportesGFPI_F: {
       icon: BaseIcons.doc,
       label: 'Reportes GFPI F',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/reportes-gfpi-f`,
+    },
+    reportesGFPI_FAdmin: {
+      icon: BaseIcons.doc,
+      label: 'Reportes GFPI F',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/reportes-gfpi-f`,
     },
     configuracion: {
       icon: BaseIcons.settings,
@@ -104,12 +171,21 @@ export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
       label: 'Empresa',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/empresa`,
     },
+    empresaAdmin: {
+      icon: BaseIcons.company,
+      label: 'Empresa',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/empresa`,
+    },
     empresaAprendiz: {
       icon: BaseIcons.company,
       label: 'Empresa',
       path: `/${role}/${userId}/ficha/${idFicha}/empresa`,
     },
     aprendiz: {
+      icon: BaseIcons.person,
+      label: 'Aprendiz ',
+    },
+    aprendizAdmin: {
       icon: BaseIcons.person,
       label: 'Aprendiz ',
     },
@@ -120,6 +196,7 @@ export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
     mainInstructor: {
       icon: BaseIcons.school,
       label: 'Instructor',
+      path: `/admin/rol/instructor/${idInstructorAdmin}/fichas`,
     },
   };
 };
@@ -146,15 +223,20 @@ export const roleDisplayConfig = (userId) => ({
 //Configuración de permisos por rol y submenus
 export const sidebarMenus = {
   admin: {
-    main: ['usuarios', 'mainInstructor'],
-    mainInstructor: ['fichas', 'calendarioGeneral', 'reportes'],
-    ficha: ['aprendices', 'infoFicha', 'calendarioFicha'],
-    aprendiz: [
-      'infoAprendiz',
-      'empresa',
-      'observaciones',
-      'seguimiento',
-      'reportesGFPI_F',
+    main: ['usuarios'],
+    mainInstructor: ['fichasAdmin', 'calendarioGeneralAdmin', 'reportesAdmin'],
+    fichaInstructor: [
+      'aprendicesAdmin',
+      'infoFichaAdmin',
+      'calendarioFichaAdmin',
+      'aprendizAdmin',
+    ],
+    aprendizAdmin: [
+      'infoAprendizAdmin',
+      'empresaAdmin',
+      'observacionesAdmin',
+      'seguimientoAdmin',
+      'reportesGFPI_FAdmin',
     ],
   },
   instructor: {
@@ -168,8 +250,10 @@ export const sidebarMenus = {
       'reportesGFPI_F',
     ],
   },
+
   aprendiz: {
-    ficha: [
+    main: [],
+    fichasAprendiz: [
       'calendarioFicha',
       'infoFicha',
       'empresaAprendiz',

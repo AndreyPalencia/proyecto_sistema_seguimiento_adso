@@ -1,19 +1,21 @@
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAlert } from '../../context/AlertContext';
+import { useAuth } from '../../context/AuthContext';
+
+import { Box, Typography } from '@mui/material';
+
+import { obtenerUsuario, modificarUsuario } from '../../services/Usuarios';
+
+import InformationPanel from '../../components/Info/InformationPanel';
+import SectionInfo from '../../components/Info/SectionInfo/SectionInfo';
+import InformationPanelFile from '../../components/Info/InformationPanelField';
+
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { obtenerUsuario, modificarUsuario } from '../../services/Usuarios';
-
-import { Box, Typography } from '@mui/material';
-import InformationPanel from '../../components/Info/InformationPanel';
-import SectionInfo from '../../components/Info/SectionInfo/SectionInfo';
-import InformationPanelFile from '../../components/Info/InformationPanelField';
-
-import { useAlert } from '../../context/AlertContext';
 
 /**
  * `AprendizDetalles`
@@ -31,6 +33,8 @@ const AprendizDetalles = () => {
   const [aprendiz, setAprendiz] = useState({});
 
   const { showAlert } = useAlert();
+
+  const { roleUsuario } = useAuth();
 
   /**
    * Función asincrónica para obtener los datos del aprendiz desde la API.
@@ -216,7 +220,7 @@ const AprendizDetalles = () => {
         <InformationPanel
           name="estadoUsuario"
           tag="select"
-          disableModal
+          disableModal={roleUsuario !== 'admin'}
           titulo="Estado Usuario"
           item={aprendiz.estadoUsuario == 1 ? 'Activo' : 'Inactivo'}
           menuOpciones={['Activo', 'Inactivo']}

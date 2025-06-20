@@ -62,7 +62,7 @@ const CrearAgendamiento = ({
     fichas,
     loading: loadingFichas,
     error: errorFichas,
-  } = useFichasTransformadas({ idInstructor });
+  } = useFichasTransformadas({ idInstructor, estadoFicha: 1 });
 
   /**
    * Memorizamos las fichas transformadas desde el hook useFichasTransformadas

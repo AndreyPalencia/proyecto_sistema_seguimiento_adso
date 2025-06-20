@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Typography,
   DialogContent,
@@ -17,8 +19,10 @@ import { recuperarPassword } from '../../services/Auth';
 import InputField from '../../components/FormFields/InputField';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import formEmail from '../../schemas/formEmail';
+
+import CircularProgress from '@mui/material/CircularProgress';
 
 const RecuperarPassword = () => {
   const navigate = useNavigate();
@@ -29,8 +33,11 @@ const RecuperarPassword = () => {
 
   const { showAlert } = useAlert();
 
+  const [loading, setLoading] = useState(false);
+
   const handleRecuperar = async (formData) => {
     try {
+      setLoading(true);
       const response = await recuperarPassword(formData);
       if (!response.success) {
         showAlert({
@@ -53,6 +60,7 @@ const RecuperarPassword = () => {
         variant: 'standard',
         severity: 'warning',
       });
+      setLoading(false);
     }
   };
 
@@ -124,7 +132,16 @@ const RecuperarPassword = () => {
                     },
                   }}
                 >
-                  Enviar
+                  {loading ? (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        color: '#fff', // Cambia el color del loader
+                      }}
+                    />
+                  ) : (
+                    'Enviar'
+                  )}
                 </Button>
               </Grid>
 

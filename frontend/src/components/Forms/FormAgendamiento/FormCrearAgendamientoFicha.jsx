@@ -21,7 +21,6 @@ import FormularioFechas from '../../Calendario/AgendamientoForm/FormularioFechas
 import FormularioReunion from '../../Calendario/AgendamientoForm/FormularioReunion';
 import FormularioEstadoTipo from '../../Calendario/AgendamientoForm/FormularioEstadoTipo';
 
-
 //Validaciones del formulario
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,7 +28,6 @@ import { crearAgendamientoSchema } from '../../../schemas/formAgendamientoSchema
 import { createAgendamiento } from '../../../services/Agendamientos';
 
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-
 
 const FormCrearAgendamientoFicha = ({
   ficha,
@@ -155,8 +153,8 @@ const FormCrearAgendamientoFicha = ({
           )}
           <FormularioFechas control={control} required disabled={false} />
           <FormularioEstadoTipo control={control} required disabled={false} />
-          <DialogActions>
-            <Stack direction="row" spacing={2} sx={{ px: 2 }}>
+          <DialogActions sx={{ px: 0 }}>
+            <Stack direction="row" spacing={2}>
               <Button
                 variant="outlined"
                 color="secondary"
