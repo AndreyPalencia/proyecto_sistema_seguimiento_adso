@@ -19,7 +19,6 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import FormEditarReporteGFIPF from '../../../../trash/FormEditarReporteGFIPF';
 
 const ReportesInstructorGFPIF = () => {
   const { idAprendiz, idFicha } = useParams();
