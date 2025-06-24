@@ -193,8 +193,8 @@ const FichaDetalles = () => {
         icono={<PermIdentityOutlinedIcon className="icon-section-info" />}
       >
         <InformationPanel
-          disableModal={isAdmin || isAprendiz}
-          disableClick={isAdmin || isAprendiz}
+          disableModal
+          disableClick
           name="idInstructor"
           titulo="Instructor"
           item={nombreInstructor}

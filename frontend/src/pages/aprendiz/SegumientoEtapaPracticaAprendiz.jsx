@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Box, Typography, IconButton, Tooltip } from '@mui/material';
@@ -13,7 +13,7 @@ import BitacorasAprendiz from './SegumientoAprendiz/BitacorasAprendiz.jsx';
 import DocumentosAprendiz from './SegumientoAprendiz/DocumentosAprendiz.jsx';
 import FormCrearBitacora from '../../components/Forms/FormBitacora/FormCrearBitacora.jsx';
 import FormCrearDocumento from '../../components/Forms/FormDocumento/FormCrearDocumento.jsx';
-import FormCrearAgendamientoFichaAprendiz from '../../components/Forms/FormAgendamiento/FormCrearAgendamientoFichaAprendiz.jsx';
+import FormCrearAgendamientoFicha from '../../components/Forms/FormAgendamiento/FormCrearAgendamientoFicha.jsx';
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import AgendamientosAprendiz from './SegumientoAprendiz/AgendamientosAprendiz.jsx';
@@ -22,16 +22,14 @@ import { useAprendizByRuta } from '../../hook/useAprendizByRuta.js';
 const seccionesSeguimiento = ['Bitácoras', 'Documentos', 'Agendamientos'];
 
 const SegumientoEtapaPracticaAprendiz = () => {
-  const { idFicha } = useParams();
+  const { idFicha, idAprendizAdmin } = useParams();
 
-  //Estado que almacena la apertura del dialogo de creación de un bitácora
+  //Estado que almacena la apertura del dialogo de creación
   const [openAgregarBitacora, setAgregarBitacora] = useState(false);
-
   const [openAgregarDocumento, setAgregarDocumento] = useState(false);
-
   const [openAgregarAgendamiento, setAgregarAgendamiento] = useState(false);
 
-  //Estado que almacena la nueva bitacora
+  //Estado que almacena la nueva
   const [nuevaBitacora, setNuevaBitacora] = useState(null);
   const [nuevaDocumento, setNuevaDocumento] = useState(null);
   const [nuevoAgendamiento, setNuevoAgendamiento] = useState(null);
@@ -122,6 +120,8 @@ const SegumientoEtapaPracticaAprendiz = () => {
           {estadoSelecionado === 'Bitácoras' && (
             <BitacorasAprendiz
               idFichaAprendiz={idFichaAprendiz}
+              ficha={ficha}
+              idAprendiz={idAprendizAdmin}
               nuevaBitacora={nuevaBitacora}
               onDatosFormulario={setDatosFormularioBitacora}
             />
@@ -129,6 +129,8 @@ const SegumientoEtapaPracticaAprendiz = () => {
           {estadoSelecionado === 'Documentos' && (
             <DocumentosAprendiz
               idFichaAprendiz={idFichaAprendiz}
+              ficha={ficha}
+              idAprendiz={idAprendizAdmin}
               nuevoDocumento={nuevaDocumento}
               onTiposDocumentos={setTiposDocumentoDisponibles}
             />
@@ -156,7 +158,6 @@ const SegumientoEtapaPracticaAprendiz = () => {
                 setNuevaBitacora(bitacora); // guardar la nueva bitácora
                 setAgregarBitacora(false); // cerrar el modal
               }}
-              isAprendiz
             />
           )}
           {estadoSelecionado === 'Documentos' && openAgregarDocumento && (
@@ -169,17 +170,16 @@ const SegumientoEtapaPracticaAprendiz = () => {
                 setNuevaDocumento(documento); // guardar la nueva bitácora
                 setAgregarDocumento(false); // cerrar el modal
               }}
-              isAprendiz
             />
           )}
           {estadoSelecionado === 'Agendamientos' && openAgregarAgendamiento && (
-            <FormCrearAgendamientoFichaAprendiz
+            <FormCrearAgendamientoFicha
               open={openAgregarAgendamiento}
               onClose={() => setAgregarAgendamiento(false)}
               idFichaAprendiz={idFichaAprendiz}
               ficha={ficha}
               idInstructor={idInstructor}
-              aprendizInfo={aprendizInfo}
+              aprendiz={aprendizInfo}
               onAgendamientoCrear={(agendamiento) => {
                 setNuevoAgendamiento(agendamiento);
                 setAgregarAgendamiento(false);

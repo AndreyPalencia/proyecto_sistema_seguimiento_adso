@@ -17,6 +17,7 @@ const FormSearchEmpresa = ({
   onEmpresaActualizar,
   idFichaAprendiz,
   idEmpresa,
+  onCloseSection,
 }) => {
   //Estado para manejar la lista
   const [empresasEncontradas, setEmpresasEncontradas] = useState([]);
@@ -53,6 +54,7 @@ const FormSearchEmpresa = ({
 
       //console.log(aprendizFicha, idEmpresa , 'lOG DE FORM');
       onEmpresaActualizar(idEmpresa);
+      onCloseSection?.();
       clearSelection();
     } catch (error) {
       console.error('Error en actualizar la empresa.', error);

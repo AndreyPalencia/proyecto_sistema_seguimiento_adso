@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-
 import { useAprendices } from '../../context/AprendicesContext';
 import { useAlert } from '../../context/AlertContext';
 
 import { Box, Typography } from '@mui/material';
-
-import { modificarEmpresa } from '../../services/Empresa';
-import { modificarFichaAprendiz } from '../../services/FichaAprendiz';
 
 import SectionInfo, {
   CollapsibleSection,
@@ -16,6 +12,8 @@ import InformationPanel from '../../components/Info/InformationPanel';
 import FormSearchEmpresa from '../../components/Forms/FormEmpresa/FormSearchEmpresa';
 
 import useEmpresaById from '../../hook/empresas/useEmpresaById';
+import { useEditarEmpresa } from '../../hook/empresas/useEditarEmpresa';
+import { useEditarInfoAprendizEmpresa } from '../../hook/empresas/useEditarInfoAprendizEmpresa';
 
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
@@ -26,12 +24,6 @@ const EmpresaAprendiz = () => {
   //Obtenemos el id del aprendiz desde la URL
   const { idAprendiz } = useParams();
 
-  //Estado para almacenar la información de la empresa que pertence el aprendiz
-  const [aprendizEmpresa, setAprendizEmpresa] = useState(null);
-
-  //Estado para almacenar el infoFichaAprendiz que contiene los datos tipo contrato, jefe inmediato y cargo
-  const [infoFichaAprendiz, setInfoFichaAprendiz] = useState(null);
-
   //Obtenemos del contexto de aprendices la funciones para selecionar un grupo de propieda del aprendiz
   //y una para actualizar un propiedad de un aprendiz en el contexto y el listado de los aprendices
   const {
@@ -40,11 +32,19 @@ const EmpresaAprendiz = () => {
     aprendices,
   } = useAprendices();
 
+  const { editarEmpresa, loading: loadingEditarEmpresa } = useEditarEmpresa();
+
+  const { editarInfoAprendizEmpresa, loading: loadingInfoEmpresaAprendiz } =
+    useEditarInfoAprendizEmpresa();
+
   //Permite mostrar alert en la vista
   const { showAlert } = useAlert();
 
-  const idFichaAprendiz = infoFichaAprendiz?.idFichaAprendiz;
-  const idEmpresa = infoFichaAprendiz?.idEmpresa;
+  //Estado para almacenar la información de la empresa que pertence el aprendiz
+  const [aprendizEmpresa, setAprendizEmpresa] = useState(null);
+
+  //Estado para almacenar el infoFichaAprendiz que contiene los datos tipo contrato, jefe inmediato y cargo
+  const [infoFichaAprendiz, setInfoFichaAprendiz] = useState(null);
 
   //Nuevo estado controlado para la empresa actual
   const [idEmpresaActual, setIdEmpresaActual] = useState(null);
@@ -52,63 +52,34 @@ const EmpresaAprendiz = () => {
   //Hook personalizado para cargar la empresa
   const { empresa, loading } = useEmpresaById(idEmpresaActual);
 
+  const idFichaAprendiz = infoFichaAprendiz?.idFichaAprendiz;
+  const idEmpresa = infoFichaAprendiz?.idEmpresa;
+
   //Funcion que actualiza la info del empresa
   const actualizarEmpresa = async (formEmpresa) => {
-    try {
-      const updateEmpresa = await modificarEmpresa(idEmpresa, formEmpresa);
-      //console.log(updateEmpresa, 'updataEMprs');
+    const updateEmpresa = await editarEmpresa(idEmpresa, formEmpresa);
+    if (updateEmpresa) {
       setAprendizEmpresa(updateEmpresa);
-      //console.log(aprendizEmpresa);
-
-      showAlert({
-        message: 'Se actualizo con exito la empresa.',
-        variant: 'standard',
-        severity: 'info',
-      });
-    } catch (error) {
-      console.error('Error al actualizar los datos', error);
-      showAlert({
-        title: 'Error',
-        message: `Error al modificar el agendamiento: ${error.message}`,
-        severity: 'error',
-        variant: 'filled',
-      });
     }
   };
 
   const actualizarInfoAprendizEmpresa = async (formFichaAprendiz) => {
-    try {
-      const updateFichaAprendiz = await modificarFichaAprendiz(
-        idFichaAprendiz,
-        formFichaAprendiz
-      );
-      console.log('updateFicha', updateFichaAprendiz);
+    const updateFichaAprendiz = await editarInfoAprendizEmpresa(
+      idFichaAprendiz,
+      formFichaAprendiz
+    );
+    if (updateFichaAprendiz) {
       setInfoFichaAprendiz(updateFichaAprendiz);
       actualizarPropiedadDeAprendiz(
         idAprendiz,
         formFichaAprendiz,
         'infoFichaAprendiz'
       );
-      //console.log('infoFichaA', infoFichaAprendiz);
-      showAlert({
-        message:
-          'Se actualizo con exito la información sobre practicas del aprendiz.',
-        variant: 'standard',
-        severity: 'info',
-      });
-    } catch (error) {
-      console.error('Error al actualizar los datos', error);
-      showAlert({
-        title: 'Error',
-        message: `Error al modificar la información sobre practicas del aprendiz. : ${error.message}`,
-        severity: 'error',
-        variant: 'filled',
-      });
     }
   };
 
   const handleCambioEmpresa = (nuevaEmpresaId) => {
-    console.log('handleCambioEmpresa', nuevaEmpresaId);
+    //console.log('handleCambioEmpresa', nuevaEmpresaId);
 
     // Actualizamos en el contexto global
     actualizarPropiedadDeAprendiz(
@@ -120,7 +91,7 @@ const EmpresaAprendiz = () => {
     showAlert({
       message: `Se actualizó la información del aprendiz respecto a la empresa.`,
       severity: 'info',
-      variant: 'standard'
+      variant: 'standard',
     });
 
     // Refrescamos localmente la ficha y el ID empresa
@@ -199,7 +170,7 @@ const EmpresaAprendiz = () => {
             {
               <FormSearchEmpresa
                 onEmpresaActualizar={handleCambioEmpresa}
-                idFichaAprendiz={infoFichaAprendiz.idFichaAprendiz}
+                idFichaAprendiz={idFichaAprendiz}
                 idEmpresa={idEmpresa}
               />
             }
@@ -220,7 +191,6 @@ const EmpresaAprendiz = () => {
               name="nit"
               titulo="NIT de la empresa"
               item={aprendizEmpresa?.nit}
-              //type="number"
               fetchUpdate={actualizarEmpresa}
             />
             <InformationPanel

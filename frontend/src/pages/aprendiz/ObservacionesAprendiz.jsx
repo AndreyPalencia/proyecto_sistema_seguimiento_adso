@@ -1,22 +1,33 @@
+import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 
-import { Typography, Box, Divider } from '@mui/material';
+import { Typography, Box, Divider, Tooltip, IconButton } from '@mui/material';
 
 import { useObservacionesAprendiz } from '../../hook/observaciones/useObservacionesAprendiz';
-
-import NoDataComponent from '../../components/Tabla/NoDataComponent/NoDataComponet';
-
-import ObservacionAprendiz from '../../components/Forms/FormObservacion/ObservacionAprendiz';
 import { useAprendizByRuta } from '../../hook/useAprendizByRuta';
 
-const observacionesAprendiz = () => {
+import NoDataComponent from '../../components/Tabla/NoDataComponent/NoDataComponet';
+import ObservacionAprendiz from '../../components/Forms/FormObservacion/ObservacionAprendiz';
+import FormCrearObservacion from '../../components/Forms/FormObservacion/FormCrearObservacion';
+import Observacion from '../../components/Forms/FormObservacion/Observacion';
+
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+
+const ObservacionesAprendiz = () => {
+  const { roleUsuario } = useAuth();
+
   const { aprendizInfo } = useAprendizByRuta();
+
+  const [openCrear, setOpenCrear] = useState(false);
+
+  const isAdmin = roleUsuario === 'admin';
 
   const idFichaAprendiz = aprendizInfo?.idFichaAprendiz;
 
-  const { observaciones, loading, error } =
+  const { observaciones, loading, refetchObservaciones } =
     useObservacionesAprendiz(idFichaAprendiz);
+
+  const handleCloseCrear = () => setOpenCrear((prev) => !prev);
 
   return (
     <>
@@ -40,6 +51,17 @@ const observacionesAprendiz = () => {
           </Typography>
 
           {/* Aquí va el botón adicional */}
+          {isAdmin && (
+            <Tooltip title="Agregar un observación">
+              <IconButton
+                variant="contained"
+                color="primary"
+                onClick={handleCloseCrear} // define esta función según tu lógica
+              >
+                <AddOutlinedIcon fontSize="large" />
+              </IconButton>
+            </Tooltip>
+          )}
         </Box>
         <Divider sx={{ mb: 1, mt: -3 }} />
 
@@ -48,7 +70,16 @@ const observacionesAprendiz = () => {
         {!loading && observaciones.length > 0 ? (
           [...observaciones].reverse().map((obs, index) => (
             <Box key={`${obs.idObservacion}-${index}`} sx={{ mb: 1 }}>
-              <ObservacionAprendiz observacion={obs} />
+              {isAdmin ? (
+                <Observacion
+                  key={`observacion-${obs.idObservacion} `}
+                  idObservacion={obs.idObservacion}
+                  observacion={obs}
+                  refetchObservaciones={refetchObservaciones}
+                />
+              ) : (
+                <ObservacionAprendiz observacion={obs} />
+              )}
             </Box>
           ))
         ) : !loading ? (
@@ -57,8 +88,16 @@ const observacionesAprendiz = () => {
           </Box>
         ) : null}
       </Box>
+      {
+        <FormCrearObservacion
+          idFichaAprendiz={idFichaAprendiz}
+          open={openCrear}
+          onClose={handleCloseCrear}
+          refetchObservaciones={refetchObservaciones}
+        />
+      }
     </>
   );
 };
 
-export default observacionesAprendiz;
+export default ObservacionesAprendiz;

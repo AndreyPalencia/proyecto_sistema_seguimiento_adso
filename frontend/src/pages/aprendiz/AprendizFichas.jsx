@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSidebar } from '../../context/SidebarContext';
 import { useActionsButtonsContext } from '../../context/ActionsButtonsContext';
 import { useAprendiz } from '../../context/AprendizContext';
+import { useAuth } from '../../context/AuthContext';
 
 import { Box, Typography } from '@mui/material';
 
@@ -31,13 +32,17 @@ import SchoolIcon from '@mui/icons-material/School';
  */
 const AprendizFichas = () => {
   // Obtiene el ID del instructor desde los parámetros de la URL
-  const { idAprendiz, idFicha } = useParams();
+  const { idAprendiz, idAprendizAdmin } = useParams();
+
+  const idAprendizConsulta = idAprendiz || idAprendizAdmin;
 
   // Estado para almacenar la lista de fichas del instructor
   const [fichas, setFichas] = useState([]);
 
   // Hook de navegación para redirigir a otras rutas
   const navegacion = useNavigate();
+
+  const { roleUsuario } = useAuth();
 
   const { aprendiz, loading, obtenerAprendiz } = useAprendiz();
 
@@ -65,25 +70,14 @@ const AprendizFichas = () => {
   const obtenerFichas = async () => {
     try {
       // Llamada al servicio para obtener las fichas del instructor
-      const fichasList = await getFichasByIdAprendizAndState(idAprendiz);
+      const fichasList = await getFichasByIdAprendizAndState(
+        idAprendizConsulta
+      );
       // Actualiza el estado con las fichas obtenidas
       setFichas(fichasList);
     } catch (error) {
       // Manejo de errores en la solicitud
       console.error(error);
-    }
-  };
-
-  /**
-   * Función para manejar el clic en una ficha.
-   * Redirige a la pagina de de los aprendices pertenecientes a la ficha seleccionada.
-   *
-   * @param {string|number} fichaId - ID de la ficha seleccionada.
-   */
-  const handleClickAprendiz = (fichaId) => {
-    if (!sidebarStack.includes('ficha')) {
-      pushSidebarView('ficha'); // Esto abre el submenu en el sidebar
-      setIds('fichaId', fichaId); // Esto actualiza el aprendiz seleccionado
     }
   };
 
@@ -99,9 +93,15 @@ const AprendizFichas = () => {
       color: ' #39A900',
       position: 'left',
       action: async (idFicha) => {
-        await obtenerAprendiz(idFicha, idAprendiz);
-        navegacion(`/aprendiz/${idAprendiz}/ficha/${idFicha}/seguimiento`);
-        handleClickAprendiz(idFicha); // Llama a la función para manejar el clic en el aprendiz
+        await obtenerAprendiz(idFicha, idAprendizConsulta);
+        if (roleUsuario === 'admin')
+          navegacion(
+            `/admin/rol/aprendiz/${idAprendizConsulta}/ficha/${idFicha}/seguimiento`
+          );
+        else
+          navegacion(
+            `/aprendiz/${idAprendizConsulta}/ficha/${idFicha}/seguimiento`
+          );
       },
       tooltip: 'Abrir',
       id: 'MainGrid',
@@ -115,7 +115,7 @@ const AprendizFichas = () => {
   useEffect(() => {
     obtenerFichas();
     updateActionsButtons(botones);
-  }, [idAprendiz]);
+  }, [idAprendizConsulta]);
 
   return (
     <Box

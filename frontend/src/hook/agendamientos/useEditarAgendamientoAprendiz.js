@@ -24,7 +24,7 @@ const useEditarAgendamientoAprendiz = () => {
         showAlert({
           message: `No se realizaron ningún cambio al agendamiento.`,
           severity: 'warning',
-          variant: 'standard'
+          variant: 'standard',
         });
         return;
       }

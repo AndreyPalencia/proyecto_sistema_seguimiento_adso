@@ -1,14 +1,16 @@
 import { TablaProvider } from '../../context/TablaContext.jsx';
-import TablaContainer from './TablaContainer.jsx';
 import { PaginadorProvider } from '../../context/PaginadorContext.jsx';
-import TablaController from './TablaController/TablaController.jsx';
-import { FilterButtonsProvider } from '../../context/FilterButtonsContext.jsx';
+
+import TablaContainer from './TablaContainer.jsx';
+
 import { Divider } from '@mui/material';
+import TablaController from './TablaController/TablaController.jsx';
 import TablaContainerSelect from './TablaContainerSelect.jsx';
 import TablaContainerLista from './TablaContainerLista.jsx';
 import TablaContainerSelectCheckBox from './TablaContainerSelectCheckBox.jsx';
 import TablaContainerViewGrid from './TablaContainerViewGrid.jsx';
 import TablaContainerCheckBoxGrid from './TablaContainerCheckBoxGrid.jsx';
+import TablaContainerCheckBox from './TablaContainerCheckBox.jsx';
 
 /**
  * Componente `Tabla`
@@ -59,31 +61,67 @@ const Tabla = ({
   selectedValue,
   header,
   buttonAction,
-  getRowActions,
+  extraActions,
+  rowActions,
 }) => {
   const { filter, filterSearch, defaultValuefilterSearch } = filters;
   return (
-    <TablaProvider>
-      <FilterButtonsProvider>
-        <TablaController
-          filters={filter}
-          defaultValuefilterSearch={defaultValuefilterSearch}
-          buttonAction={buttonAction}
-        />
-        <Divider sx={{ margin: '10px 0 20px 0' }} />
-        <PaginadorProvider>
-          <TablaContainer
-            dataList={data}
-            gridOptions={gridOptions}
-            dataException={dataException}
-            filterSearch={filterSearch}
-            selectedValue={selectedValue}
-            header={header}
-            getRowActions={getRowActions}
-          />
-        </PaginadorProvider>
-      </FilterButtonsProvider>
-    </TablaProvider>
+    <>
+      <TablaController
+        filters={filter}
+        defaultValuefilterSearch={defaultValuefilterSearch}
+        buttonAction={buttonAction}
+      />
+      <Divider sx={{ margin: '10px 0 20px 0' }} />
+      <TablaContainer
+        dataList={data}
+        gridOptions={gridOptions}
+        dataException={dataException}
+        filterSearch={filterSearch}
+        selectedValue={selectedValue}
+        header={header}
+        extraActions={extraActions}
+        rowActions={rowActions}
+      />
+    </>
+  );
+};
+
+export const TablaCheckBox = ({
+  data,
+  gridOptions,
+  dataException,
+  filters,
+  selectedValue,
+  header,
+  initialValue,
+  buttonAction,
+  extraActions,
+  rowActions,
+  formatCellValue,
+}) => {
+  const { filter, filterSearch, defaultValuefilterSearch } = filters;
+  return (
+    <>
+      <TablaController
+        filters={filter}
+        defaultValuefilterSearch={defaultValuefilterSearch}
+        buttonAction={buttonAction}
+      />
+      <Divider sx={{ margin: '10px 0 20px 0' }} />
+      <TablaContainerCheckBox
+        dataList={data}
+        gridOptions={gridOptions}
+        dataException={dataException}
+        filterSearch={filterSearch}
+        selectedValue={selectedValue}
+        header={header}
+        initialValue={initialValue}
+        extraActions={extraActions}
+        rowActions={rowActions}
+        formatCellValue={formatCellValue}
+      />
+    </>
   );
 };
 
@@ -95,32 +133,37 @@ export const TablaSelect = ({
   multiSelect,
 }) => {
   return (
-    <TablaProvider>
-      <PaginadorProvider>
-        <TablaContainerSelect
-          dataList={data}
-          dataException={dataException}
-          selectedValue={selectedValue}
-          header={header}
-          multiSelect={multiSelect}
-        />
-      </PaginadorProvider>
-    </TablaProvider>
+    <>
+      <TablaContainerSelect
+        dataList={data}
+        dataException={dataException}
+        selectedValue={selectedValue}
+        header={header}
+        multiSelect={multiSelect}
+      />
+    </>
   );
 };
 
-export const TablaLista = ({ data, dataException, selectedValue, header }) => {
+export const TablaLista = ({
+  data,
+  dataException,
+  selectedValue,
+  header,
+  extraActions,
+  rowActions,
+}) => {
   return (
-    <TablaProvider>
-      <PaginadorProvider>
-        <TablaContainerLista
-          dataList={data}
-          dataException={dataException}
-          selectedValue={selectedValue}
-          header={header}
-        />
-      </PaginadorProvider>
-    </TablaProvider>
+    <>
+      <TablaContainerLista
+        dataList={data}
+        dataException={dataException}
+        selectedValue={selectedValue}
+        header={header}
+        extraActions={extraActions}
+        rowActions={rowActions}
+      />
+    </>
   );
 };
 
@@ -131,20 +174,22 @@ export const TablaViewGrid = ({
   header,
   gridOptions,
   buttonAction,
+  extraActions,
+  rowActions,
 }) => {
   return (
-    <TablaProvider>
-      <PaginadorProvider>
-        <TablaContainerViewGrid
-          dataList={data}
-          dataException={dataException}
-          selectedValue={selectedValue}
-          header={header}
-          gridOptions={gridOptions}
-          buttonAction={buttonAction}
-        />
-      </PaginadorProvider>
-    </TablaProvider>
+    <>
+      <TablaContainerViewGrid
+        dataList={data}
+        dataException={dataException}
+        selectedValue={selectedValue}
+        header={header}
+        gridOptions={gridOptions}
+        buttonAction={buttonAction}
+        extraActions={extraActions}
+        rowActions={rowActions}
+      />
+    </>
   );
 };
 
@@ -154,19 +199,21 @@ export const TablaListaCheckBox = ({
   selectedValue,
   header,
   initialValue,
+  extraActions,
+  rowActions,
 }) => {
   return (
-    <TablaProvider>
-      <PaginadorProvider>
-        <TablaContainerSelectCheckBox
-          dataList={data}
-          dataException={dataException}
-          selectedValue={selectedValue}
-          header={header}
-          initialValue={initialValue}
-        />
-      </PaginadorProvider>
-    </TablaProvider>
+    <>
+      <TablaContainerSelectCheckBox
+        dataList={data}
+        dataException={dataException}
+        selectedValue={selectedValue}
+        header={header}
+        initialValue={initialValue}
+        extraActions={extraActions}
+        rowActions={rowActions}
+      />
+    </>
   );
 };
 
@@ -179,30 +226,30 @@ export const TablaGridListSelect = ({
   header,
   buttonAction,
   initialValue,
+  extraActions,
+  rowActions,
 }) => {
   const { filter, filterSearch, defaultValuefilterSearch } = filters;
   return (
-    <TablaProvider>
-      <FilterButtonsProvider>
-        <TablaController
-          filters={filter}
-          defaultValuefilterSearch={defaultValuefilterSearch}
-          buttonAction={buttonAction}
-        />
-        <Divider sx={{ margin: '10px 0 20px 0' }} />
-        <PaginadorProvider>
-          <TablaContainerCheckBoxGrid
-            dataList={data}
-            dataException={dataException}
-            filterSearch={filterSearch}
-            selectedValue={selectedValue}
-            header={header}
-            initialValue={initialValue}
-            gridOptions={gridOptions}
-          />
-        </PaginadorProvider>
-      </FilterButtonsProvider>
-    </TablaProvider>
+    <>
+      <TablaController
+        filters={filter}
+        defaultValuefilterSearch={defaultValuefilterSearch}
+        buttonAction={buttonAction}
+      />
+      <Divider sx={{ margin: '10px 0 20px 0' }} />
+      <TablaContainerCheckBoxGrid
+        dataList={data}
+        dataException={dataException}
+        filterSearch={filterSearch}
+        selectedValue={selectedValue}
+        header={header}
+        initialValue={initialValue}
+        gridOptions={gridOptions}
+        extraActions={extraActions}
+        rowActions={rowActions}
+      />
+    </>
   );
 };
 export default Tabla;

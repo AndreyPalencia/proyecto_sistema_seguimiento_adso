@@ -62,6 +62,35 @@ const sidebarRoutes = [
     sidebarAction: 'none', // <-- ¡Esta es la clave!
   },
 
+  {
+    pattern: /^\/admin\/rol\/aprendiz\/(\d+)\/fichas\/?$/,
+    views: ['main', 'fichasAprendizAdminPerfil'],
+    idType: ['idAprendizAdmin'],
+    sidebarAction: 'set',
+  },
+
+  {
+    pattern:
+      /^\/admin\/rol\/aprendiz\/(\d+)\/ficha\/(\d+)\/(seguimiento|observaciones|empresa|calendario-ficha|info|reportes-gfpi-f)\/?$/,
+    views: ['main', 'fichasAprendizAdminPerfil', 'fichasAprendizAdmin'],
+    idType: ['idAprendizAdmin', 'idFicha'],
+    sidebarAction: 'set',
+  },
+
+  {
+    pattern: /^\/admin\/rol\/instructor\/(\d+)\/info-perfil\/?$/,
+    views: ['main', 'mainInstructor'],
+    idType: ['idInstructorAdmin'],
+    sidebarAction: 'set',
+  },
+
+  {
+    pattern: /^\/admin\/rol\/aprendiz\/(\d+)\/info-perfil\/?$/,
+    views: ['main', 'fichasAprendizAdminPerfil'],
+    idType: ['idAprendizAdmin'],
+    sidebarAction: 'set',
+  },
+
   // --- Vista instructor ---
   {
     pattern: /^\/instructor\/(\d+)\/fichas\/?$/,
@@ -141,11 +170,6 @@ export const useSyncSidebarWithRoute = () => {
     pathname: '',
   });
 
-  // useEffect separado para monitorear cambios en selectedIds
-  // useEffect(() => {
-  //   console.log('🔄 selectedIds actualizado:', selectedIds);
-  // }, [selectedIds]);
-
   /**
    * Establece el sidebar según las vistas requeridas
    * @param {Array} targetViews - Array de vistas que debe tener el sidebar
@@ -196,10 +220,10 @@ export const useSyncSidebarWithRoute = () => {
 
   useEffect(() => {
     const path = location.pathname;
-    console.log('🚀 Hook ejecutándose para path:', path);
+    //console.log('🚀 Hook ejecutándose para path:', path);
 
     if (prevRef.current.pathname === path) {
-      console.log('⏭️ Path no cambió, saltando...');
+      //console.log('⏭️ Path no cambió, saltando...');
       return;
     }
 
@@ -215,17 +239,17 @@ export const useSyncSidebarWithRoute = () => {
       matchFound = true;
       currentSidebarAction = route.sidebarAction || 'set'; // Obtener la acción o usar 'set' por defecto
 
-      console.log('✅ Ruta encontrada:', {
-        pattern: route.pattern,
-        match,
-        sidebarAction: currentSidebarAction,
-      });
+      // console.log('✅ Ruta encontrada:', {
+      //   pattern: route.pattern,
+      //   match,
+      //   sidebarAction: currentSidebarAction,
+      // });
 
       // Si la acción es 'none', salimos inmediatamente sin hacer cambios en el sidebar.
       if (currentSidebarAction === 'none') {
-        console.log(
-          '⚠️ sidebarAction es "none", no se realizarán cambios en el sidebar.'
-        );
+        // console.log(
+        //   '⚠️ sidebarAction es "none", no se realizarán cambios en el sidebar.'
+        // );
         prevRef.current = { pathname: path }; // Actualizar la referencia previa para evitar bucles
         return; // Salir del useEffect
       }
@@ -241,8 +265,8 @@ export const useSyncSidebarWithRoute = () => {
       }
       targetViewsForRoute = route.views;
 
-      console.log('🔍 IDs extraídos:', extractedIdsForRoute);
-      console.log('📋 Vistas objetivo:', targetViewsForRoute);
+      // console.log('🔍 IDs extraídos:', extractedIdsForRoute);
+      // console.log('📋 Vistas objetivo:', targetViewsForRoute);
 
       // Se encontró una coincidencia con una acción de sidebar, así que procesamos y salimos del bucle
       break;
@@ -258,10 +282,10 @@ export const useSyncSidebarWithRoute = () => {
     // Esto ya está cubierto por el `return` temprano.
     if (matchFound) {
       // Esta parte solo se ejecuta si currentSidebarAction NO es 'none'
-      console.log('📱 Estableciendo vistas y IDs del sidebar...');
+      // console.log('📱 Estableciendo vistas y IDs del sidebar...');
       setSidebarViewsAndIds(targetViewsForRoute, extractedIdsForRoute);
     } else {
-      console.log('❌ No se encontró ruta, reseteando...');
+      // console.log('❌ No se encontró ruta, reseteando...');
       resetSidebarView();
     }
   }, [

@@ -42,7 +42,8 @@ const ListaTabla = ({
   dataList,
   dataException,
   selectedValue,
-  getRowActions,
+  extraActions,
+  rowActions,
 }) => {
   //Estado local para almacenar la lista de filas de la tabla.
   //Inicialmente se establece como un array vacío.
@@ -119,7 +120,9 @@ const ListaTabla = ({
                     <ActionsButtons
                       idSelecion={rowId}
                       isGridView={false}
-                      extraActions={getRowActions?.(filaTabla)}
+                      extraActions={extraActions}
+                      rowActions={rowActions}
+                      rowData={filaTabla}
                     />
                   </TableCell>
                 </TableRow>

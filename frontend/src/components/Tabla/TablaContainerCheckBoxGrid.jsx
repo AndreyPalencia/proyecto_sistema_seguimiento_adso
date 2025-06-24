@@ -1,10 +1,10 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
-import { usePagination } from '../../context/PaginadorContext.jsx';
+import { useTabla } from '../../context/TablaContext.jsx';
+
+import { useTablaLogic } from './hook/useTablaLogic.js';
+
 import { Paginador } from './Paginador/Paginador.jsx';
 import ListaTablaCheckBox from './ListaTabla/ListaTablaCheckBox.jsx';
-import { useTabla } from '../../context/TablaContext.jsx';
 import CuadroTabla from './CuadroTabla/CuadroTabla.jsx';
-import { useFilterButtons } from '../../context/FilterButtonsContext.jsx';
 /**
  * Componente `TablaList`
  * Procesa y muestra una tabla con paginación y cabeceras siempre visibles, incluso si no hay datos.
@@ -25,121 +25,17 @@ const TablaContainerCheckBoxGrid = ({
   initialValue,
   gridOptions,
   filterSearch,
+  extraActions,
+  rowActions,
 }) => {
   const { isTablaList } = useTabla();
-  //Se usa el contexto de paginación
-  const {
-    isPaginador,
-    switchPaginador,
-    currentPage,
-    rowsPerPage,
-    handleTotalRows,
-  } = usePagination();
-
-  //Se obtine el valor del filtro y si esta activo
-  const { filterFlagButtons, filterActiveButtons } = useFilterButtons();
-
-  const [dataFormat, setDataFormat] = useState([]);
-
-  /**
-   * Filtra los datos según el filtro activo.
-   *
-   * @param {Array<Object>} data - Lista de objetos que contienen los datos.
-   * @returns {Array} Datos filtrados según el criterio activo.
-   */
-  const filterData = useCallback(
-    (data) => {
-      if (!filterFlagButtons) return data;
-      if (filterActiveButtons === '') return data; // No se filtra nada, todos los datos se muestran
-
-      // Asegurarse de que filterSearch existe antes de usarlo
-      if (!filterSearch) return data;
-
-      // Retornar explícitamente el resultado filtrado
-      return data.filter((item) => {
-        return item[filterSearch] == filterActiveButtons;
-      });
-    },
-    [filterFlagButtons, filterActiveButtons, filterSearch]
-  );
-
-  /**
-   * Memoriza el formato de datos paginados.
-   * Separa las cabeceras y filas, y aplica la paginación según la página actual y filas por página.
-   *
-   * @returns {Object} Objeto con las propiedades: headers, dataRows y paginatedData.
-   */
-
-  const formatPaginatedData = useMemo(() => {
-    if (!dataFormat || dataFormat.length === 0)
-      return {
-        headers: [],
-        dataRows: [],
-        paginatedData: [],
-      };
-
-    const dataRows = dataFormat; //Extraemos las filas de las headers
-    const pageIndex = currentPage - 1;
-    const paginatedData = dataRows.slice(
-      pageIndex * rowsPerPage,
-      pageIndex * rowsPerPage + rowsPerPage
-    );
-
-    return {
-      dataRows,
-      paginatedData,
-    };
-  }, [dataFormat, currentPage, rowsPerPage, header]);
-
-  /**
-   * Procesa la data de la tabla aplicando el formateo de cabeceras y filtros.
-   */
-  const processDataTable = useCallback(() => {
-    // Verificar si dataList es válido
-    if (!dataList || dataList.length === 0) {
-      setDataFormat([]);
-      return;
-    }
-
-    const filteredRows = filterData(dataList);
-
-    setDataFormat(filteredRows);
-  }, [dataList, header, filterData]);
-
-  //Extraemos las propiedes de vueltas por formatPaginatedData
-  const { dataRows, paginatedData } = formatPaginatedData;
-
-  //Actualiza el total de filas en el contexto cuando cambian los datos.
-  useEffect(() => {
-    if (dataRows.length > 0) {
-      handleTotalRows(dataRows.length);
-    }
-  }, [dataRows.length, handleTotalRows]);
-
-  //Procesa la data cada vez que cambien los filtros o datos relevantes
-  useEffect(() => {
-    processDataTable();
-  }, [
-    filterFlagButtons,
-    filterActiveButtons,
-    filterSearch,
+  // Usar el hook personalizado con filtros habilitados
+  const { tablaData, dataRows, isPaginador } = useTablaLogic({
     dataList,
-    processDataTable,
-  ]);
-
-  //Verifica y activa el paginador si hay más de dos filas de datos.
-  useEffect(() => {
-    if (dataRows.length > 2 && !isPaginador) {
-      switchPaginador(true);
-    }
-  }, [dataRows.length, isPaginador, switchPaginador]);
-
-  //Concatena cabeceras y datos paginados para formar la data final a mostrar.
-  const tablaData = useMemo(() => {
-    return header && paginatedData.length > 0
-      ? [header, ...paginatedData]
-      : [header];
-  }, [header, paginatedData]);
+    filterSearch,
+    header,
+    enableFilters: true, // Este componente usa filtros
+  });
 
   return (
     <>
@@ -149,12 +45,16 @@ const TablaContainerCheckBoxGrid = ({
           dataException={dataException}
           selectedValue={selectedValue}
           initialValue={initialValue}
+          extraActions={extraActions}
+          rowActions={rowActions}
         />
       ) : (
         <CuadroTabla
           dataList={tablaData}
           gridOptions={gridOptions}
           selectedValue={selectedValue}
+          extraActions={extraActions}
+          rowActions={rowActions}
         />
       )}
 

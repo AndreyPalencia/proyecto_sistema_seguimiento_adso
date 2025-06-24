@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { usePagination } from '../../context/PaginadorContext.jsx';
+import { useTablaLogic } from './hook/useTablaLogic.js';
+
 import { Paginador } from './Paginador/Paginador.jsx';
 import CuadroTabla from './CuadroTabla/CuadroTabla.jsx';
 
@@ -33,84 +33,15 @@ const TablaContainerViewGrid = ({
   header,
   gridOptions,
   actionAdd,
+  extraActions,
+  rowActions,
 }) => {
-  // Se usa el contexto de paginación
-  const {
-    isPaginador,
-    switchPaginador,
-    currentPage,
-    rowsPerPage,
-    handleTotalRows,
-  } = usePagination();
-
-  const [dataFormat, setDataFormat] = useState([]);
-
-  /**
-   * Procesa la data de la tabla aplicando el formateo de cabeceras.
-   */
-  const processDataTable = useCallback(() => {
-    // Verificar si dataList es válido
-    if (!dataList || dataList.length === 0) {
-      setDataFormat([]);
-      return;
-    }
-    setDataFormat(dataList);
-  }, [dataList]); // Depend on dataList only
-
-  /**
-   * Memoriza el formato de datos paginados.
-   * Separa las cabeceras y filas, y aplica la paginación según la página actual y filas por página.
-   *
-   * @returns {Object} Objeto con las propiedades: headers, dataRows y paginatedData.
-   */
-  const formatPaginatedData = useMemo(() => {
-    if (!dataFormat || dataFormat.length === 0)
-      return {
-        dataRows: [],
-        paginatedData: [],
-      };
-
-    const dataRows = dataFormat; // Extraemos las filas de las headers
-    const pageIndex = currentPage - 1;
-    const paginatedData = dataRows.slice(
-      pageIndex * rowsPerPage,
-      pageIndex * rowsPerPage + rowsPerPage
-    );
-
-    return {
-      dataRows,
-      paginatedData,
-    };
-  }, [dataFormat, header, currentPage, rowsPerPage]);
-
-  //Actualiza el total de filas en el contexto cuando cambian los datos.
-  const { dataRows, paginatedData } = formatPaginatedData;
-
-  // Actualiza el total de filas en el contexto cuando cambian los datos.
-  useEffect(() => {
-    if (dataRows.length > 0) {
-      handleTotalRows(dataRows.length);
-    }
-  }, [dataRows.length, handleTotalRows]);
-
-  // Procesa la data cada vez que cambien los datos relevantes
-  useEffect(() => {
-    processDataTable();
-  }, [processDataTable]);
-
-  // Verifica y activa el paginador si hay más de dos filas de datos.
-  useEffect(() => {
-    if (dataRows.length > 2 && !isPaginador) {
-      switchPaginador(true);
-    }
-  }, [dataRows.length, isPaginador, switchPaginador]);
-
-  // Concatena cabeceras y datos paginados para formar la data final a mostrar.
-  const tablaData = useMemo(() => {
-    return header && paginatedData.length > 0
-      ? [header, ...paginatedData]
-      : [header];
-  }, [header, paginatedData]);
+  // Usar el hook personalizado SIN filtros
+  const { tablaData, dataRows, isPaginador } = useTablaLogic({
+    dataList,
+    header,
+    enableFilters: false, // Este componente NO usa filtros
+  });
   return (
     <>
       {/* Renderizamos la vista según el estado */}
@@ -121,6 +52,8 @@ const TablaContainerViewGrid = ({
         selectedValue={selectedValue}
         gridOptions={gridOptions}
         actionAdd={actionAdd}
+        extraActions={extraActions}
+        rowActions={rowActions}
       />
 
       {/* Renderiza el componente Paginador si isPaginador es true y hay datos */}

@@ -7,6 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridWeek from '@fullcalendar/timegrid';
 import listWeek from '@fullcalendar/list';
 import esLocale from '@fullcalendar/core/locales/es';
+import { useResizeFullCalendarOnSidebarToggle } from '../../hook/useResizeFullCalendarOnSidebarToggle';
 
 const CalendarioBase = ({
   calendarRef,
@@ -17,10 +18,13 @@ const CalendarioBase = ({
 }) => {
   const [currentView, setCurrentView] = useState('dayGridMonth');
 
+  useResizeFullCalendarOnSidebarToggle(calendarRef);
+
   return (
-    <Box sx={{ height: height ?? 'auto', overflow: 'auto' }}>
+    <Box sx={{ height: height ?? 'auto', overflow: 'auto', width:'100%' }}>
       <FullCalendar
         height="100%"
+        width='100%'
         locale={{ ...esLocale, allDayText: 'Todo el día' }}
         ref={calendarRef}
         initialView="dayGridMonth"

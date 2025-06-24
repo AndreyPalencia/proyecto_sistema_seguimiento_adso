@@ -196,3 +196,18 @@ export function getChangedFields(current, original) {
 
   return changed;
 }
+
+export const getUtcSlotFromOffset = ({
+  daysAgo = 1,
+  startTime = '12:00:00Z',
+  endTime = '12:30:00Z',
+} = {}) => {
+  const baseDate = new Date();
+  baseDate.setUTCDate(baseDate.getUTCDate() - daysAgo);
+  const dateStr = baseDate.toISOString().slice(0, 10);
+
+  return {
+    start: `${dateStr}T${startTime}`,
+    end: `${dateStr}T${endTime}`,
+  };
+};

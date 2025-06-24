@@ -102,7 +102,18 @@ const NavigationList = ({ isCollapsed }) => {
             <ListItemIcon sx={{ color: 'text.primary' }}>
               {roleInfo.icon}
             </ListItemIcon>
-            {!isCollapsed && <ListItemText primary={roleInfo.label} />}
+            {!isCollapsed && (
+              <ListItemText
+                sx={{
+                  opacity: isCollapsed ? 0 : 1,
+                  transition: 'opacity 0.2s ease',
+                  transitionDelay: isCollapsed ? '0s' : '0.3s', // Delay cuando aparece
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                }}
+                primary={roleInfo.label}
+              />
+            )}
           </ListItemButton>
         </ListItem>
       </List>

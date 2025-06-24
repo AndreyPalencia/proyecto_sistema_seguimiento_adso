@@ -11,26 +11,20 @@ import NoDataComponent from '../../components/Tabla/NoDataComponent/NoDataCompon
 import FormCrearObservacion from '../../components/Forms/FormObservacion/FormCrearObservacion';
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { useEliminarObservacionAprendiz } from '../../hook/observaciones/useEliminarObservacionAprendiz';
 
 const ObservacionesInstructor = () => {
   const { idAprendiz } = useParams();
-  const [openCrear, setOpenCrear] = useState(false);
-
+  
   const { aprendiz } = useAprendicesByRuta(idAprendiz);
+    
+  const [openCrear, setOpenCrear] = useState(false);
 
   const idFichaAprendiz = aprendiz?.idFichaAprendiz;
 
   const { observaciones, loading, refetchObservaciones } =
     useObservacionesAprendiz(idFichaAprendiz);
 
-  const { fetchEliminarObservacion } = useEliminarObservacionAprendiz();
-
   const handleCloseCrear = () => setOpenCrear((prev) => !prev);
-
-  const eliminarObservacion = async (idObservacion) => {
-    await fetchEliminarObservacion(idObservacion, refetchObservaciones);
-  };
 
   return (
     <>
@@ -76,7 +70,6 @@ const ObservacionesInstructor = () => {
                 idObservacion={obs.idObservacion}
                 observacion={obs}
                 refetchObservaciones={refetchObservaciones}
-                eliminarObservacion={eliminarObservacion}
               />
             </Box>
           ))

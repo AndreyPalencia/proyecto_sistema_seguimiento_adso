@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useAlert } from '../../../context/AlertContext';
+import { useAuth } from '../../../context/AuthContext';
 
 import {
   Box,
@@ -11,7 +12,7 @@ import {
   IconButton,
   Stack,
   Tooltip,
-  Typography
+  Typography,
 } from '@mui/material';
 
 import { crearDocumento } from '../../../services/Documentos';
@@ -33,7 +34,6 @@ const FormCrearDocumento = ({
   idFichaAprendiz,
   tiposDisponibles,
   onCrearDocumento,
-  isAprendiz = false,
 }) => {
   //console.log(tiposDisponibles);
 
@@ -53,6 +53,11 @@ const FormCrearDocumento = ({
   });
 
   const { showAlert } = useAlert();
+
+  const { roleUsuario } = useAuth();
+
+  const isAprendiz = roleUsuario === 'aprendiz';
+  const isInstructor = roleUsuario === 'instructor';
 
   const handleCrearDocumento = async (formData) => {
     try {
@@ -143,7 +148,7 @@ const FormCrearDocumento = ({
                 control={control}
               />
 
-              {!isAprendiz && (
+              {(!isAprendiz && !isInstructor) && (
                 <TextAreaField
                   name="observacion"
                   label="Observación"

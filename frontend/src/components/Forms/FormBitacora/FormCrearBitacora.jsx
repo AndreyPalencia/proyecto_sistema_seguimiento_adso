@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { useAuth } from '../../../context/AuthContext';
+import { useAlert } from '../../../context/AlertContext';
 
 import {
   Box,
@@ -14,8 +16,6 @@ import {
 } from '@mui/material';
 
 import { crearBitacora } from '../../../services/Bitacoras';
-
-import { useAlert } from '../../../context/AlertContext';
 
 import InputField from '../../FormFields/InputField';
 import DateTimeFieldColombia from '../../FormFields/DateTimeFieldColombia';
@@ -34,7 +34,6 @@ const FormCrearBitacora = ({
   idFichaAprendiz,
   datosFormulario,
   onCrearBitacora,
-  isAprendiz = false,
 }) => {
   const { control, handleSubmit, reset } = useForm({
     resolver: zodResolver(formCrearBitacora),
@@ -49,6 +48,11 @@ const FormCrearBitacora = ({
   });
 
   const { showAlert } = useAlert();
+
+  const { roleUsuario } = useAuth();
+
+  const isAprendiz = roleUsuario === 'aprendiz';
+  const isInstructor = roleUsuario === 'instructor';
 
   const handleCrearBitacora = async (formData) => {
     try {
@@ -136,7 +140,7 @@ const FormCrearBitacora = ({
                 disabled
               />
 
-              {!isAprendiz && (
+              {(!isAprendiz && !isInstructor) && (
                 <TextAreaField
                   name="observacion"
                   label="Observación"

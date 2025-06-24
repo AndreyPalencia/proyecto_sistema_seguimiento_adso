@@ -22,14 +22,15 @@ const ReporteGeneralFichas = lazy(() =>
   import('../pages/ReporteGeneralFichas.jsx')
 );
 
-/** Páginas relacionadas con aprendices */
+/** Páginas relacionadas con aprendices vista instructor */
+
 const AprendicesFicha = lazy(() =>
   import('../pages/instructor/AprendicesFicha.jsx')
 );
 const AprendizDetalles = lazy(() =>
   import('../pages/instructor/AprendizDetalles.jsx')
 );
-const EmpresaAprendiz = lazy(() =>
+const EmpresaAprendizAdmin = lazy(() =>
   import('../pages/instructor/EmpresaAprendiz.jsx')
 );
 const ObservacionesInstructor = lazy(() =>
@@ -41,6 +42,28 @@ const SegumientoAprendiz = lazy(() =>
 
 const ReportesInstructorGFPIF = lazy(() =>
   import('../pages/instructor/SegumientoAprendiz/ReportesInstructorGFPIF.jsx')
+);
+
+/** Páginas relacionadas con vista aprendiz */
+
+const AprendizFichas = lazy(() =>
+  import('../pages/aprendiz/AprendizFichas.jsx')
+);
+
+const EmpresaAprendiz = lazy(() =>
+  import('../pages/aprendiz/EmpresaAprendiz.jsx')
+);
+
+const ObservacionesAprendiz = lazy(() =>
+  import('../pages/aprendiz/ObservacionesAprendiz.jsx')
+);
+
+const SegumientoEtapaPracticaAprendiz = lazy(() =>
+  import('../pages/aprendiz/SegumientoEtapaPracticaAprendiz.jsx')
+);
+
+const CalendarioAprendiz = lazy(() =>
+  import('../pages/aprendiz/CalendarioAprendiz.jsx')
 );
 
 const adminRoutes = [
@@ -84,7 +107,7 @@ const adminRoutes = [
   },
   {
     path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/aprendiz/:idAprendiz/empresa',
-    element: <EmpresaAprendiz />,
+    element: <EmpresaAprendizAdmin />,
   },
   {
     path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/aprendiz/:idAprendiz/observaciones',
@@ -98,11 +121,48 @@ const adminRoutes = [
     path: 'rol/instructor/:idInstructorAdmin/ficha/:idFicha/aprendiz/:idAprendiz/reportes-gfpi-f',
     element: <ReportesInstructorGFPIF />,
   },
+  {
+    path: 'rol/instructor/:idInstructorAdmin/info-perfil',
+    element: <UsuarioDetalles />,
+  },
 
   /** Reportes */
   {
     path: 'rol/instructor/:idInstructorAdmin/reporte-general-ficha',
     element: <ReporteGeneralFichas />,
+  },
+
+  /** Rutas generales de usuario */
+  /** Gestión de aprendices de una ficha */
+  { path: 'rol/aprendiz/:idAprendizAdmin/fichas', element: <AprendizFichas /> },
+  {
+    path: 'rol/aprendiz/:idAprendizAdmin/ficha/:idFicha/calendario-ficha',
+    element: <CalendarioAprendiz />,
+  },
+  {
+    path: 'rol/aprendiz/:idAprendizAdmin/ficha/:idFicha/info',
+    element: <FichaDetalles />,
+  },
+
+  {
+    path: 'rol/aprendiz/:idAprendizAdmin/ficha/:idFicha/empresa',
+    element: <EmpresaAprendiz />,
+  },
+  {
+    path: 'rol/aprendiz/:idAprendizAdmin/ficha/:idFicha/observaciones',
+    element: <ObservacionesAprendiz />,
+  },
+  {
+    path: 'rol/aprendiz/:idAprendizAdmin/ficha/:idFicha/seguimiento',
+    element: <SegumientoEtapaPracticaAprendiz />,
+  },
+  {
+    path: 'rol/aprendiz/:idAprendizAdmin/ficha/:idFicha/reportes-gfpi-f',
+    element: <ReportesInstructorGFPIF />,
+  },
+  {
+    path: 'rol/aprendiz/:idAprendizAdmin/info-perfil',
+    element: <UsuarioDetalles />,
   },
 ];
 

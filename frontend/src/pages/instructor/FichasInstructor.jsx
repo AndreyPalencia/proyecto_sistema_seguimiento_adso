@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useActionsButtonsContext } from '../../context/ActionsButtonsContext';
-import { useSidebar } from '../../context/SidebarContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -50,9 +49,6 @@ const FichasInstructor = () => {
 
   const getFichaById = (id) => fichas.find((f) => f.idFicha === id);
 
-  //Obtenemos del contexto de sidebar las fuciones de agregar vistas y el stack de vistas y los ids selecionados
-  const { pushSidebarView, setIds, sidebarStack } = useSidebar();
-
   const [openCrearFicha, setOpenCrearFicha] = useState(false);
   const handleCloseCrearFicha = () => setOpenCrearFicha((prev) => !prev);
 
@@ -77,19 +73,6 @@ const FichasInstructor = () => {
   };
 
   /**
-   * Función para manejar el clic en una ficha.
-   * Redirige a la pagina de de los aprendices pertenecientes a la ficha seleccionada.
-   *
-   * @param {string|number} fichaId - ID de la ficha seleccionada.
-   */
-  const handleClickAprendiz = (fichaId) => {
-    if (!sidebarStack.includes('ficha')) {
-      pushSidebarView('ficha'); // Esto abre el submenu en el sidebar
-      setIds('idFicha', fichaId); // Esto actualiza el aprendiz seleccionado
-    }
-  };
-
-  /**
    * Array de objetos que representan los botones de acción para las fichas.
    * Cada botón tiene un ícono, color, posición, acción y tooltip.
    *
@@ -109,7 +92,6 @@ const FichasInstructor = () => {
           navegacion(
             `/instructor/${idInstructorConsultas}/ficha/${idFicha}/aprendices`
           );
-        //handleClickAprendiz(idFicha); // Llama a la función para manejar el clic en el aprendiz
       },
       tooltip: 'Abrir',
       id: 'MainGrid',

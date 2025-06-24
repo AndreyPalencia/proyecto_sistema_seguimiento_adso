@@ -10,27 +10,34 @@ import {
   Tooltip,
 } from '@mui/material';
 
+import { useEliminarObservacionAprendiz } from '../../../hook/observaciones/useEliminarObservacionAprendiz';
 import { modificarEstadoObservacion } from '../../../services/Observaciones';
 
 import FormEditarObservacion from './FormEditarObservacion';
 
-import EditIcon from '@mui/icons-material/Edit';
+import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const Observacion = ({
   idObservacion,
   observacion,
-  eliminarObservacion,
   refetchObservaciones,
 }) => {
+
   const { fechaUltimaActualizacion: fecha, mostrarObservacion: mostrar } =
     observacion;
+
+  const { fetchEliminarObservacion } = useEliminarObservacionAprendiz();
 
   const [valorObservacion, setValorObservacion] = useState(false);
 
   const [openEditar, setOpenEditar] = useState(false);
 
   const { showAlert } = useAlert();
+
+  const eliminarObservacion = async (idObservacion) => {
+    await fetchEliminarObservacion(idObservacion, refetchObservaciones);
+  };
 
   const handleEstadoObservacion = async () => {
     const nuevoValor = !valorObservacion;
@@ -94,8 +101,8 @@ const Observacion = ({
               />
             </Tooltip>
             <Tooltip title="Editar Observación">
-              <IconButton onClick={handleCloseEditar} color="primary">
-                <EditIcon fontSize="medium" />
+              <IconButton onClick={handleCloseEditar} color="secondary">
+                <DrawOutlinedIcon sx={{ fontSize: 26 }} />
               </IconButton>
             </Tooltip>
 
@@ -104,7 +111,7 @@ const Observacion = ({
                 onClick={() => eliminarObservacion(idObservacion)}
                 color="error"
               >
-                <DeleteOutlineOutlinedIcon fontSize="medium" />
+                <DeleteOutlineOutlinedIcon sx={{ fontSize: 26 }} />
               </IconButton>
             </Tooltip>
           </Box>

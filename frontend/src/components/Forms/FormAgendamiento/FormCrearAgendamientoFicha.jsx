@@ -1,7 +1,5 @@
-//React & Context
-import { useAlert } from '../../../context/AlertContext';
+import { useAuth } from '../../../context/AuthContext';
 
-//MUI Componentes
 import {
   Dialog,
   DialogTitle,
@@ -20,12 +18,16 @@ import {
 import FormularioFechas from '../../Calendario/AgendamientoForm/FormularioFechas';
 import FormularioReunion from '../../Calendario/AgendamientoForm/FormularioReunion';
 import FormularioEstadoTipo from '../../Calendario/AgendamientoForm/FormularioEstadoTipo';
+import FullScreenLoader from '../../Feedback/FullScreenLoader';
+
+import { useCrearAgendamiento } from '../../../hook/agendamientos/useCrearAgendamiento';
+import { useNotificacionesDefault } from '../../../hook/notificaciones/useNotfiicacionesDefault';
+import { getUtcSlotFromOffset } from '../../../utils/utils';
 
 //Validaciones del formulario
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { crearAgendamientoSchema } from '../../../schemas/formAgendamientoSchema';
-import { createAgendamiento } from '../../../services/Agendamientos';
 
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
@@ -35,20 +37,20 @@ const FormCrearAgendamientoFicha = ({
   idFichaAprendiz,
   idInstructor,
   onAgendamientoCrear,
-  datosFormulario,
   open,
   onClose,
 }) => {
-  const today = new Date();
-  today.setUTCDate(today.getUTCDate() - 1);
-  const baseDateStr = today.toISOString().slice(0, 10); // "2025-05-02"
+  const { roleUsuario } = useAuth();
 
-  const fechaInicioFin = {
-    start: `${baseDateStr}T12:00:00Z`,
-    end: `${baseDateStr}T12:30:00Z`,
-  };
+  const fechas = getUtcSlotFromOffset({daysAgo: 0});
 
-  const { showAlert } = useAlert();
+  const { notificarAgendamientoVisita } = useNotificacionesDefault();
+
+  const { fetchCrearAgendamiento, loading } = useCrearAgendamiento();
+
+  const isAprendiz = roleUsuario === 'aprendiz' 
+
+  const estado = isAprendiz ? 'Solicitud' : 'Programada';
 
   const { control, handleSubmit, watch } = useForm({
     resolver: zodResolver(crearAgendamientoSchema),
@@ -58,9 +60,9 @@ const FormCrearAgendamientoFicha = ({
       idInstructor: idInstructor,
       herramientaReunion: '',
       enlaceReunion: '',
-      fechaInicio: fechaInicioFin.start || '',
-      fechaFin: fechaInicioFin.end || '',
-      estadoVisita: 'Programada',
+      fechaInicio: fechas.start || '',
+      fechaFin: fechas.end || '',
+      estadoVisita: estado,
       tipoVisita: 'Presencial',
       numeroVisita: '1',
     },
@@ -68,113 +70,110 @@ const FormCrearAgendamientoFicha = ({
 
   const tipoVisita = watch('tipoVisita');
 
-  const handleCreateAgendamiento = async (formData) => {
+  const onSubmit = async (data) => {
+    const { idFicha, ...formData } = data;
+
     try {
-      const agendamiento = await createAgendamiento(formData);
-      showAlert({
-        message: 'Agendamiento creado con éxito',
-        severity: 'success',
-        variant: 'standard',
-      });
-      onAgendamientoCrear(agendamiento);
+      const agendamiento = await fetchCrearAgendamiento(data);
+
+      if (agendamiento) {
+        onAgendamientoCrear?.(agendamiento); // usar el objeto retornado
+
+        if (roleUsuario === 'aprendiz' || roleUsuario === 'admin') {
+          await notificarAgendamientoVisita(idInstructor, formData, ficha);
+        }
+
+        onClose?.(); // cerrar modal
+      }
     } catch (error) {
-      console.log('Error al crear el agendamiento:', error);
-      showAlert({
-        title: 'Error',
-        message: `Error al crear el agendamiento: ${error.message}`,
-        severity: 'error',
-        variant: 'filled',
-      });
+      console.error(
+        'Error al crear agendamiento o enviar notificación:',
+        error
+      );
     }
   };
-
-  const onSubmit = (data) => {
-    const { idFicha, ...formData } = data;
-    handleCreateAgendamiento(formData);
-    onClose();
-  };
-
-  // console.log(
-  //   JSON.stringify(datosFormulario),
-  //   'Datos actualies de agenamientos'
-  // );
-
+  
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography
-            sx={{ flexGrow: 1, textAlign: 'center', ml: 4 }}
-            variant="title"
+    <>
+      <FullScreenLoader open={loading} />
+
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            Crear Agendamiento
-          </Typography>
-          <Tooltip title="Cerrar formulario">
-            <IconButton onClick={onClose}>
-              <CloseOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </DialogTitle>
-      {/* {console.log({
-        aprendiz,
-        ficha,
-      })} */}
-      <DialogContent sx={{ width: 800, maxWidth: '100%' }}>
-        <form
-          onSubmit={handleSubmit(onSubmit, (error) => {
-            console.log(error);
-          })}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-            padding: '10px 15px',
-          }}
-        >
-          <TextField
-            label="Ficha"
-            name="idFicha"
-            value={`${ficha?.numeroFicha} - ${ficha?.nombrePrograma} `}
-            disabled
-          />
-          <TextField
-            label="Aprendiz"
-            name="idFichaAprendiz"
-            value={`${aprendiz?.nombre} ${aprendiz?.apellido}`}
-            disabled
-          />
-          {tipoVisita === 'Virtual' && (
-            <FormularioReunion
-              control={control}
-              required={false}
-              disabled={false}
+            <Typography
+              sx={{ flexGrow: 1, textAlign: 'center', ml: 4 }}
+              variant="title"
+            >
+              Crear Agendamiento
+            </Typography>
+            <Tooltip title="Cerrar formulario">
+              <IconButton onClick={onClose}>
+                <CloseOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </DialogTitle>
+
+        <DialogContent sx={{ width: 800, maxWidth: '100%' }}>
+          <form
+            onSubmit={handleSubmit(onSubmit, (error) => {
+              console.log(error);
+            })}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              padding: '10px 15px',
+            }}
+          >
+            <TextField
+              label="Ficha"
+              name="idFicha"
+              value={`${ficha?.numeroFicha} - ${ficha?.nombrePrograma} `}
+              disabled
             />
-          )}
-          <FormularioFechas control={control} required disabled={false} />
-          <FormularioEstadoTipo control={control} required disabled={false} />
-          <DialogActions sx={{ px: 0 }}>
-            <Stack direction="row" spacing={2}>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => onClose()}
-              >
-                Cerrar
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                name="Guardar"
-              >
-                Crear
-              </Button>
-            </Stack>
-          </DialogActions>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <TextField
+              label="Aprendiz"
+              name="idFichaAprendiz"
+              value={`${aprendiz?.nombre} ${aprendiz?.apellido}`}
+              disabled
+            />
+            {tipoVisita === 'Virtual' && (
+              <FormularioReunion
+                control={control}
+                required={false}
+                disabled={false}
+              />
+            )}
+            <FormularioFechas control={control} required disabled={false} />
+            <FormularioEstadoTipo control={control} required isAprendiz={isAprendiz} />
+            <DialogActions sx={{ px: 0 }}>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => onClose()}
+                >
+                  Cerrar
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  name="Guardar"
+                >
+                  Agendar
+                </Button>
+              </Stack>
+            </DialogActions>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

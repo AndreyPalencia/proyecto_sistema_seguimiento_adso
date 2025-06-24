@@ -17,6 +17,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
+import { useLocation, useParams } from 'react-router-dom';
 
 /**
  * `UsuarioDetalles`
@@ -35,19 +36,32 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
  */
 const UsuarioDetalles = () => {
   //Obtemos el idUsuario de la ruta
-  const { idUsuario, roleUsuario } = useAuth();
+  const { idUsuario: idAuth, roleUsuario } = useAuth();
+
+  const { idAprendizAdmin, idInstructorAdmin } = useParams();
+
+  const location = useLocation();
+
+  // Detectar si estamos viendo otro perfil (como admin)
+  const isAdminViewingOtherUser =
+    roleUsuario === 'admin' && (idAprendizAdmin || idInstructorAdmin);
+
+  const isPerfilPropio = location.pathname.endsWith('/info-usuario');
+
+  // ID del usuario que se va a consultar
+  const idUsuario = idInstructorAdmin || idAprendizAdmin || idAuth;
+
   //Estado para mostrar la información del aprendiz
   const [infoUsuario, setInfoUsuario] = useState(null);
 
   const [cambiarPassword, setCambiarPassword] = useState(false);
-
-  const handleCambiarPassword = () => setCambiarPassword((prev) => !prev);
 
   const { showAlert } = useAlert();
 
   const isAprendiz = roleUsuario === 'aprendiz' ? true : false;
   const isAdmin = roleUsuario === 'admin' ? true : false;
 
+  const handleCambiarPassword = () => setCambiarPassword((prev) => !prev);
   /**
    * Función asincrónica para obtener los datos del aprendiz.
    * Realiza una consulta a la API para obtener los datos del usuario.
@@ -133,8 +147,18 @@ const UsuarioDetalles = () => {
         fontSize="28px"
         fontWeight="bold"
       >
-        Información de Usuario
-      </Typography>
+        {isPerfilPropio
+          ? 'Información de Usuario'
+          : idAprendizAdmin
+          ? 'Información del perfil aprendiz'
+          : 'Información del perfil instructor'}
+      </Typography>{' '}
+      {isAdminViewingOtherUser && (
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 0 }}>
+          Estás visualizando el perfil de un{' '}
+          {idAprendizAdmin ? 'instructor' : 'aprendiz'} como administrador.
+        </Typography>
+      )}
       <SectionInfo
         titulo="Información del usuario"
         icono={<AccountCircleOutlinedIcon className="icon-section-info" />}
@@ -184,7 +208,6 @@ const UsuarioDetalles = () => {
           isLast
         />
       </SectionInfo>
-
       <SectionInfo
         titulo="Información de contacto"
         icono={<AlternateEmailIcon className="icon-section-info" />}
@@ -205,7 +228,6 @@ const UsuarioDetalles = () => {
           fetchUpdate={handleActualizacionInfoUsurio}
         />
       </SectionInfo>
-
       <SectionInfo
         titulo="Firma"
         icono={<BorderColorIcon className="icon-section-info" />}
@@ -218,7 +240,6 @@ const UsuarioDetalles = () => {
           fetchUpdate={handleActualizacionFirma}
         />
       </SectionInfo>
-
       <SectionInfo
         titulo="Estado usuario"
         icono={
@@ -239,7 +260,7 @@ const UsuarioDetalles = () => {
           name="estadoUsuario"
           tag="select"
           titulo="Estado Usuario"
-          disableModal
+          disableModal={!isAdmin}
           item={infoUsuario?.estadoUsuario == 1 ? 'Activo' : 'Inactivo'}
           menuOpciones={['Activo', 'Inactivo']}
           isArrayOptions={true}

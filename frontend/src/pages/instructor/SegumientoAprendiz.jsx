@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 import { Box, Typography, IconButton, Tooltip } from '@mui/material';
 import {
@@ -22,13 +23,24 @@ import AgendamientosInstructor from './SegumientoAprendiz/AgendamientosInstructo
 const seccionesSeguimiento = ['Bitácoras', 'Documentos', 'Agendamientos'];
 
 const SegumientoAprendiz = () => {
-  const { idAprendiz, idFicha, idInstructor } = useParams();
+  const { idAprendiz, idFicha, idInstructor, idInstructorAdmin } = useParams();
 
-  //Estado que almacena la apertura del dialogo de creación de un bitácora
+  const { roleUsuario } = useAuth();
+
+  //Estado que almacena la apertura del dialogo de creación
+  const [openAgregarBitacora, setAgregarBitacora] = useState(false);
+  const [openAgregarDocumento, setAgregarDocumento] = useState(false);
   const [openAgregarAgendamiento, setAgregarAgendamiento] = useState(false);
 
   //Estado que almacena la nuevo registro
   const [nuevoAgendamiento, setNuevoAgendamiento] = useState(null);
+  const [nuevaBitacora, setNuevaBitacora] = useState(null);
+  const [nuevaDocumento, setNuevaDocumento] = useState(null);
+
+  //Estado que almacena la data para los formularios
+  const [datosFormularioBitacora, setDatosFormularioBitacora] = useState(null);
+  const [tiposDocumentoDisponibles, setTiposDocumentoDisponibles] =
+    useState(null);
 
   const [estadoSelecionado, setEstadoSelecionado] = useState('Bitácoras');
 
@@ -42,6 +54,13 @@ const SegumientoAprendiz = () => {
   };
 
   const handleCreateClick = () => {
+    if (estadoSelecionado === 'Bitácoras') {
+      setAgregarBitacora(true);
+    }
+
+    if (estadoSelecionado === 'Documentos') {
+      setAgregarDocumento(true);
+    }
     if (estadoSelecionado === 'Agendamientos') {
       setAgregarAgendamiento(true);
     }
@@ -83,7 +102,8 @@ const SegumientoAprendiz = () => {
           })}
         </BoxFilter>
         <Box>
-          {estadoSelecionado === 'Agendamientos' && (
+          {(estadoSelecionado === 'Agendamientos' ||
+            roleUsuario === 'admin') && (
             <Tooltip
               aria-label={`${estadoSelecionado}`}
               title={`Agregar ${estadoSelecionado.slice(0, -1)}`}
@@ -106,6 +126,8 @@ const SegumientoAprendiz = () => {
               idFichaAprendiz={idFichaAprendiz}
               ficha={ficha}
               idAprendiz={idAprendiz}
+              nuevaBitacora={nuevaBitacora}
+              onDatosFormulario={setDatosFormularioBitacora}
             />
           )}
           {estadoSelecionado === 'Documentos' && (
@@ -113,6 +135,8 @@ const SegumientoAprendiz = () => {
               idFichaAprendiz={idFichaAprendiz}
               ficha={ficha}
               idAprendiz={idAprendiz}
+              nuevoDocumento={nuevaDocumento}
+              onTiposDocumentos={setTiposDocumentoDisponibles}
             />
           )}
           {estadoSelecionado === 'Agendamientos' && (
@@ -135,10 +159,36 @@ const SegumientoAprendiz = () => {
               idFichaAprendiz={idFichaAprendiz}
               ficha={ficha}
               aprendiz={aprendiz}
-              idInstructor={idInstructor}
+              idInstructor={idInstructor || idInstructorAdmin}
               onAgendamientoCrear={(agendamiento) => {
                 setNuevoAgendamiento(agendamiento);
                 setAgregarAgendamiento(false);
+              }}
+            />
+          )}
+
+          {estadoSelecionado === 'Bitácoras' && openAgregarBitacora && (
+            <FormCrearBitacora
+              open={openAgregarBitacora}
+              onClose={() => setAgregarBitacora(false)}
+              idFichaAprendiz={idFichaAprendiz}
+              datosFormulario={datosFormularioBitacora}
+              onCrearBitacora={(bitacora) => {
+                setNuevaBitacora(bitacora); // guardar la nueva bitácora
+                setAgregarBitacora(false); // cerrar el modal
+              }}
+            />
+          )}
+
+          {estadoSelecionado === 'Documentos' && openAgregarDocumento && (
+            <FormCrearDocumento
+              open={openAgregarDocumento}
+              onClose={() => setAgregarDocumento(false)}
+              idFichaAprendiz={idFichaAprendiz}
+              tiposDisponibles={tiposDocumentoDisponibles}
+              onCrearDocumento={(documento) => {
+                setNuevaDocumento(documento); // guardar la nueva bitácora
+                setAgregarDocumento(false); // cerrar el modal
               }}
             />
           )}

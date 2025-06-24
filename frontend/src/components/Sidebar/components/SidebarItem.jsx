@@ -37,8 +37,9 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
 
   //Determinar si este item es Aprendiz, para mostra el submenú a nivel del menú de ficha
   const isAprendiz = item === 'aprendiz';
-  const isAprendizAdmin = item === 'aprendizAdmin';
- // const isInstructorAdmin = item === 'mainInstructor';
+  const isAprendizInstructorAdmin = item === 'aprendizAdmin';
+  const isAprendizAdmin = item === 'fichasAprendizAdmin';
+  // const isInstructorAdmin = item === 'mainInstructor';
 
   //Determinar si la ruta actual coincide con la ruta del ítem
   const isActive = location.pathname.includes(config[item]?.path);
@@ -46,13 +47,17 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
   //Obtener el array de elementos del menú aprendiz del rol del usuario
   const menuItemsAprendiz = sidebarMenus[roleUsuario]?.['aprendiz'] || [];
 
-  //Obtener el array de elementos del menú instructor del rol del admin
   const menuItemsAprendizAdmin =
-    sidebarMenus[roleUsuario]?.['aprendizAdmin'] || [];
+    sidebarMenus[roleUsuario]?.['aprendizAdminInstructor'] || [];
+
 
   //Cuando se selecciona un aprendiz, se debe abrir automáticamente el submenú
   useEffect(() => {
     if (isAprendiz && selectedIds.idAprendiz) {
+      setOpenSubMenu(true);
+    }
+
+    if (isAprendizInstructorAdmin && selectedIds.idInstructorAdmin) {
       setOpenSubMenu(true);
     }
 
@@ -65,6 +70,7 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
   //Esto es para manejar el caso en que se navega directamente a una ruta de aprendiz
   const isAprendizRoute = location.pathname.includes('/aprendiz/');
   const isInstructorAdminRoute = location.pathname.includes('/rol/instructor/');
+  const isAprendizAdminRoute = location.pathname.includes('/rol/aprendiz/');
 
   // Manejar clic en el ítem
   const handleClick = () => {
@@ -73,23 +79,36 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
 
   return (
     <div key={item}>
-      {item !== 'aprendiz' && item !== 'aprendizAdmin' && (
-        <ListItem>
-          {/* {console.log('item', item)} */}
-          {/* {console.log('sidebarStack', sidebarStack)} */}
-          <ListItemButton
-            selected={isActive}
-            component={config[item]?.path ? Link : 'div'}
-            to={config[item]?.path}
-            onClick={config[item]?.onClick || (() => {})}
-          >
-            <ListItemIcon sx={{ color: 'text.primary' }}>
-              {config[item]?.icon}
-            </ListItemIcon>
-            {!isCollapsed && <ListItemText primary={config[item]?.label} />}
-          </ListItemButton>
-        </ListItem>
-      )}
+      {item !== 'aprendiz' &&
+        item !== 'aprendizAdminInstructor' &&
+       (
+          <ListItem>
+            {/* {console.log('item', item)} */}
+            {/* {console.log('sidebarStack', sidebarStack)} */}
+            <ListItemButton
+              selected={isActive}
+              component={config[item]?.path ? Link : 'div'}
+              to={config[item]?.path}
+              onClick={config[item]?.onClick || (() => {})}
+            >
+              <ListItemIcon sx={{ color: 'text.primary' }}>
+                {config[item]?.icon}
+              </ListItemIcon>
+              {!isCollapsed && (
+                <ListItemText
+                  primary={config[item]?.label}
+                  sx={{
+                    width: isCollapsed ? '0px' : 'auto',
+                    opacity: isCollapsed ? 0 : 1,
+                    transition: 'width 0.3s ease, opacity 0.2s ease',
+                    whiteSpace: 'wrap',
+                    overflow: 'hidden',
+                  }}
+                />
+              )}
+            </ListItemButton>
+          </ListItem>
+        )}
 
       {/* Renderizar el submenú si corresponde */}
       {item === 'aprendiz' && (selectedIds.idAprendiz || isAprendizRoute) && (
@@ -106,7 +125,18 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
                   {config[item]?.icon}
                 </ListItemIcon>
               )}
-              {!isCollapsed && <ListItemText primary={config[item]?.label} />}
+              {!isCollapsed && (
+                <ListItemText
+                  primary={config[item]?.label}
+                  sx={{
+                    width: isCollapsed ? '0px' : 'auto',
+                    opacity: isCollapsed ? 0 : 1,
+                    transition: 'width 0.3s ease, opacity 0.2s ease',
+                    whiteSpace: 'wrap',
+                    overflow: 'hidden',
+                  }}
+                />
+              )}
               {openSubMenu ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
           </ListItem>
@@ -125,7 +155,16 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
                     {config[subItem]?.icon}
                   </ListItemIcon>
                   {!isCollapsed && (
-                    <ListItemText primary={config[subItem]?.label} />
+                    <ListItemText
+                      primary={config[subItem]?.label}
+                      sx={{
+                        width: isCollapsed ? '0px' : 'auto',
+                        opacity: isCollapsed ? 0 : 1,
+                        transition: 'width 0.3s ease, opacity 0.2s ease',
+                        whiteSpace: 'wrap',
+                        overflow: 'hidden',
+                      }}
+                    />
                   )}
                 </ListItemButton>
               ))}
@@ -134,8 +173,9 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
         </>
       )}
 
-      {item === 'aprendizAdmin' &&
-        (selectedIds.idInstructorAdmin || isInstructorAdminRoute) && selectedIds.idAprendiz  && (
+      {item === 'aprendizAdminInstructor' &&
+        (selectedIds.idInstructorAdmin || isInstructorAdminRoute) &&
+        selectedIds.idAprendiz && (
           <>
             <ListItem>
               <ListItemButton
@@ -149,7 +189,18 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
                     {config[item]?.icon}
                   </ListItemIcon>
                 )}
-                {!isCollapsed && <ListItemText primary={config[item]?.label} />}
+                {!isCollapsed && (
+                  <ListItemText
+                    primary={config[item]?.label}
+                    sx={{
+                      width: isCollapsed ? '0px' : 'auto',
+                      opacity: isCollapsed ? 0 : 1,
+                      transition: 'width 0.3s ease, opacity 0.2s ease',
+                      whiteSpace: 'wrap',
+                      overflow: 'hidden',
+                    }}
+                  />
+                )}
                 {openSubMenu ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
             </ListItem>
@@ -168,7 +219,16 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
                       {config[subItem]?.icon}
                     </ListItemIcon>
                     {!isCollapsed && (
-                      <ListItemText primary={config[subItem]?.label} />
+                      <ListItemText
+                        primary={config[subItem]?.label}
+                        sx={{
+                          width: isCollapsed ? '0px' : 'auto',
+                          opacity: isCollapsed ? 0 : 1,
+                          transition: 'width 0.3s ease, opacity 0.2s ease',
+                          whiteSpace: 'wrap',
+                          overflow: 'hidden',
+                        }}
+                      />
                     )}
                   </ListItemButton>
                 ))}
@@ -176,6 +236,7 @@ const SidebarItem = ({ item, config, location, isCollapsed }) => {
             </Collapse>
           </>
         )}
+
     </div>
   );
 };

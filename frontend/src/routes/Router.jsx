@@ -48,6 +48,7 @@ const Router = createBrowserRouter([
     children: adminRoutes,
   },
   { path: '*', element: <NotFound /> },
+  { index: true, element: <Navigate to="/auth" replace /> },
 ]);
 
 export default Router;

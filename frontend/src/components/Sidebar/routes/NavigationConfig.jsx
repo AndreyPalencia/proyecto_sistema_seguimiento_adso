@@ -1,22 +1,10 @@
 import { BaseIcons } from './BaseIcons';
-
 import { useSidebar } from '../../../context/SidebarContext';
 
-//Mapeo de navegación con sus respectivos iconos, labels y paths
 export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
-  const idFicha = selectedIds.idFicha;
-  const idAprendiz = selectedIds.idAprendiz;
-  const idInstructorAdmin = selectedIds.idInstructorAdmin;
-
+  const { idFicha, idAprendiz, idInstructorAdmin, idAprendizAdmin } =
+    selectedIds;
   const { sidebarStack } = useSidebar();
-
-  // console.log('navigationConfig:', {
-  //   userId,
-  //   role,
-  //   selectedIds,
-  //   clearId,
-  //   sidebarStack,
-  // });
 
   return {
     home: {
@@ -35,173 +23,211 @@ export const navigationConfig = (userId, role, selectedIds = {}, clearId) => {
       label: 'Perfil',
       path: `/${role}/${userId}/perfil`,
     },
-    fichas: {
+    mainFichasInstructor: {
       icon: BaseIcons.dashboard,
       label: 'Fichas',
       path: `/${role}/${userId}/fichas`,
     },
-    fichasAprendiz: {
-      icon: BaseIcons.dashboard,
-      label: 'Fichas',
-      path: `/${role}/${userId}/fichas`,
-    },
-    fichasAdmin: {
+    mainFichasInstructorAdmin: {
       icon: BaseIcons.dashboard,
       label: 'Fichas',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/fichas`,
     },
-    aprendices: {
+    fichaAprendicesInstructor: {
       icon: BaseIcons.groupsIcon,
       label: 'Aprendices',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendices`,
       onClick: () => clearId?.('idAprendiz'),
     },
-    aprendicesAdmin: {
+    fichaAprendicesInstructorAdmin: {
       icon: BaseIcons.groupsIcon,
       label: 'Aprendices',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendices`,
       onClick: () => clearId?.('idAprendiz'),
     },
-    infoFicha: {
+    fichaInfoInstructor: {
       icon: BaseIcons.info,
       label: 'Información Ficha',
       path: `/${role}/${userId}/ficha/${idFicha}/info`,
-      onClick: () => clearId?.('idAprendiz'),
     },
-    infoFichaAdmin: {
+    fichaInfoInstructorAdmin: {
       icon: BaseIcons.info,
       label: 'Información Ficha',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/info`,
-      onClick: () => clearId?.('idAprendiz'),
     },
-    calendarioFicha: {
+    fichaInfoAprendizAdmin: {
+      icon: BaseIcons.info,
+      label: 'Información Ficha',
+      path: `/${role}/rol/aprendiz/${idAprendizAdmin}/ficha/${idFicha}/info`,
+    },
+    fichaCalendarioAprendiz: {
       icon: BaseIcons.event,
       label: 'Calendario Ficha',
       path: `/${role}/${userId}/ficha/${idFicha}/calendario-ficha`,
-      onClick: () => clearId?.('idAprendiz'),
     },
-    calendarioFichaAdmin: {
+    fichaCalendarioInstructor: {
+      icon: BaseIcons.event,
+      label: 'Calendario Ficha',
+      path: `/${role}/${userId}/ficha/${idFicha}/calendario-ficha`,
+    },
+    fichaCalendarioInstructorAdmin: {
       icon: BaseIcons.event,
       label: 'Calendario Ficha',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/calendario-ficha`,
-      onClick: () => clearId?.('idAprendiz'),
     },
-    calendarioGeneral: {
+    fichaCalendarioAprendizAdmin: {
+      icon: BaseIcons.event,
+      label: 'Calendario Ficha',
+      path: `/${role}/rol/aprendiz/${idAprendizAdmin}/ficha/${idFicha}/calendario-ficha`,
+    },
+    // Agregando versión específica para aprendiz - información de ficha
+    fichaInfoAprendiz: {
+      icon: BaseIcons.info,
+      label: 'Información Ficha',
+      path: `/${role}/${userId}/ficha/${idFicha}/info`,
+    },
+    calendarioGeneralInstructor: {
       icon: BaseIcons.calendar,
-      label: 'Calendario',
+      label: 'Calendario General',
       path: `/${role}/${userId}/calendario-fichas`,
     },
-    calendarioGeneralAdmin: {
+    calendarioGeneralInstructorAdmin: {
       icon: BaseIcons.calendar,
-      label: 'Calendario',
+      label: 'Calendario General',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/calendario-fichas`,
     },
-    infoAprendiz: {
+    aprendizInfoInstructor: {
       icon: BaseIcons.manage,
-      label: 'Aprendiz',
+      label: 'Información Aprendiz',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/info`,
     },
-    infoAprendizAdmin: {
+    aprendizInfoInstructorAdmin: {
       icon: BaseIcons.manage,
-      label: 'Aprendiz',
+      label: 'Información Aprendiz',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/info`,
     },
-    visitas: {
-      icon: BaseIcons.today,
-      label: 'Visitas',
-      path: `/${role}/${userId}/visitas`,
+    // Agregando versión específica para aprendiz
+    aprendizInfoAprendiz: {
+      icon: BaseIcons.manage,
+      label: 'Mi Información',
+      path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/info`,
     },
-    seguimiento: {
+    aprendizSeguimientoInstructor: {
       icon: BaseIcons.analytics,
       label: 'Seguimiento',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/seguimiento`,
     },
-    seguimientoAdmin: {
+    aprendizSeguimientoInstructorAdmin: {
       icon: BaseIcons.analytics,
       label: 'Seguimiento',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/seguimiento`,
     },
-    seguimientoAprendiz: {
+    // Agregando versión específica para aprendiz
+    aprendizSeguimientoAprendiz: {
       icon: BaseIcons.analytics,
       label: 'Seguimiento',
       path: `/${role}/${userId}/ficha/${idFicha}/seguimiento`,
     },
-    observaciones: {
+    fichaSeguimientoAprendizAdmin: {
+      icon: BaseIcons.analytics,
+      label: 'Seguimiento',
+      path: `/${role}/rol/aprendiz/${idAprendizAdmin}/ficha/${idFicha}/seguimiento`,
+    },
+    aprendizObservacionesInstructor: {
       icon: BaseIcons.search,
       label: 'Observaciones',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/observaciones`,
     },
-    observacionesAdmin: {
+    aprendizObservacionesInstructorAdmin: {
       icon: BaseIcons.search,
       label: 'Observaciones',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/observaciones`,
     },
-    observacionesAprendiz: {
+    // Agregando versión específica para aprendiz
+    aprendizObservacionesAprendiz: {
       icon: BaseIcons.search,
       label: 'Observaciones',
       path: `/${role}/${userId}/ficha/${idFicha}/observaciones`,
     },
-    reportes: {
+    fichaObservacionesAprendizAdmin: {
+      icon: BaseIcons.search,
+      label: 'Observaciones',
+      path: `/${role}/rol/aprendiz/${idAprendizAdmin}/ficha/${idFicha}/observaciones`,
+    },
+    fichaReportesInstructor: {
       icon: BaseIcons.doc,
-      label: 'Reportes',
+      label: 'Reportes Generales',
       path: `/${role}/${userId}/reporte-general-ficha`,
     },
-    reportesAdmin: {
+    fichaReportesInstructorAdmin: {
       icon: BaseIcons.doc,
-      label: 'Reportes',
+      label: 'Reportes Generales',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/reporte-general-ficha`,
     },
-    reportesGFPI_F: {
+    aprendizReportesGFPIInstructor: {
       icon: BaseIcons.doc,
-      label: 'Reportes GFPI F',
+      label: 'Reportes GFPI ',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/reportes-gfpi-f`,
     },
-    reportesGFPI_FAdmin: {
+    aprendizReportesGFPIInstructorAdmin: {
       icon: BaseIcons.doc,
-      label: 'Reportes GFPI F',
+      label: 'Reportes GFPI ',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/reportes-gfpi-f`,
     },
-    configuracion: {
-      icon: BaseIcons.settings,
-      label: 'Configuración',
-      path: `/${role}/${userId}/`,
+    fichaReportesGFPIAprendizAdmin: {
+      icon: BaseIcons.doc,
+      label: 'Reportes GFPI ',
+      path: `/${role}/rol/aprendiz/${idAprendizAdmin}/ficha/${idFicha}/reportes-gfpi-f`,
     },
-    empresa: {
+    aprendizEmpresaInstructor: {
       icon: BaseIcons.company,
       label: 'Empresa',
       path: `/${role}/${userId}/ficha/${idFicha}/aprendiz/${idAprendiz}/empresa`,
     },
-    empresaAdmin: {
+    aprendizEmpresaInstructorAdmin: {
       icon: BaseIcons.company,
       label: 'Empresa',
       path: `/${role}/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendiz/${idAprendiz}/empresa`,
     },
-    empresaAprendiz: {
+    // Agregando versión específica para aprendiz
+    aprendizEmpresaAprendiz: {
       icon: BaseIcons.company,
       label: 'Empresa',
       path: `/${role}/${userId}/ficha/${idFicha}/empresa`,
     },
+    fichaEmpresaAprendizAdmin: {
+      icon: BaseIcons.company,
+      label: 'Información Empresa',
+      path: `/${role}/rol/aprendiz/${idAprendizAdmin}/ficha/${idFicha}/empresa`,
+    },
     aprendiz: {
       icon: BaseIcons.person,
-      label: 'Aprendiz ',
+      label: 'Aprendiz',
     },
-    aprendizAdmin: {
+    aprendizAdminInstructor: {
       icon: BaseIcons.person,
-      label: 'Aprendiz ',
+      label: 'Aprendiz',
     },
-    instructor: {
+
+    infoPerfilInstructorAdmin: {
       icon: BaseIcons.school,
-      label: 'Instructor',
+      label: 'Perfil del Instructor',
+      path: `/${role}/rol/instructor/${idInstructorAdmin}/info-perfil`,
     },
-    mainInstructor: {
-      icon: BaseIcons.school,
-      label: 'Instructor',
-      path: `/admin/rol/instructor/${idInstructorAdmin}/fichas`,
+
+    fichaPerfilAprendizAdmin: {
+      icon: BaseIcons.person,
+      label: 'Perfil del Aprendiz',
+      path: `/${role}/rol/aprendiz/${idAprendizAdmin}/info-perfil`,
+    },
+    fichasPerfilAprendizAdmin: {
+      icon: BaseIcons.analytics,
+      label: 'Fichas Aprendiz',
+      path: `/${role}/rol/aprendiz/${idAprendizAdmin}/fichas`,
     },
   };
 };
 
-//Mapeo del selecion por rol
 export const roleDisplayConfig = (userId) => ({
   admin: {
     icon: BaseIcons.supervisor,
@@ -220,45 +246,70 @@ export const roleDisplayConfig = (userId) => ({
   },
 });
 
-//Configuración de permisos por rol y submenus
 export const sidebarMenus = {
   admin: {
     main: ['usuarios'],
-    mainInstructor: ['fichasAdmin', 'calendarioGeneralAdmin', 'reportesAdmin'],
-    fichaInstructor: [
-      'aprendicesAdmin',
-      'infoFichaAdmin',
-      'calendarioFichaAdmin',
-      'aprendizAdmin',
+    mainInstructor: [
+      'infoPerfilInstructorAdmin',
+      'mainFichasInstructorAdmin',
+      'calendarioGeneralInstructorAdmin',
+      'fichaReportesInstructorAdmin',
     ],
-    aprendizAdmin: [
-      'infoAprendizAdmin',
-      'empresaAdmin',
-      'observacionesAdmin',
-      'seguimientoAdmin',
-      'reportesGFPI_FAdmin',
+    fichaInstructor: [
+      'fichaAprendicesInstructorAdmin',
+      'fichaInfoInstructorAdmin',
+      'fichaCalendarioInstructorAdmin',
+      'aprendizAdminInstructor',
+    ],
+    aprendizAdminInstructor: [
+      'aprendizInfoInstructorAdmin',
+      'aprendizEmpresaInstructorAdmin',
+      'aprendizObservacionesInstructorAdmin',
+      'aprendizSeguimientoInstructorAdmin',
+      'aprendizReportesGFPIInstructorAdmin',
+    ],
+    fichasAprendizAdminPerfil: [
+      'fichaPerfilAprendizAdmin',
+      'fichasPerfilAprendizAdmin',
+      'fichasAprendizAdmin',
+    ],
+    fichasAprendizAdmin: [
+      'fichaCalendarioAprendizAdmin',
+      'fichaInfoAprendizAdmin',
+      'fichaEmpresaAprendizAdmin',
+      'fichaObservacionesAprendizAdmin',
+      'fichaSeguimientoAprendizAdmin',
+      'fichaReportesGFPIAprendizAdmin',
     ],
   },
   instructor: {
-    main: ['fichas', 'calendarioGeneral', 'reportes'],
-    ficha: ['aprendices', 'infoFicha', 'calendarioFicha', 'aprendiz'],
+    main: [
+      'mainFichasInstructor',
+      'calendarioGeneralInstructor',
+      'fichaReportesInstructor',
+    ],
+    ficha: [
+      'fichaAprendicesInstructor',
+      'fichaInfoInstructor',
+      'fichaCalendarioInstructor',
+      'aprendiz',
+    ],
     aprendiz: [
-      'infoAprendiz',
-      'empresa',
-      'observaciones',
-      'seguimiento',
-      'reportesGFPI_F',
+      'aprendizInfoInstructor',
+      'aprendizEmpresaInstructor',
+      'aprendizObservacionesInstructor',
+      'aprendizSeguimientoInstructor',
+      'aprendizReportesGFPIInstructor',
     ],
   },
-
   aprendiz: {
     main: [],
     fichasAprendiz: [
-      'calendarioFicha',
-      'infoFicha',
-      'empresaAprendiz',
-      'observacionesAprendiz',
-      'seguimientoAprendiz',
+      'fichaCalendarioAprendiz',
+      'fichaInfoAprendiz',
+      'aprendizEmpresaAprendiz',
+      'aprendizObservacionesAprendiz',
+      'aprendizSeguimientoAprendiz',
     ],
   },
 };

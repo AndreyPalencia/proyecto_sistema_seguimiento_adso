@@ -11,11 +11,13 @@ import {
   Typography,
 } from '@mui/material';
 import { crearAgendamientoSchema } from '../../../schemas/formAgendamientoSchema';
+import { useAuth } from '../../../context/AuthContext';
 
 //Formularios e Inputs personalizados
 import FormularioFechas from '../AgendamientoForm/FormularioFechas';
 import FormularioReunion from '../AgendamientoForm/FormularioReunion';
 import FormularioEstadoTipo from '../AgendamientoForm/FormularioEstadoTipo';
+import FullScreenLoader from '../../Feedback/FullScreenLoader';
 
 import { useFichaById } from '../../../hook/useFichaById';
 import { useNotificacionesDefault } from '../../../hook/notificaciones/useNotfiicacionesDefault';
@@ -53,19 +55,9 @@ const CrearAgendamientoFichaAprendiz = ({
 }) => {
   const { fetchCrearAgendamiento, loading } = useCrearAgendamiento();
   const { notificarAgendamientoVisita } = useNotificacionesDefault();
+  const { roleUsuario } = useAuth();
+  const isAdmin = roleUsuario === 'admin';
 
-  // console.log(
-  //   {
-  //     aprendizInfo,
-  //     idFicha,
-  //     idFichaAprendiz,
-  //     idInstructor,
-  //     fechaSeleccionada,
-  //     handleFechaSeleccionada,
-  //     agregarEventosCalendario,
-  //   },
-  //   'objeto'
-  // );
 
   const { ficha, loading: loadingFicha } = useFichaById(idFicha);
 
@@ -96,26 +88,6 @@ const CrearAgendamientoFichaAprendiz = ({
    *
    * @param {Object} formData - Datos del formulario que serán enviados al backend
    */
-  // const handleCreateAgendamiento = async (formData) => {
-  //   try {
-  //     const agendamiento = await createAgendamiento(formData);
-  //     agregarEventosCalendario(agendamiento);
-  //     handleFechaSeleccionada();
-  //     showAlert({
-  //       message: 'Agendamiento creado con éxito',
-  //       severity: 'success',
-  //       variant: 'standard',
-  //     });
-  //   } catch (error) {
-  //     console.log('Error al crear el agendamiento:', error);
-  //     showAlert({
-  //       title: 'Error',
-  //       message: `Error al crear el agendamiento: ${error.message}`,
-  //       severity: 'error',
-  //       variant: 'filled',
-  //     });
-  //   }
-  // };
 
   /**
    * Función que maneja el envío del formulario de agendamiento.
@@ -135,89 +107,96 @@ const CrearAgendamientoFichaAprendiz = ({
   };
 
   return (
-    <Dialog
-      open={Boolean(fechaSeleccionada)}
-      onClose={() => {
-        handleFechaSeleccionada();
-      }}
-    >
-      <DialogTitle>
-        {' '}
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography
-            sx={{ flexGrow: 1, textAlign: 'center', ml: 4 }}
-            variant="title"
+    <>
+      <FullScreenLoader open={loading} />
+      <Dialog
+        open={Boolean(fechaSeleccionada)}
+        onClose={() => {
+          handleFechaSeleccionada();
+        }}
+      >
+        <DialogTitle>
+          {' '}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            Agendar Visita
-          </Typography>
-          <Tooltip title="Cerrar formulario">
-            <IconButton
-              onClick={() => {
-                handleFechaSeleccionada();
-              }}
+            <Typography
+              sx={{ flexGrow: 1, textAlign: 'center', ml: 4 }}
+              variant="title"
             >
-              <CloseOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </DialogTitle>
-      <DialogContent sx={{ width: 800, maxWidth: '100%' }}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '10px',
-            padding: '10px 15px',
-          }}
-        >
-          <TextField
-            label="Ficha"
-            name="idFicha"
-            value={`${ficha?.numeroFicha} - ${ficha?.nombrePrograma} `}
-            disabled
-          />
-          <TextField
-            label="Aprendiz"
-            name="idFichaAprendiz"
-            value={nombreAprendiz}
-            disabled
-          />
-          {tipoVisita === 'Virtual' && (
-            <FormularioReunion
+              Agendar Visita
+            </Typography>
+            <Tooltip title="Cerrar formulario">
+              <IconButton
+                onClick={() => {
+                  handleFechaSeleccionada();
+                }}
+              >
+                <CloseOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </DialogTitle>
+        <DialogContent sx={{ width: 800, maxWidth: '100%' }}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              padding: '10px 15px',
+            }}
+          >
+            <TextField
+              label="Ficha"
+              name="idFicha"
+              value={`${ficha?.numeroFicha} - ${ficha?.nombrePrograma} `}
+              disabled
+            />
+            <TextField
+              label="Aprendiz"
+              name="idFichaAprendiz"
+              value={nombreAprendiz}
+              disabled
+            />
+            {tipoVisita === 'Virtual' && (
+              <FormularioReunion
+                control={control}
+                required={false}
+                disabled={false}
+              />
+            )}
+            <FormularioFechas
               control={control}
               required={false}
               disabled={false}
             />
-          )}
-          <FormularioFechas
-            control={control}
-            required={false}
-            disabled={false}
-          />
-          <FormularioEstadoTipo
-            control={control}
-            required={false}
-            disabled={false}
-            isAprendiz
-          />
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => {
-                handleFechaSeleccionada();
-              }}
-            >
-              Cerrar
-            </Button>
-            <Button type="submit" variant="contained" color="primary">
-              Guardar
-            </Button>
-          </Box>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <FormularioEstadoTipo
+              control={control}
+              required={false}
+              disabled={false}
+              isAprendiz={!isAdmin}
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => {
+                  handleFechaSeleccionada();
+                }}
+              >
+                Cerrar
+              </Button>
+              <Button type="submit" variant="contained" color="primary">
+                Guardar
+              </Button>
+            </Box>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useActionsButtonsContext } from '../../context/ActionsButtonsContext';
 import { useNavigate } from 'react-router-dom';
-import { useSidebar } from '../../context/SidebarContext';
 
 import {
   Box,
@@ -15,14 +14,13 @@ import {
 } from '@mui/material';
 
 import { useObtenerUsuarios } from '../../hook/usuarios/useObtenerUsuarios';
+import { useEditarEstadoUsuario } from '../../hook/usuarios/useEditarEstadoUsuario';
 
-import Tabla from '../../components/Tabla/Tabla';
+import { TablaCheckBox } from '../../components/Tabla/Tabla';
 import FormUsuario from '../../components/Forms/FormUsuarios/FormUsuario';
 
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
-import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
@@ -30,12 +28,14 @@ const Usuarios = () => {
   // Hook de navegación para redirigir a otras rutas
   const navegation = useNavigate();
 
-  const { loading, usuarios, refetchUsuarios } = useObtenerUsuarios();
+  const { loading, usuarios, refetchUsuarios, buscarUsuarios } =
+    useObtenerUsuarios();
+
+  const { editarEstadoUsuario, loading: loadingEstadoUsuario } =
+    useEditarEstadoUsuario();
 
   // Obtiene funciones del contexto para manejar botones de acción
   const { updateActionsButtons } = useActionsButtonsContext();
-
-  const { pushSidebarView, setIds, sidebarStack } = useSidebar();
 
   const [openCrearUsuario, setCrearUsuario] = useState(false);
 
@@ -46,6 +46,11 @@ const Usuarios = () => {
   const [openEditarUsuario, setEditarUsuario] = useState(false);
 
   const handleUpdateUsuario = () => setEditarUsuario((prev) => !prev);
+
+  const handleUpdateStateUsuario = async (valueCheck, idUsuario) => {
+    await editarEstadoUsuario(idUsuario, valueCheck);
+    await refetchUsuarios();
+  };
 
   /**
    * Array de objetos que representan los botones de acción para las fichas.
@@ -77,15 +82,25 @@ const Usuarios = () => {
     }
   }, [usuarios, loading]);
 
-  const getRowActions = (fila) => {
+  const rowActionsUsuarios = (fila) => {
     if (fila.rol === 'Aprendiz') {
       return [
         {
           icon: OpenInNewIcon,
-          action: (iFdUsuario) => {},
-          tooltip: 'Abir fichas afiliadas',
+          action: (idAprendizAdmin) => {
+            navegation(`/admin/rol/aprendiz/${idAprendizAdmin}/fichas`);
+          },
+          tooltip: 'Abir fichas en afiliadas',
           position: 'left',
-          color: 'primary',
+          color: '#39A900',
+          id: 'MainGrid',
+        },
+        {
+          id: 'estadoUsuario',
+          type: 'checkbox',
+          action: handleUpdateStateUsuario,
+          tooltip: 'Activo',
+          otherTooltip: 'Desactivado',
         },
       ];
     }
@@ -95,16 +110,19 @@ const Usuarios = () => {
         {
           icon: OpenInNewIcon,
           action: (idInstructorAdmin) => {
-            if (!sidebarStack.includes('mainInstructor')) {
-              setIds('idInstructorAdmin', idInstructorAdmin);
-              navegation(`/admin/rol/instructor/${idInstructorAdmin}/fichas`);
-              //pushSidebarView('mainInstructor'); // Esto abre el submenu en el sidebar
-            }
+            navegation(`/admin/rol/instructor/${idInstructorAdmin}/fichas`);
           },
           tooltip: 'Abir fichas en seguimiento',
           position: 'left',
-          color: 'primary',
+          color: '#39A900',
           id: 'MainGrid',
+        },
+        {
+          id: 'estadoUsuario',
+          type: 'checkbox',
+          action: handleUpdateStateUsuario,
+          tooltip: 'Activo',
+          otherTooltip: 'Desactivado',
         },
       ];
     }
@@ -116,6 +134,12 @@ const Usuarios = () => {
     return []; // Si no hay acciones, no se renderiza nada
   };
 
+  const formatCellUsuarios = ({ key, value }) => {
+    if (key === 'estadoUsuario') {
+      return value === true ? 'Activo' : 'Inactivo';
+    }
+    return value;
+  };
   return (
     <>
       <Typography
@@ -127,7 +151,7 @@ const Usuarios = () => {
         Listado usuarios:
       </Typography>
       {!loading && (
-        <Tabla
+        <TablaCheckBox
           key={`${usuarios.length}`}
           data={usuarios ?? []}
           dataException={['idUsuario']}
@@ -145,7 +169,7 @@ const Usuarios = () => {
             title: [`nombre`, 'apellido'],
             subtitle: ['tipoDocumento', 'numeroDocumento'],
           }}
-          getRowActions={getRowActions}
+          rowActions={rowActionsUsuarios}
           header={[
             'Tipo Documento',
             'Número Documento',
@@ -156,6 +180,8 @@ const Usuarios = () => {
             'Rol',
             'Estado Usuario',
           ]}
+          initialValue={['estadoUsuario']}
+          formatCellValue={formatCellUsuarios}
           buttonAction={[
             {
               title: 'Crear Usuario',
@@ -164,7 +190,6 @@ const Usuarios = () => {
               size: 30,
             },
           ]}
-          initialValue={['estadoFicha']}
         />
       )}
 

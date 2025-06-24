@@ -11,7 +11,11 @@ import { AprendizFichaProvider } from './context/AprendizFichaContext.jsx';
 import { AprendizProvider } from './context/AprendizContext.jsx';
 import { CheckboxProvider } from './context/CheckboxContext.jsx';
 import { NumberNotificationsProvider } from './context/NumberNotifications';
+import { SidebarProvider } from './context/SidebarContext.jsx';
 import { LayoutProvider } from './context/LayoutContext.jsx';
+import { FilterButtonsProvider } from './context/FilterButtonsContext.jsx';
+import { TablaProvider } from './context/TablaContext.jsx';
+import { PaginadorProvider } from './context/PaginadorContext.jsx';
 
 //Importamos el contexto HeaderProvider para permitir a los componentes hijos acceder a la altura del header.
 import { HeaderProvider } from '../src/context/HeaderContext';
@@ -29,34 +33,42 @@ import './style/styles.css';
 function App() {
   return (
     <Suspense fallback={<LazyLoader />}>
-      <NumberNotificationsProvider>
-        <HeaderProvider>
-          <LayoutProvider>
-            <AlertProvider>
-              <AprendicesProvider>
-                <AprendizFichaProvider>
-                  <AprendizProvider>
-                    <ActionsButtonsProvider>
-                      <CheckboxProvider>
-                        <HeaderProvider>
-                          <AuthProvider>
-                            <ConfirmDialogProvider>
-                              <ThemeProvider theme={theme}>
-                                <CssBaseline />
-                                <RouterProvider router={Router} />
-                              </ThemeProvider>
-                            </ConfirmDialogProvider>
-                          </AuthProvider>
-                        </HeaderProvider>
-                      </CheckboxProvider>
-                    </ActionsButtonsProvider>
-                  </AprendizProvider>
-                </AprendizFichaProvider>
-              </AprendicesProvider>
-            </AlertProvider>
-          </LayoutProvider>
-        </HeaderProvider>
-      </NumberNotificationsProvider>
+      <SidebarProvider>
+        <NumberNotificationsProvider>
+          <HeaderProvider>
+            <LayoutProvider>
+              <AlertProvider>
+                <AprendicesProvider>
+                  <AprendizFichaProvider>
+                    <AprendizProvider>
+                      <ActionsButtonsProvider>
+                        <CheckboxProvider>
+                          <HeaderProvider>
+                            <AuthProvider>
+                              <ConfirmDialogProvider>
+                                <TablaProvider>
+                                  <PaginadorProvider>
+                                    <FilterButtonsProvider>
+                                      <ThemeProvider theme={theme}>
+                                        <CssBaseline />
+                                        <RouterProvider router={Router} />
+                                      </ThemeProvider>
+                                    </FilterButtonsProvider>
+                                  </PaginadorProvider>
+                                </TablaProvider>
+                              </ConfirmDialogProvider>
+                            </AuthProvider>
+                          </HeaderProvider>
+                        </CheckboxProvider>
+                      </ActionsButtonsProvider>
+                    </AprendizProvider>
+                  </AprendizFichaProvider>
+                </AprendicesProvider>
+              </AlertProvider>
+            </LayoutProvider>
+          </HeaderProvider>
+        </NumberNotificationsProvider>
+      </SidebarProvider>
     </Suspense>
   );
 }

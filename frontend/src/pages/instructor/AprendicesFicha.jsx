@@ -145,13 +145,11 @@ const AprendicesFichas = () => {
    */
   const botonesFicha = [
     {
-      icon: OpenInNewIcon,
+      icon: TbReportAnalytics,
       color: ' #39A900',
-      position: 'center',
-      action: (idAprendiz) => {
-        handleClickAprendiz(idAprendiz); // Esto actualiza el aprendiz seleccionado
-      },
-      tooltip: 'Abrir seguimiento',
+      position: 'left',
+      action: handleReporteAprendiz,
+      tooltip: 'Generar reporte GFPIF',
     },
     {
       icon: DrawOutlinedIcon,
@@ -165,11 +163,13 @@ const AprendicesFichas = () => {
       tooltip: 'Editar',
     },
     {
-      icon: TbReportAnalytics,
+      icon: OpenInNewIcon,
       color: ' #39A900',
-      position: 'left',
-      action: handleReporteAprendiz,
-      tooltip: 'Generar reporte GFPIF',
+      position: 'center',
+      action: (idAprendiz) => {
+        handleClickAprendiz(idAprendiz); // Esto actualiza el aprendiz seleccionado
+      },
+      tooltip: 'Abrir seguimiento',
     },
   ];
 

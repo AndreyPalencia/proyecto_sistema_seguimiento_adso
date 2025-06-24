@@ -3,6 +3,7 @@ import { useAlert } from '../../../context/AlertContext';
 import { useActionsButtonsContext } from '../../../context/ActionsButtonsContext';
 
 import { descargarBitacora } from '../../../services/Bitacoras';
+import { useEliminarBitacora } from '../../../hook/bitacoras/useEliminarBitacoraAprendiz';
 
 import { useBitacorasAprendiz } from '../../../hook/bitacoras/useBitacorasAprendiz';
 import { useEditarBitacora } from '../../../hook/bitacoras/useEditarBitacoraAprendiz';
@@ -14,11 +15,14 @@ import FormEditarBitacora from '../../../components/Forms/FormBitacora/FormEdita
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ReplyIcon from '@mui/icons-material/Reply';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const BitacorasInstructor = ({
   idFichaAprendiz,
   ficha,
   idAprendiz,
+  nuevaBitacora = null,
+  onDatosFormulario = null,
 }) => {
   const [openEditarBitacora, setEditarBitacora] = useState(false);
   const [bitacoraSeleccionada, setBitacoraSeleccionada] = useState(null);
@@ -29,6 +33,8 @@ const BitacorasInstructor = ({
 
   // Hook para editar una bitácora
   const { editarBitacora } = useEditarBitacora();
+
+  const { eliminarBitacora } = useEliminarBitacora();
 
   const { notificarSolicitudNuevaBitacora } = useNotificacionesDefault();
 
@@ -81,11 +87,13 @@ const BitacorasInstructor = ({
     await refetchBitacoras();
   };
 
-  const handleNotificacionSolicitud = (idBitacora) => {
+  const handleNotificacionSolicitud = async (idBitacora) => {
     const bitacora = getBitacoraById(idBitacora);
-    //console.log(ficha, bitacora);
+    await notificarSolicitudNuevaBitacora(idAprendiz, bitacora, ficha);
+  };
 
-    notificarSolicitudNuevaBitacora(idAprendiz, bitacora, ficha);
+  const handleEliminarBitacoraClick = async (idBitacora) => {
+    await eliminarBitacora(idBitacora, refetchBitacoras);
   };
 
   const botonesBitacora = [
@@ -96,27 +104,6 @@ const BitacorasInstructor = ({
       action: handleEditarBitacoraClick,
       tooltip: 'Editar',
     },
-    {
-      id: 'estadoBitacora',
-      type: 'checkbox',
-      action: handleStateBitacoraClick,
-      tooltip: 'Aprobar',
-      otherTooltip: 'No aprobada',
-    },
-    {
-      icon: ReplyIcon,
-      color: ' #29737D',
-      position: 'center',
-      action: handleNotificacionSolicitud,
-      tooltip: 'Solicitar nuevamente la bitácora',
-    },
-    {
-      icon: FileDownloadOutlinedIcon,
-      color: ' #39A900',
-      position: 'left',
-      action: handleDonwloadBitacora,
-      tooltip: 'Descargar',
-    },
   ];
 
   useEffect(() => {
@@ -125,6 +112,73 @@ const BitacorasInstructor = ({
     }
   }, [bitacoras, loading]);
 
+  useEffect(() => {
+    if (nuevaBitacora) {
+      refetchBitacoras(); // actualiza todo con datos frescos
+    }
+  }, [nuevaBitacora]);
+
+  useEffect(() => {
+    if (datosFormulario) {
+      onDatosFormulario(datosFormulario); // lo subes al padre
+    }
+  }, [datosFormulario]);
+
+  const extraActionsBitacoras = {
+    admin: [
+      {
+        icon: DeleteOutlineOutlinedIcon,
+        color: ' #EC221F',
+        position: 'center',
+        action: handleEliminarBitacoraClick,
+        tooltip: 'Eliminar bitácora',
+      },
+      {
+        icon: ReplyIcon,
+        color: ' #29737D',
+        position: 'center',
+        action: handleNotificacionSolicitud,
+        tooltip: 'Solicitar nuevamente la bitácora',
+      },
+      {
+        icon: FileDownloadOutlinedIcon,
+        color: ' #39A900',
+        position: 'left',
+        action: handleDonwloadBitacora,
+        tooltip: 'Descargar',
+      },
+      {
+        id: 'estadoBitacora',
+        type: 'checkbox',
+        action: handleStateBitacoraClick,
+        tooltip: 'Aprobar',
+        otherTooltip: 'No aprobada',
+      },
+    ],
+    instructor: [
+      {
+        icon: ReplyIcon,
+        color: ' #29737D',
+        position: 'center',
+        action: handleNotificacionSolicitud,
+        tooltip: 'Solicitar nuevamente la bitácora',
+      },
+      {
+        icon: FileDownloadOutlinedIcon,
+        color: ' #39A900',
+        position: 'left',
+        action: handleDonwloadBitacora,
+        tooltip: 'Descargar',
+      },
+      {
+        id: 'estadoBitacora',
+        type: 'checkbox',
+        action: handleStateBitacoraClick,
+        tooltip: 'Aprobar',
+        otherTooltip: 'No aprobada',
+      },
+    ],
+  };
 
   return (
     !loading && (
@@ -141,6 +195,7 @@ const BitacorasInstructor = ({
             'Bitácora',
             'Fecha de ultima altulización',
           ]}
+          extraActions={extraActionsBitacoras}
         />
         {openEditarBitacora && (
           <FormEditarBitacora
@@ -150,7 +205,6 @@ const BitacorasInstructor = ({
             bitacora={bitacoraSeleccionada}
             onEditarBitacora={handleEditarBitacoraDialog}
             datosFormulario={datosFormulario}
-            isInstructor
           />
         )}
       </>

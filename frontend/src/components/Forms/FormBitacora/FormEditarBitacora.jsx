@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 
 import {
   Box,
@@ -30,8 +31,6 @@ const FormEditarBitacora = ({
   idFichaAprendiz,
   bitacora,
   onEditarBitacora,
-  isAprendiz = false,
-  isInstructor = false,
 }) => {
   const { control, handleSubmit, reset } = useForm({
     resolver: zodResolver(formEditarBitacora),
@@ -45,6 +44,11 @@ const FormEditarBitacora = ({
       archivo: null,
     },
   });
+
+  const { roleUsuario } = useAuth();
+
+  const isAprendiz = roleUsuario === 'aprendiz';
+  const isInstructor = roleUsuario === 'instructor';
 
   const OnSubmit = async (formData) => {
     const { idBitacora } = bitacora;

@@ -1,6 +1,7 @@
 // CalendarioAprendiz.jsx
 import { useParams } from 'react-router-dom';
 import { useLayout } from '../../context/LayoutContext';
+import { useAuth } from '../../context/AuthContext';
 
 import { Box } from '@mui/material';
 
@@ -10,6 +11,7 @@ import { useAgendamientoCalendar } from '../../hook/agendamientos/useAgendamient
 import CalendarioBase from '../../components/Calendario/CalendarioBase';
 import CrearAgendamientoFichaAprendiz from '../../components/Calendario/CrearAgendamiento/CrearAgendamientoFichaAprendiz';
 import VerAgendamiento from '../../components/Calendario/VerAgendamiento/VerAgendamiento';
+import EditarAgendamientoFicha from '../../components/Calendario/EditarAgendamiento/EditarAgendamientoFicha';
 /**
  * CalendarioAprendiz
  *
@@ -19,8 +21,13 @@ import VerAgendamiento from '../../components/Calendario/VerAgendamiento/VerAgen
  * @param {string|number} idFicha - ID de la ficha
  */
 const CalendarioAprendiz = () => {
-  const { idAprendiz, idFicha } = useParams();
+  const { idFicha } = useParams();
+
   const { contentHeight } = useLayout();
+
+  const { roleUsuario } = useAuth();
+
+  const isAdmin = roleUsuario === 'admin';
 
   const { aprendizInfo, datosCargados } = useAprendizByRuta();
 
@@ -37,6 +44,7 @@ const CalendarioAprendiz = () => {
     agregarEvento,
     agendamientoSeleccionado,
     setAgendamientoSeleccionado,
+    actualizarEvento,
   } = useAgendamientoCalendar({ idInstructor });
 
   const idFichaAprendizAge = agendamientoSeleccionado?.idFichaAprendiz;
@@ -60,7 +68,7 @@ const CalendarioAprendiz = () => {
             eventos={formatEventosConDestacado(idFichaAprendiz)}
             onSelect={handleDateSelect}
             onEventClick={handleEventClick}
-            height={contentHeight - 120}
+            height={contentHeight - 50}
           />
         </Box>
 
@@ -75,12 +83,24 @@ const CalendarioAprendiz = () => {
             agregarEventosCalendario={agregarEvento}
           />
         )}
-        {agendamientoSeleccionado && idFichaAprendizAge == idFichaAprendiz && (
-          <VerAgendamiento
-            aprendizInfo={aprendizInfo}
+
+        {!isAdmin &&
+          agendamientoSeleccionado &&
+          idFichaAprendizAge == idFichaAprendiz && (
+            <VerAgendamiento
+              aprendizInfo={aprendizInfo}
+              idFicha={idFicha}
+              agendamientoSeleccionado={agendamientoSeleccionado}
+              handleAgendamientoSeleccionado={setAgendamientoSeleccionado}
+            />
+          )}
+        {isAdmin && agendamientoSeleccionado && (
+          <EditarAgendamientoFicha
+            idInstructor={idInstructor}
             idFicha={idFicha}
             agendamientoSeleccionado={agendamientoSeleccionado}
             handleAgendamientoSeleccionado={setAgendamientoSeleccionado}
+            actualizarEventoCalendario={actualizarEvento}
           />
         )}
       </Box>

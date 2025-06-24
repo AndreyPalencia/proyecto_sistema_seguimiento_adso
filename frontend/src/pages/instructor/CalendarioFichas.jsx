@@ -166,7 +166,7 @@ const CalendarioFichas = () => {
         </Box>
       </Box>
 
-      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', width: '100%' }}>
         {estadoSelecionado === 'Calendario' && (
           <CalendarioBase
             calendarRef={calendarioRef}

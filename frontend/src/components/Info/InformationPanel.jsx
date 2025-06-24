@@ -53,7 +53,7 @@ const InformationPanel = ({
   isArrayOptions,
   labelKey,
   valueKey,
-  fetchUpdate,
+  fetchUpdate ,
 }) => {
   //Estado para manejar la apertura del modal
   const [isModalOpen, setIsModalOpen] = useState(false);

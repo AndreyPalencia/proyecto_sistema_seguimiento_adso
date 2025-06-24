@@ -7,9 +7,10 @@ import { useAgendamientosAprendiz } from '../../../hook/agendamientos/useAgendam
 import { useEditarAgendamientoAprendiz } from '../../../hook/agendamientos/useEditarAgendamientoAprendiz';
 import { useEliminarAgendamientoAprendiz } from '../../../hook/agendamientos/useEliminarAgendamientoAprendiz';
 
+import FormEditarAgendamientoFicha from '../../../components/Forms/FormAgendamiento/FormEditarAgendamientoFicha';
+
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import FormEditarAgendamientoFicha from '../../../components/Forms/FormAgendamiento/FormEditarAgendamientoFicha';
 
 const AgendamientosInstructor = ({
   idFichaAprendiz,
@@ -61,18 +62,18 @@ const AgendamientosInstructor = ({
 
   const botonesAgendamiento = [
     {
-      icon: DrawOutlinedIcon,
-      color: ' #29737D',
-      position: 'center',
-      action: handleEditarAgendamientoClick,
-      tooltip: 'Editar',
-    },
-    {
       icon: DeleteOutlineOutlinedIcon,
       color: ' #EC221F',
       position: 'center',
       action: handleEliminarAgendamiento,
       tooltip: 'Eliminar',
+    },
+    {
+      icon: DrawOutlinedIcon,
+      color: ' #29737D',
+      position: 'center',
+      action: handleEditarAgendamientoClick,
+      tooltip: 'Editar',
     },
   ];
 

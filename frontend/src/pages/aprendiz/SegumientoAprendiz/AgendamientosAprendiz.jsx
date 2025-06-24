@@ -1,21 +1,62 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useActionsButtonsContext } from '../../../context/ActionsButtonsContext';
 
 import { TablaLista } from '../../../components/Tabla/Tabla';
+import FormEditarAgendamientoFicha from '../../../components/Forms/FormAgendamiento/FormEditarAgendamientoFicha';
 
 import { useAgendamientosAprendiz } from '../../../hook/agendamientos/useAgendamientosAprendiz';
+import { useEditarAgendamientoAprendiz } from '../../../hook/agendamientos/useEditarAgendamientoAprendiz';
+import { useEliminarAgendamientoAprendiz } from '../../../hook/agendamientos/useEliminarAgendamientoAprendiz';
+
+import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const AgendamientosAprendiz = ({
   idFichaAprendiz,
   idFicha,
+  aprendiz,
+  ficha,
   nuevoAgendamiento,
 }) => {
-  const { agendamientos, loading, refetchAgendamientos } = useAgendamientosAprendiz({
-    idFicha,
-    idFichaAprendiz,
-  });
+  const [openEditarAgendamiento, setEditarAgendamiento] = useState(false);
+
+  const [agendamientoSeleccionado, setAgendamientoSeleccionado] =
+    useState(null);
+  const { agendamientos, loading, refetchAgendamientos } =
+    useAgendamientosAprendiz({
+      idFicha,
+      idFichaAprendiz,
+    });
+
+  const { editarAgendamiento } = useEditarAgendamientoAprendiz();
+
+  const { eliminarAgendamiento } = useEliminarAgendamientoAprendiz();
 
   const { updateActionsButtons } = useActionsButtonsContext();
+
+  const getAgendamientoById = (id) =>
+    agendamientos.find((agen) => agen.idAgendamiento === id);
+
+  const handleEditarAgendamiento = () => setEditarAgendamiento((prev) => !prev);
+
+  const handleEditarAgendamientoClick = (idAgendamiento) => {
+    const seleccionado = getAgendamientoById(idAgendamiento);
+    if (!seleccionado) return;
+    setAgendamientoSeleccionado(seleccionado);
+    handleEditarAgendamiento();
+  };
+
+  const handleEditarAgendamientoDialog = async (
+    idAgendamiento,
+    agendamientoEditado
+  ) => {
+    await editarAgendamiento(idAgendamiento, agendamientoEditado);
+    await refetchAgendamientos();
+  };
+
+  const handleEliminarAgendamiento = async (idAgendamiento) => {
+    await eliminarAgendamiento(idAgendamiento, refetchAgendamientos);
+  };
 
   const botonesAgendamiento = [];
 
@@ -30,6 +71,26 @@ const AgendamientosAprendiz = ({
       refetchAgendamientos();
     }
   }, [nuevoAgendamiento]);
+
+  const extraActionsAgendamientos = {
+    admin: [
+      {
+        icon: DeleteOutlineOutlinedIcon,
+        color: ' #EC221F',
+        position: 'center',
+        action: handleEliminarAgendamiento,
+        tooltip: 'Eliminar',
+      },
+      {
+        icon: DrawOutlinedIcon,
+        color: ' #29737D',
+        position: 'center',
+        action: handleEditarAgendamientoClick,
+        tooltip: 'Editar',
+      },
+    ],
+    aprendiz: [],
+  };
 
   return (
     !loading && (
@@ -53,7 +114,21 @@ const AgendamientosAprendiz = ({
             'Herramienta Reunión',
             'Enlace Reunión',
           ]}
+          extraActions={extraActionsAgendamientos}
         />
+
+        {openEditarAgendamiento && agendamientoSeleccionado && (
+          <FormEditarAgendamientoFicha
+            ficha={ficha}
+            aprendiz={aprendiz}
+            agendamientoSeleccionado={agendamientoSeleccionado}
+            onAgendamientoActualizado={handleEditarAgendamientoDialog}
+            onClose={() => {
+              handleEditarAgendamiento();
+              setAgendamientoSeleccionado(null);
+            }}
+          />
+        )}
       </>
     )
   );

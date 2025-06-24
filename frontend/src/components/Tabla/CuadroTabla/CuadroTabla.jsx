@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { GridContainer, GridItem, ButtonGroup } from './CuadroTabla.style';
-import { Box, Typography } from '@mui/material';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useActionsButtonsContext } from '../../../context/ActionsButtonsContext';
+
+import { Box, Typography } from '@mui/material';
+
 import ActionsButtons from '../ActionButtons/ActionButtons';
+import { GridContainer, GridItem, ButtonGroup } from './CuadroTabla.style';
 import NoDataComponent from '../NoDataComponent/NoDataComponet';
 
 /**
@@ -33,7 +35,8 @@ const CuadroTabla = ({
   dataList,
   gridOptions,
   selectedValue,
-  getRowActions,
+  extraActions,
+  rowActions,
 }) => {
   //Estado local para almacenar la lista de filas de la tabla.
   //Inicialmente se establece como un array vacío.
@@ -48,22 +51,22 @@ const CuadroTabla = ({
   }, [dataList]);
 
   /**
-   * Encuentra la acción principal asociada a la cuadrícula en los botones de acción.
-   * @type {Object} Acción principal para la cuadrícula.
-   */
-  const mainGridAction = useMemo(() => {
-    return actionsButtons.find((btn) => btn.id === 'MainGrid');
-  }, [actionsButtons]);
-
-  /**
    * Maneja el clic en una celda de la cuadrícula, ejecutando la acción correspondiente.
    * @param {string|number} id - ID de la fila seleccionada.
    */
-  const handleMainGridClick = (id) => {
-    if (typeof mainGridAction?.action === 'function') {
-      mainGridAction.action(id);
-    }
-  };
+  const handleMainGridClick = useCallback(
+    (rowData, rowId) => {
+      const rowBtns = rowActions?.(rowData ?? []) || [];
+      const allButtons = [...actionsButtons, ...rowBtns]; // prioridad a globales
+
+      const mainGridAction = allButtons.find(
+        (btn) => btn.id === 'MainGrid'
+      )?.action;
+      mainGridAction?.(rowId);
+    },
+    [actionsButtons, rowActions]
+  );
+  
 
   /**
    * Determina si hay datos suficientes para mostrar en la tabla.
@@ -79,6 +82,8 @@ const CuadroTabla = ({
 
           const rowId = row[selectedValue];
 
+          console.log;
+
           return (
             <GridItem
               xs={12}
@@ -87,7 +92,7 @@ const CuadroTabla = ({
               key={`grid-item-${rowId || index}`}
             >
               <Box
-                onClick={() => handleMainGridClick(rowId)}
+                onClick={() => handleMainGridClick(row, rowId)}
                 sx={{
                   height: '80%',
                   backgroundColor: '#39A900',
@@ -147,7 +152,9 @@ const CuadroTabla = ({
                     <ActionsButtons
                       idSelecion={rowId}
                       isGridView={true}
-                      extraActions={getRowActions?.(row)}
+                      extraActions={extraActions}
+                      rowActions={rowActions}
+                      rowData={row}
                     />
                   }
                 </ButtonGroup>

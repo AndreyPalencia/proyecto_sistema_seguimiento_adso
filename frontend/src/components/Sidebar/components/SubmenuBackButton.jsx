@@ -28,8 +28,9 @@ const SubmenuBackButton = ({ isCollapsed }) => {
     ficha: 'idFicha',
     aprendizAdmin: 'idAprendiz',
     fichasAprendiz: 'idFicha', // 👈 NUEVO
-
     mainInstructor: 'idInstructorAdmin',
+
+    fichasAprendizAdmin: 'idFicha',
   };
 
   // Configuración de rutas por rol para la vista 'main'
@@ -47,7 +48,7 @@ const SubmenuBackButton = ({ isCollapsed }) => {
    * @returns {string} - Ruta generada
    */
   const generateRoute = (view, ids) => {
-    const { idFicha, idAprendiz, idInstructorAdmin } = ids;
+    const { idFicha, idAprendiz, idAprendizAdmin, idInstructorAdmin } = ids;
 
     // Casos específicos de vistas
     const viewRoutes = {
@@ -55,6 +56,10 @@ const SubmenuBackButton = ({ isCollapsed }) => {
       fichaInstructor: () =>
         `/admin/rol/instructor/${idInstructorAdmin}/fichas`,
       ficha: () => `/ficha/${idFicha}/aprendices`,
+      fichasAprendizAdmin: () =>
+        `/admin/rol/aprendiz/${idAprendizAdmin}/fichas`,
+      fichasAprendizAdminPerfil: () =>
+        `/admin/rol/aprendiz/${idAprendizAdmin}/info-perfil`,
       // fichaAprendiz: () =>
       //   `/admin/rol/instructor/${idInstructorAdmin}/ficha/${idFicha}/aprendices`,
       main: () => getMainRoute(),

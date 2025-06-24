@@ -6,17 +6,23 @@ import { descargarDocumento } from '../../../services/Documentos';
 
 import { useDocumentosAprendiz } from '../../../hook/documentos/useDocumentosAprendiz';
 import { useEditarDocumentoAprendiz } from '../../../hook/documentos/useEditarDocumentoAprendiz';
+import { useEliminarDocumento } from '../../../hook/documentos/useEliminarDocumentoAprendiz';
+import { useNotificacionesDefault } from '../../../hook/notificaciones/useNotfiicacionesDefault';
 
 import { TablaListaCheckBox } from '../../../components/Tabla/Tabla';
 import FormEditarDocumento from '../../../components/Forms/FormDocumento/FormEditarDocumento';
 
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import ReplyIcon from '@mui/icons-material/Reply';
 
 const DocumentosAprendiz = ({
   idFichaAprendiz,
-  nuevoDocumento,
-  onTiposDocumentos,
+  ficha,
+  idAprendiz,
+  nuevoDocumento = null,
+  onTiposDocumentos = null,
 }) => {
   const [openEditarDocumento, setEditarDocumento] = useState(false);
   const [documentoSelecionado, setDocumentoSelecionado] = useState(null);
@@ -25,6 +31,9 @@ const DocumentosAprendiz = ({
     useDocumentosAprendiz(idFichaAprendiz);
 
   const { editarDocumento } = useEditarDocumentoAprendiz();
+  const { eliminarDocumento } = useEliminarDocumento();
+
+  const { notificarSolicitudDocumento } = useNotificacionesDefault();
 
   const { showAlert } = useAlert();
   const { updateActionsButtons } = useActionsButtonsContext();
@@ -62,6 +71,26 @@ const DocumentosAprendiz = ({
     await descargarDocumento(fileName);
   };
 
+  const handleEliminarDocumentoClick = async (idDocumento) => {
+    await eliminarDocumento(idDocumento, refetchDocumentos);
+  };
+
+  const handleStateDocumentoClick = async (valueCheck, idDocumento) => {
+    const { tipoDocumento, ...documento } = getDocumentoById(idDocumento);
+    if (!documento) return;
+    const documentoEditado = {
+      ...documento,
+      estadoDocumento: valueCheck,
+    };
+    await editarDocumento(idDocumento, documentoEditado);
+    await refetchDocumentos();
+  };
+
+  const handleNotificacionSolicitud = async (idDocumento) => {
+    const documento = getDocumentoById(idDocumento);
+    await notificarSolicitudDocumento(idAprendiz, documento, ficha);
+  };
+
   const botonesDocumento = [
     {
       icon: DrawOutlinedIcon,
@@ -69,23 +98,6 @@ const DocumentosAprendiz = ({
       position: 'center',
       action: handleEditarDocumentoClick,
       tooltip: 'Editar',
-    },
-    {
-      id: 'estadoBitacora',
-      type: 'checkbox',
-      action: () => {},
-      color: `rgb(57, 169, 0)`,
-
-      isDisabled: true,
-      tooltip: 'Aprobar',
-      otherTooltip: 'No aprobada',
-    },
-    {
-      icon: FileDownloadOutlinedIcon,
-      color: ' #39A900',
-      position: 'left',
-      action: handleDownloadDocumento,
-      tooltip: 'Descargar Documento',
     },
   ];
 
@@ -106,6 +118,58 @@ const DocumentosAprendiz = ({
     }
   }, [tiposDisponibles, onTiposDocumentos]);
 
+  const extraActionsDocumentos = {
+    admin: [
+      {
+        icon: DeleteOutlineOutlinedIcon,
+        color: ' #EC221F',
+        position: 'center',
+        action: handleEliminarDocumentoClick,
+        tooltip: 'Eliminar',
+      },
+      {
+        icon: ReplyIcon,
+        color: ' #29737D',
+        position: 'center',
+        action: handleNotificacionSolicitud,
+        tooltip: 'Solicitar nuevamente el documento',
+      },
+      {
+        icon: FileDownloadOutlinedIcon,
+        color: ' #39A900',
+        position: 'left',
+        action: handleDownloadDocumento,
+        tooltip: 'Descargar Documento',
+      },
+      {
+        id: 'estadoDocumento',
+        type: 'checkbox',
+        action: handleStateDocumentoClick,
+        tooltip: 'Aprobar',
+        otherTooltip: 'No aprobada',
+      },
+    ],
+
+    aprendiz: [
+      {
+        icon: FileDownloadOutlinedIcon,
+        color: ' #39A900',
+        position: 'left',
+        action: handleDownloadDocumento,
+        tooltip: 'Descargar Documento',
+      },
+      {
+        id: 'estadoDocumento',
+        type: 'checkbox',
+        action: () => {},
+        color: `rgb(57, 169, 0)`,
+        isDisabled: true,
+        tooltip: 'Aprobada',
+        otherTooltip: 'No aprobada',
+      },
+    ],
+  };
+
   return (
     !loading && (
       <>
@@ -122,6 +186,7 @@ const DocumentosAprendiz = ({
             'Fecha de ultima actulización ',
           ]}
           initialValue={['estadoDocumento']}
+          extraActions={extraActionsDocumentos}
         />
         {openEditarDocumento && (
           <FormEditarDocumento

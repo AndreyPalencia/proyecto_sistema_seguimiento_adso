@@ -1,6 +1,6 @@
 import { Typography, Divider, IconButton, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
@@ -72,57 +72,62 @@ const SectionInfo = ({ icono, titulo = 'Unknow', children }) => {
  *
  * @returns {JSX.Element} Componente con el control de visibilidad y estado adicional.
  */
-export const CollapsibleSection = ({ icono, titulo, children }) => {
+export const CollapsibleSection = ({ icono, titulo, children, onCloseSection }) => {
   const [visible, setVisible] = useState(false);
 
   // Función para alternar la visibilidad
   const toggleVisibility = () => setVisible(!visible);
 
- return (
-   <>
-     <BoxInformacion component="section">
-       <BoxTitulo
-         sx={{ justifyContent: 'space-between' }}
-         onClick={toggleVisibility}
-       >
-         {/* Icono y Título juntos */}
-         <div style={{ display: 'flex', alignItems: 'center' }}>
-           {/* Icono */}
-           <IconButton size="small">{icono}</IconButton>
+  const handleClose = () => {
+    setVisible(false);
+    onCloseSection?.(); // ejecutar solo si existe
+  };
 
-           {/* Título */}
-           <Typography component="h3" variant="subtitle1" fontWeight="bold">
-             {titulo}
-           </Typography>
-         </div>
+  return (
+    <>
+      <BoxInformacion component="section">
+        <BoxTitulo
+          sx={{ justifyContent: 'space-between' }}
+          onClick={toggleVisibility}
+        >
+          {/* Icono y Título juntos */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* Icono */}
+            <IconButton size="small">{icono}</IconButton>
 
-         {/* Botón para controlar el estado "start/stop" */}
-         <IconButton size="small" onClick={toggleVisibility} sx={{ pr: 1 }}>
-           {visible ? (
-             <KeyboardArrowUpIcon sx={{ fontSize: '30px' }} />
-           ) : (
-             <KeyboardArrowDownIcon sx={{ fontSize: '30px' }} />
-           )}
-         </IconButton>
-       </BoxTitulo>
+            {/* Título */}
+            <Typography component="h3" variant="subtitle1" fontWeight="bold">
+              {titulo}
+            </Typography>
+          </div>
 
-       {/* Solo se muestra el contenido si está visible */}
-       <Box
-         sx={{
-           maxHeight: visible ? '500px' : '0', // Controla la altura visible
-           overflow: 'hidden', // Esconde el contenido cuando está colapsado
-           transition: 'max-height 0.3s ease-out', // Animación de la altura
-         }}
-       >
-         {visible && (
-           <>
-             <Divider />
-             {children}
-           </>
-         )}
-       </Box>
-     </BoxInformacion>
-   </>
- );
+          {/* Botón para controlar el estado "start/stop" */}
+          <IconButton size="small" onClick={toggleVisibility} sx={{ pr: 1 }}>
+            {visible ? (
+              <KeyboardArrowUpIcon sx={{ fontSize: '30px' }} />
+            ) : (
+              <KeyboardArrowDownIcon sx={{ fontSize: '30px' }} />
+            )}
+          </IconButton>
+        </BoxTitulo>
+
+        {/* Solo se muestra el contenido si está visible */}
+        <Box
+          sx={{
+            maxHeight: visible ? '500px' : '0', // Controla la altura visible
+            overflow: 'hidden', // Esconde el contenido cuando está colapsado
+            transition: 'max-height 0.3s ease-out', // Animación de la altura
+          }}
+        >
+          {visible && (
+            <>
+              <Divider />
+              {React.cloneElement(children, { onCloseSection: handleClose })}
+            </>
+          )}
+        </Box>
+      </BoxInformacion>
+    </>
+  );
 };
 export default SectionInfo;

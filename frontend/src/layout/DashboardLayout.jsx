@@ -1,19 +1,20 @@
+//Usamos el useHeader para obtener la altura del header y calcular la pantalla principal
+import { useHeader } from '../context/HeaderContext';
+import RouteLoader from '../components/RouteLoader';
+import { Outlet } from 'react-router-dom';
+import { useSidebar } from '../context/SidebarContext';
+import { useAuth } from '../context/AuthContext';
+import { socket } from '../socket';
+
 import Grid from '@mui/material/Grid2';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import { Outlet } from 'react-router-dom';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 //Componetes que hacen parte del layout
 import Header from '../components/Header/Header';
 import Sidebar from '../components/Sidebar/Sidebar';
-import { SidebarProvider } from '../context/SidebarContext';
-
-//Usamos el useHeader para obtener la altura del header y calcular la pantalla principal
-import { useHeader } from '../context/HeaderContext';
-import RouteLoader from '../components/RouteLoader';
-import { useAuth } from '../context/AuthContext';
-import { socket } from '../socket';
 
 import { useSocketNotifications } from '../hook/socket/useSocketNotifications';
 
@@ -37,90 +38,110 @@ const DashboardLayout = () => {
 
   const { idUsuario } = useAuth();
 
+  const { isSidebarVisible } = useSidebar();
+
+  const theme = useTheme();
+
+  //isMovile = Determina si la pantalla es móvil (menos de 600px).
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isCollapsed = !isMobile && !isSidebarVisible;
+
+  const drawerWidth = 240;
+  const collapsedWidth = 88;
+
   useSocketNotifications(idUsuario);
 
   return (
-    <SidebarProvider>
-      <Container
-        maxWidth={false}
-        disableGutters
+    <Container
+      maxWidth={false}
+      disableGutters
+      sx={{
+        height: '100vh',
+        display: 'grid',
+        gridTemplateRows: 'auto auto 1fr',
+        overflow: 'hidden',
+      }}
+    >
+      <Header />
+      <Divider />
+      {/**El calculo de la altura del grid container se hace atravez de valor de headerHeight del header + 1 por el heigth del divider
+       * que se encuentra entre el header y el contenido principal restando esa suma al 100vh se obtiene el tamaño del contenido principal
+       */}
+      {/**El calculo de la altura del grid container se hace atravez de valor de headerHeight del header + 1 por el heigth del divider
+       * que se encuentra entre el header y el contenido principal restando esa suma al 100vh se obtiene el tamaño del contenido principal
+       */}
+      <Box
         sx={{
-          height: '100vh',
-          display: 'grid',
-          gridTemplateRows: 'auto auto 1fr',
+          height: `calc(100vh - ${headerHeight + 10}px)`,
           overflow: 'hidden',
+          width: '100%',
+          display: 'grid',
+          gridTemplateColumns: isMobile
+            ? '1fr'
+            : isCollapsed
+            ? `${collapsedWidth}px 1px 1fr`
+            : `${drawerWidth}px 1px 1fr`,
+          transition: (theme) =>
+            theme.transitions.create('grid-template-columns', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.standard,
+            }),
         }}
       >
-        <Header />
-        <Divider />
-        {/**El calculo de la altura del grid container se hace atravez de valor de headerHeight del header + 1 por el heigth del divider
-         * que se encuentra entre el header y el contenido principal restando esa suma al 100vh se obtiene el tamaño del contenido principal
-         */}
-        <Grid
-          container
-          spacing={0}
+        <Sidebar drawerWidth={drawerWidth} isMobile={isMobile} />
+
+        <Divider
+          orientation="vertical"
+          sx={{ display: { xs: 'none', sm: 'block' } }}
+        />
+
+        <Box
           sx={{
-            height: `calc(100vh - ${headerHeight + 10}px)`,
+            height: '100%',
+            minWidth: 0,
             overflow: 'hidden',
-            width: '100%',
           }}
         >
-          <Sidebar />
-
-          <Divider
-            orientation="vertical"
-            flexItem
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-          />
-
-          <Grid
-            size="grow"
+          
+          <Box
+            component="div"
+            className="scroll-container"
             sx={{
+              padding: '0px 22px',
+              width: '100%',
+              boxSizing: 'border-box',
               height: '100%',
-              minWidth: 0,
-              overflow: 'hidden',
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
+            {/* Contenedor del contenido principal que crece */}
+            <Box sx={{ flex: '1 0 auto' }}>
+              <RouteLoader />
+              <Outlet />
+            </Box>
+
+            {/* Footer sticky */}
             <Box
-              component="div"
-              className="scroll-container"
+              component="footer"
               sx={{
-                padding: '0px 22px',
-                width: '100%',
-                boxSizing: 'border-box',
-                height: '100%',
-                overflow: 'auto',
-                display: 'flex',
-                flexDirection: 'column',
+                marginTop: '2rem',
+                padding: '1rem 0',
+                borderTop: '1px solid #e0e0e0',
+                textAlign: 'center',
+                color: 'text.secondary',
+                fontSize: '0.875rem',
+                flexShrink: 0,
               }}
             >
-              {/* Contenedor del contenido principal que crece */}
-              <Box sx={{ flex: '1 0 auto' }}>
-                <RouteLoader />
-                <Outlet />
-              </Box>
-
-              {/* Footer sticky */}
-              <Box
-                component="footer"
-                sx={{
-                  marginTop: '2rem',
-                  padding: '1rem 0',
-                  borderTop: '1px solid #e0e0e0',
-                  textAlign: 'center',
-                  color: 'text.secondary',
-                  fontSize: '0.875rem',
-                  flexShrink: 0,
-                }}
-              >
-                © {new Date().getFullYear()} SAEP. Sistema de Seguimiento al
-                Aprendiz en Etapa Práctica - SAEP.
-              </Box>
+              © {new Date().getFullYear()} SAEP. Sistema de Seguimiento al
+              Aprendiz en Etapa Práctica - SAEP.
             </Box>
-          </Grid>
-        </Grid>
-      </Container>
-    </SidebarProvider>
+          </Box>
+        </Box>
+      </Box>
+    </Container>
   );
 };
 

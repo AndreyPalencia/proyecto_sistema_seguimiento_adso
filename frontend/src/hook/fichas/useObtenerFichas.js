@@ -21,6 +21,7 @@ const useObtenerFichas = (idInstructor) => {
           severity: 'warning',
           variant: 'standard',
         });
+        return;
       }
       showAlert({
         message: `Error al obtener las fichas realcionadas con el instructor.`,

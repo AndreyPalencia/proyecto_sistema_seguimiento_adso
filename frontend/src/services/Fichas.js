@@ -66,7 +66,6 @@ export const getFichasByIdAprendizAndState = async (
     estadoFicha,
   });
 
-  console.log(data, 'fichas');
   return data.data;
 };
 

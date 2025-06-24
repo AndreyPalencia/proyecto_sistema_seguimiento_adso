@@ -17,6 +17,9 @@ const ListaTablaCheckBox = ({
   dataException,
   selectedValue,
   initialValue = [],
+  extraActions,
+  rowActions,
+  formatCellValue,
 }) => {
   //Estado local para almacenar la lista de filas de la tabla.
   //Inicialmente se establece como un array vacío.
@@ -96,7 +99,13 @@ const ListaTablaCheckBox = ({
                         align="left"
                         key={`cell-${cellIndex}`}
                       >
-                        {cell || ' '}
+                        {formatCellValue
+                          ? formatCellValue({
+                              key,
+                              value: cell,
+                              row: filaTabla,
+                            })
+                          : cell || ' '}
                       </TableCell>
                     ) : null
                   )}
@@ -105,6 +114,9 @@ const ListaTablaCheckBox = ({
                     <ActionsButtonsListBox
                       idSelecionado={rowId}
                       inicialValues={booleanObject}
+                      extraActions={extraActions}
+                      rowActions={rowActions}
+                      rowData={filaTabla}
                     />
                   </TableCell>
                 </TableRow>

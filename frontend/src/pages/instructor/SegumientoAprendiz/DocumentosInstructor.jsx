@@ -17,7 +17,13 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import ReplyIcon from '@mui/icons-material/Reply';
 
-const DocumentosInstructor = ({ idFichaAprendiz, ficha, idAprendiz }) => {
+const DocumentosInstructor = ({
+  idFichaAprendiz,
+  ficha,
+  idAprendiz,
+  nuevoDocumento,
+  onTiposDocumentos,
+}) => {
   const [openEditarDocumento, setEditarDocumento] = useState(false);
   const [documentoSelecionado, setDocumentoSelecionado] = useState(null);
 
@@ -25,6 +31,8 @@ const DocumentosInstructor = ({ idFichaAprendiz, ficha, idAprendiz }) => {
     useDocumentosAprendiz(idFichaAprendiz);
 
   const { editarDocumento } = useEditarDocumentoAprendiz();
+
+  const { eliminarDocumento } = useEliminarDocumento();
 
   const { notificarSolicitudDocumento } = useNotificacionesDefault();
 
@@ -64,6 +72,10 @@ const DocumentosInstructor = ({ idFichaAprendiz, ficha, idAprendiz }) => {
     await descargarDocumento(fileName);
   };
 
+  const handleEliminarDocumentoClick = async (idDocumento) => {
+    await eliminarDocumento(idDocumento, refetchDocumentos);
+  };
+
   const handleStateDocumentoClick = async (valueCheck, idDocumento) => {
     const { tipoDocumento, ...documento } = getDocumentoById(idDocumento);
     if (!documento) return;
@@ -75,9 +87,9 @@ const DocumentosInstructor = ({ idFichaAprendiz, ficha, idAprendiz }) => {
     await refetchDocumentos();
   };
 
-  const handleNotificacionSolicitud = (idDocumento) => {
+  const handleNotificacionSolicitud = async (idDocumento) => {
     const documento = getDocumentoById(idDocumento);
-    notificarSolicitudDocumento(idAprendiz, documento, ficha);
+    await notificarSolicitudDocumento(idAprendiz, documento, ficha);
   };
 
   const botonesDocumento = [
@@ -88,27 +100,6 @@ const DocumentosInstructor = ({ idFichaAprendiz, ficha, idAprendiz }) => {
       action: handleEditarDocumentoClick,
       tooltip: 'Editar',
     },
-    {
-      id: 'estadoDocumento',
-      type: 'checkbox',
-      action: handleStateDocumentoClick,
-      tooltip: 'Aprobar',
-      otherTooltip: 'No aprobada',
-    },
-    {
-      icon: ReplyIcon,
-      color: ' #29737D',
-      position: 'center',
-      action: handleNotificacionSolicitud,
-      tooltip: 'Solicitar nuevamente el documento',
-    },
-    {
-      icon: FileDownloadOutlinedIcon,
-      color: ' #39A900',
-      position: 'left',
-      action: handleDownloadDocumento,
-      tooltip: 'Descargar Documento',
-    },
   ];
 
   useEffect(() => {
@@ -116,6 +107,74 @@ const DocumentosInstructor = ({ idFichaAprendiz, ficha, idAprendiz }) => {
       updateActionsButtons(botonesDocumento);
     }
   }, [documentos, loading]);
+
+  useEffect(() => {
+    if (nuevoDocumento) {
+      refetchDocumentos();
+    }
+  }, [nuevoDocumento]);
+  useEffect(() => {
+    if (tiposDisponibles) {
+      onTiposDocumentos(tiposDisponibles);
+    }
+  }, [tiposDisponibles, onTiposDocumentos]);
+
+  const extraActionsDocumentos = {
+    admin: [
+      {
+        icon: DeleteOutlineOutlinedIcon,
+        color: ' #EC221F',
+        position: 'center',
+        action: handleEliminarDocumentoClick,
+        tooltip: 'Eliminar',
+      },
+      {
+        icon: ReplyIcon,
+        color: ' #29737D',
+        position: 'center',
+        action: handleNotificacionSolicitud,
+        tooltip: 'Solicitar nuevamente el documento',
+      },
+      {
+        icon: FileDownloadOutlinedIcon,
+        color: ' #39A900',
+        position: 'left',
+        action: handleDownloadDocumento,
+        tooltip: 'Descargar Documento',
+      },
+      {
+        id: 'estadoDocumento',
+        type: 'checkbox',
+        action: handleStateDocumentoClick,
+        tooltip: 'Aprobar',
+        otherTooltip: 'No aprobada',
+      },
+    ],
+
+    instructor: [
+      {
+        icon: ReplyIcon,
+        color: ' #29737D',
+        position: 'center',
+        action: handleNotificacionSolicitud,
+        tooltip: 'Solicitar nuevamente el documento',
+      },
+      {
+        icon: FileDownloadOutlinedIcon,
+        color: ' #39A900',
+        position: 'left',
+        action: handleDownloadDocumento,
+        tooltip: 'Descargar Documento',
+      },
+      {
+        id: 'estadoDocumento',
+        type: 'checkbox',
+        action: handleStateDocumentoClick,
+        tooltip: 'Aprobar',
+        otherTooltip: 'No aprobada',
+      },
+    ],
+  };
 
   return (
     !loading && (
@@ -133,6 +192,7 @@ const DocumentosInstructor = ({ idFichaAprendiz, ficha, idAprendiz }) => {
             'Fecha de ultima actulización ',
           ]}
           initialValue={['estadoDocumento']}
+          extraActions={extraActionsDocumentos}
         />
         {openEditarDocumento && (
           <FormEditarDocumento

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 
 import {
   Box,
@@ -26,14 +27,11 @@ import SelectField from '../../FormFields/SelectField';
 
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
-
 const FormEditarDocumento = ({
   open,
   onClose,
   idFichaAprendiz,
   documento,
-  isAprediz = false,
-  isInstructor = false,
   onEditarDocumento,
 }) => {
   // Verificar si el documento existe y tiene las propiedades necesarias
@@ -41,6 +39,11 @@ const FormEditarDocumento = ({
     console.error('No se proporcionó un documento válido');
     return null;
   }
+
+  const { roleUsuario } = useAuth();
+
+  const isAprendiz = roleUsuario === 'aprendiz';
+  const isInstructor = roleUsuario === 'instructor';
 
   const {
     control,
@@ -144,7 +147,7 @@ const FormEditarDocumento = ({
               disabled={true}
             />
 
-            {!isAprediz && (
+            {!isAprendiz && (
               <TextAreaField
                 name="observacion"
                 label="Observación"

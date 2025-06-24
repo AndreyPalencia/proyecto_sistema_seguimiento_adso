@@ -1,4 +1,3 @@
-import { useMediaQuery, useTheme } from '@mui/material';
 import { useSidebar } from '../../context/SidebarContext';
 import NavigationList from './NavigationList';
 import { CustomDrawer, SidebarContent } from './Sidebar.style';
@@ -13,12 +12,8 @@ import { CustomDrawer, SidebarContent } from './Sidebar.style';
  * @param {number} [props.drawerWidth=240] - Ancho del Drawer (sidebar).
  * @returns {JSX.Element} Devuelve el componente Sidebar con su contenido y funcionalidad.
  */
-const Sidebar = ({ drawerWidth = 240 }) => {
-  const theme = useTheme();
+const Sidebar = ({ drawerWidth = 100, isMobile }) => {
   const { isSidebarVisible, toggleSidebar } = useSidebar();
-
-  //isMovile = Determina si la pantalla es móvil (menos de 600px).
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   /**
    * Define si el Drawer está abierto:

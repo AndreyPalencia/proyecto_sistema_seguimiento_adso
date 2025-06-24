@@ -154,7 +154,7 @@ const FormEditarAgendamientoFicha = ({
               color="primary"
               name="Guardar"
             >
-              Actualizar
+              Guardar
             </Button>
           </Box>
         </form>

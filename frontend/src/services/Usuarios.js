@@ -1,5 +1,25 @@
 import { apiClient } from './Axios';
 
+/**
+ * Crea un nuevo usuario.
+ *
+ * @param {Object} formData - Objeto con los datos del usuario a crear.
+ * @returns {Promise<Object>} - Devuelve el usuario creado por el servidor.
+ */
+export const crearUsuario = async (formData) => {
+  // console.log(formData, 'formData');
+  // for (let [key, value] of formData.entries()) {
+  //   console.log(key, value, 'datall');
+  // }
+
+  const response = await apiClient.post('/usuarios', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data.data;
+};
+
 export const buscarUsuario = async (filtros) => {
   const { data } = await apiClient.post('/usuarios/buscar', filtros);
   return data.data;
@@ -21,26 +41,6 @@ export const obtenerUsuarios = async () => {
 };
 
 /**
- * Crea un nuevo usuario.
- *
- * @param {Object} formData - Objeto con los datos del usuario a crear.
- * @returns {Promise<Object>} - Devuelve el usuario creado por el servidor.
- */
-export const crearUsuario = async (formData) => {
-  // console.log(formData, 'formData');
-  // for (let [key, value] of formData.entries()) {
-  //   console.log(key, value, 'datall');
-  // }
-
-  const response = await apiClient.post('/usuarios', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-  return response.data.data;
-};
-
-/**
  * Modifica los datos de un usuario existente.
  *
  * @param {number|string} idUsuario - ID del usuario a modificar.
@@ -50,4 +50,11 @@ export const crearUsuario = async (formData) => {
 export const modificarUsuario = async (idUsuario, formData) => {
   const { data } = await apiClient.put(`/usuarios/${idUsuario}`, formData);
   return data;
+};
+
+export const modificarEstadoUsuario = async (idUsuario, estadoUsuario) => {
+  const { data } = await apiClient.patch(`/usuarios/${idUsuario}/estado`, {
+    estadoUsuario,
+  });
+  return data.data;
 };

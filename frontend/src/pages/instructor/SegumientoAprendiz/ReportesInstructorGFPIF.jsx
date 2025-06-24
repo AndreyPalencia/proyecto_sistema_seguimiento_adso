@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useActionsButtonsContext } from '../../../context/ActionsButtonsContext';
+import { useAuth } from '../../../context/AuthContext';
 
 import { Box, Divider, IconButton, Tooltip, Typography } from '@mui/material';
 
@@ -12,6 +13,7 @@ import { useEliminarReporteGFPIFAprendiz } from '../../../hook/reportesGFPIF/use
 import { useEditarReporteGFPIFAprendiz } from '../../../hook/reportesGFPIF/useEditarReporteGFPIFAprendiz';
 import { useReportesGFPIFAprendiz } from '../../../hook/reportesGFPIF/useReportesGFPIFAprendiz';
 import { useAprendicesByRuta } from '../../../hook/useAprendicesByRuta';
+import { useAprendizByRuta } from '../../../hook/useAprendizByRuta';
 
 import FormReporteGFIPF from '../../../components/Forms/FormularioReporteGFIPF/FormReporteGFIPF';
 
@@ -21,14 +23,27 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 const ReportesInstructorGFPIF = () => {
-  const { idAprendiz, idFicha } = useParams();
+  const { idAprendiz, idAprendizAdmin, idFicha } = useParams();
+
+  const { roleUsuario } = useAuth();
+
+  const idAprendizConsulta = idAprendiz || idAprendizAdmin;
+
   const [openCrearReporte, setCrearReporte] = useState(false);
   const [openEditarReporte, setOpenEditarReporte] = useState(false);
   const [reporteSelecionado, setReporteSelecionado] = useState(null);
 
   const { updateActionsButtons } = useActionsButtonsContext();
 
-  const { aprendiz } = useAprendicesByRuta(idAprendiz);
+  const { aprendiz: aprendizRuta, datosCargados: cargadoRuta } =
+    useAprendicesByRuta(idAprendizConsulta, 'aprendiz');
+
+  const { aprendizInfo: aprendizContexto, datosCargados: cargadoContexto } =
+    useAprendizByRuta('aprendiz');
+
+  const isAdmin = roleUsuario === 'admin';
+  const aprendiz = isAdmin ? aprendizContexto : aprendizRuta;
+
   const idFichaAprendiz = aprendiz?.idFichaAprendiz;
 
   const { loading, reportes, refetchReportesGFPIF } = useReportesGFPIFAprendiz({
@@ -95,13 +110,6 @@ const ReportesInstructorGFPIF = () => {
 
   const botonesReportes = [
     {
-      icon: DrawOutlinedIcon,
-      color: ' #29737D',
-      position: 'center',
-      action: handleEditarReporteClick,
-      tooltip: 'Editar',
-    },
-    {
       icon: FileDownloadOutlinedIcon,
       color: ' #39A900',
       position: 'left',
@@ -114,6 +122,13 @@ const ReportesInstructorGFPIF = () => {
       position: 'center',
       action: handleEliminarReporte,
       tooltip: 'Eliminar',
+    },
+    {
+      icon: DrawOutlinedIcon,
+      color: ' #29737D',
+      position: 'center',
+      action: handleEditarReporteClick,
+      tooltip: 'Editar',
     },
   ];
 
@@ -166,7 +181,7 @@ const ReportesInstructorGFPIF = () => {
             <FormReporteGFIPF
               idFichaAprendiz={idFichaAprendiz}
               idFicha={idFicha}
-              idAprendiz={idAprendiz}
+              idAprendiz={idAprendizAdmin}
               open={openCrearReporte || openEditarReporte}
               onClose={handleCloseFormulario}
               onNuevoReporte={handleNuevoReporte}

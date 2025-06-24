@@ -30,18 +30,19 @@ export const CustomDrawer = styled(Drawer, {
     position: 'relative',
     backgroundColor: theme.palette.background.default,
     borderRight: 0,
-    height: '100vh', // ✅ para que Sidebar ocupe toda la pantalla
-    display: 'flex', // ✅ permite que SidebarContent se expanda
+    height: '100vh',
+    display: 'flex',
     flexDirection: 'column',
-  },
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.standard,
-  }),
-  '& .css-o140if-MuiPaper-root-MuiDrawer-paper': {
-    borderRight: 0,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.easeInOut, // << más suave
+      duration: isCollapsed
+        ? theme.transitions.duration.leavingScreen // al colapsar
+        : theme.transitions.duration.enteringScreen, // al expandir
+    }),
+    overflowX: 'hidden',
   },
 }));
+
 
 //SidebarContent: Contenedor del contenido del sidebar.
 export const SidebarContent = styled(Box)({
