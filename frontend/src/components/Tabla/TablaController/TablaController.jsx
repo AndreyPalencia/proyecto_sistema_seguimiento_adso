@@ -5,7 +5,7 @@ import { Box, IconButton, Tooltip } from '@mui/material';
 
 import { useTabla } from '../../../context/TablaContext';
 import { FiList, FiGrid } from 'react-icons/fi';
-import { ViewChangeButton, BoxFilter } from './TabalController.style';
+import { ViewChangeButton, BoxFilter } from './TablaController.style';
 
 /**
  * `TablaController`
