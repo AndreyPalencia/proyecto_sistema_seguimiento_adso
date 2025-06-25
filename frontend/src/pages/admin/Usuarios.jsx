@@ -228,16 +228,7 @@ const Usuarios = () => {
               rolDefault="instructor"
               onSuccess={handleUsuarioSuccess}
               onClose={handleCreateUsuario}
-            >
-              <Button
-                type="submit"
-                color="primary"
-                variant="contained"
-                sx={{ margin: '2rem 0 1rem 0' }}
-              >
-                Guardar
-              </Button>
-            </FormUsuario>
+            ></FormUsuario>
           </DialogContent>
         </Dialog>
       }
