@@ -50,6 +50,7 @@ const InformationPanelFile = ({
   isLast = false,
   disableClick = false,
   fetchUpdate,
+  imageSrc,
 }) => {
   //Estado para manejar la apertura del modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,6 +68,7 @@ const InformationPanelFile = ({
         item={item}
         isLast={isLast}
         onToggleDialog={handleModalOpen}
+        imageSrc={imageSrc}
       />
       <EditInfoModalFile
         name={name}

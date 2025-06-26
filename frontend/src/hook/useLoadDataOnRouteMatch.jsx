@@ -74,6 +74,12 @@ export const useLoadDataOnRouteMatch = () => {
       fetchData: fetchAprendicesIfNotLoaded,
     },
     {
+      pattern:
+        /\/admin\/rol\/aprendiz\/(\d+)\/ficha\/(\d+)\/reportes-gfpi-f\/?$/,
+      param: ['idAprendiz', 'idFicha'], // importa el orden
+      fetchData: fetchAprendizIfNotLoaded,
+    },
+    {
       pattern: /\/ficha\/(\d+)\/aprendiz\/(\d+)\/reportes-gfpi-f\/?$/,
       param: ['idFicha', 'idAprendiz'],
       fetchData: fetchAprendicesIfNotLoaded,

@@ -74,7 +74,9 @@ const CalendarioFichas = () => {
     agregarEvento,
     actualizarEvento,
     buscarEventoPorPropiedad,
-  } = useAgendamientoCalendar({ idInstructorConsultas });
+  } = useAgendamientoCalendar({ idInstructor: idInstructorConsultas });
+
+  console.log(eventosFormateados)
 
   const eventosSolicitados = buscarEventoPorPropiedad(
     'estadoVisita',
@@ -166,7 +168,14 @@ const CalendarioFichas = () => {
         </Box>
       </Box>
 
-      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', width: '100%' }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
         {estadoSelecionado === 'Calendario' && (
           <CalendarioBase
             calendarRef={calendarioRef}

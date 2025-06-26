@@ -78,7 +78,7 @@ export const downloadReporteAprendicesAgendamientosNoRelizados = async (
         .font('Helvetica-Bold')
         .fontSize(16)
         .text(
-          `Reporte Aprendices Pendientes Por Visitas: ${
+          `Reporte Aprendices Agendamientos No Realizado: ${
             ficha.nombrePrograma
           } - ${ficha.numeroFicha} ${
             fechaInicioReporte && fechaFinReporte

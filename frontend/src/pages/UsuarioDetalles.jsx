@@ -6,7 +6,8 @@ import { Box, Typography } from '@mui/material';
 
 import { obtenerUsuario, modificarUsuario } from '../services/Usuarios';
 
-import InformationPanelFile from '../components/Info/InformationPanelField';
+//import InformationPanelFile from '../components/Info/InformationPanelField';
+import InformationPanelFirma from '../components/Info/InformationPanelFirma';
 import InfoCard from '../components/Info/InfoCard/InfoCard';
 import InformationPanel from '../components/Info/InformationPanel';
 import SectionInfo from '../components/Info/SectionInfo/SectionInfo';
@@ -156,7 +157,7 @@ const UsuarioDetalles = () => {
       {isAdminViewingOtherUser && (
         <Typography variant="body2" color="text.secondary" sx={{ mb: 0 }}>
           Estás visualizando el perfil de un{' '}
-          {idAprendizAdmin ? 'instructor' : 'aprendiz'} como administrador.
+          {idAprendizAdmin ? 'aprendiz' : 'instructor'} como administrador.
         </Typography>
       )}
       <SectionInfo
@@ -232,11 +233,11 @@ const UsuarioDetalles = () => {
         titulo="Firma"
         icono={<BorderColorIcon className="icon-section-info" />}
       >
-        <InformationPanelFile
+
+        <InformationPanelFirma
           name="firma"
           titulo="Firma"
           item={infoUsuario?.firma}
-          isLast={true}
           fetchUpdate={handleActualizacionFirma}
         />
       </SectionInfo>

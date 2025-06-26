@@ -89,7 +89,7 @@ const FormUploadFile = ({
       </DialogContent>
 
       <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
-        <Button onClick={onClose} color="success">
+        <Button onClick={onClose} color='secondary' variant='outlined'>
           Cerrar
         </Button>
         {actions}

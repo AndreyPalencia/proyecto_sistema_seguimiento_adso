@@ -36,7 +36,6 @@ routes.use(
 );
 routes.use(
   '/archivos-generados',
-  verifyToken(['admin', 'instructor']),
   routerArchivosGenerados
 );
 
