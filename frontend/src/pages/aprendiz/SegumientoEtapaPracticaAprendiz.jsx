@@ -73,7 +73,7 @@ const SegumientoEtapaPracticaAprendiz = () => {
         fontSize="28px"
         fontWeight="bold"
       >
-        Segumiento al aprendiz
+        Seguimiento al aprendiz
       </Typography>
 
       <Box

@@ -60,7 +60,13 @@ const InfoCard = ({ titulo, item, isLast, onToggleDialog }) => {
           variant="subtitle1"
           fontWeight="400"
           color="#828282"
-          sx={{ width: '200px', textAlign: 'start' }}
+          sx={{
+            width: { xs: '100%', sm: '200px' }, // ancho completo en celular, fijo en desktop
+            textAlign: 'start',
+            whiteSpace: { xs: 'normal', sm: 'nowrap' }, // permite saltos de línea en celular
+            overflow: { xs: 'visible', sm: 'hidden' }, // no recorta en celular
+            textOverflow: { xs: 'unset', sm: 'ellipsis' }, // truncar solo en sm o mayor
+          }}
         >
           {item}
         </Typography>

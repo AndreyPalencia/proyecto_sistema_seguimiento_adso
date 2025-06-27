@@ -27,7 +27,7 @@ const handleMulterError = (error, maxFileSize, allowedExtensions) => {
     } MB`,
     LIMIT_PART_COUNT: 'Se excedió el número máximo de partes en la subida',
     LIMIT_FILE_COUNT: 'Se excedió el número máximo de archivos',
-    LIMIT_UNEXPECTED_FILE: `Tipo de archivo inesperado. Se espera los siguiente tipos de archivos${allowedExtensions.join(
+    LIMIT_UNEXPECTED_FILE: `Tipo de archivo inesperado. Se espera los siguiente tipos de archivos: ${allowedExtensions.join(
       ', '
     )}`,
     LIMIT_FIELD_KEY: 'Clave de campo no válida',

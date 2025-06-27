@@ -5,6 +5,7 @@ import {
   downloadBlob,
   getFileNameFromContentDisposition,
 } from '../utils/responseUtils';
+
 export const descarReporteFichaGeneral = async (datos) => {
   const response = await apiFileClient.post(
     '/archivos-generados/reporte-ficha-aprendices',
@@ -139,4 +140,31 @@ export const descargarReporteRutaAgendamientosMaps = async (
   downloadBlob(blob, fileName);
 
   return response.data;
+};
+
+export const obtenerFirmaUsuario = async (nombreArchivo) => {
+  const response = await apiFileClient.get(
+    `/archivos-generados/imagen/${nombreArchivo}`,
+    {
+      responseType: 'blob',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }
+  );
+
+  const contentType = response.headers['content-type'];
+
+  const blob = new Blob([response.data], { type: contentType });
+
+  // Verificamos si es un error en formato JSON
+  try {
+    const text = await readBlobAsText(blob);
+    const json = JSON.parse(text);
+    throw new Error(json.message || 'Error al cargar la firma');
+  } catch {
+    // No es JSON => es imagen válida
+  }
+
+  return URL.createObjectURL(blob); // Retorna la URL temporal
 };

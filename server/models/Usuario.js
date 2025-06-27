@@ -120,7 +120,7 @@ Usuario.init(
     },
     firma: {
       type: DataTypes.STRING(255),
-      defaultValue: 'No foto',
+      //defaultValue: 'No foto',
       allowNull: true,
     },
     rol: {

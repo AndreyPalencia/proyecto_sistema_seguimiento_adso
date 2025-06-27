@@ -27,7 +27,7 @@ const ReportesInstructorGFPIF = () => {
 
   const { roleUsuario } = useAuth();
 
-  const idAprendizConsulta = idAprendiz || idAprendizAdmin;
+  const idAprendizConsulta = parseInt(idAprendiz || idAprendizAdmin);
 
   const [openCrearReporte, setCrearReporte] = useState(false);
   const [openEditarReporte, setOpenEditarReporte] = useState(false);
@@ -42,7 +42,7 @@ const ReportesInstructorGFPIF = () => {
     useAprendizByRuta('aprendiz');
 
   const isAdmin = roleUsuario === 'admin';
-  const aprendiz = isAdmin ? aprendizContexto : aprendizRuta;
+  const aprendiz = isAdmin ? aprendizRuta || aprendizContexto : aprendizRuta;
 
   const idFichaAprendiz = aprendiz?.idFichaAprendiz;
 
@@ -131,6 +131,10 @@ const ReportesInstructorGFPIF = () => {
       tooltip: 'Editar',
     },
   ];
+
+  if (!cargadoRuta && !cargadoContexto) {
+    return <Typography>Cargando datos del aprendiz...</Typography>;
+  }
 
   return (
     <Box component="main" className="box-main-info" sx={{ marginBottom: 2 }}>

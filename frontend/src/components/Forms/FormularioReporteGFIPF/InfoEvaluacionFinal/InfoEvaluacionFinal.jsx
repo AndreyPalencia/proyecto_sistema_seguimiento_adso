@@ -13,12 +13,12 @@ const EvaluacionDesempeno = ({ control, setValue, watch, isEdit = false }) => {
     control,
     name: 'evaluacionFinal.reconocimientosEspeciales',
   });
-  
+
   // Establecer los valores en el formulario una vez que los datos estén disponibles
   useEffect(() => {
     if (!isEdit) {
       setValue('evaluacionFinal.juicioEvaluacion', true);
-      setValue('evaluacionFinal.cuidadElaboracion', 'Nombre de ciudad');
+      setValue('evaluacionFinal.cuidadElaboracion', '');
       setValue('evaluacionFinal.reconocimientosEspeciales', false);
       setValue('evaluacionFinal.reconocimientosEspecialesLista', '');
       setValue(
@@ -89,6 +89,7 @@ const EvaluacionDesempeno = ({ control, setValue, watch, isEdit = false }) => {
         multiline
         name="evaluacionFinal.cuidadElaboracion"
         control={control}
+        placeholder="Nombre de la cuidad"
       />
     </Box>
   );
