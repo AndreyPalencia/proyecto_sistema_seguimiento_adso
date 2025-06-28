@@ -76,8 +76,6 @@ const CalendarioFichas = () => {
     buscarEventoPorPropiedad,
   } = useAgendamientoCalendar({ idInstructor: idInstructorConsultas });
 
-  console.log(eventosFormateados)
-
   const eventosSolicitados = buscarEventoPorPropiedad(
     'estadoVisita',
     'Solicitud'

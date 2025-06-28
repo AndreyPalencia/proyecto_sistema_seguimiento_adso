@@ -4,25 +4,9 @@ import { Controller } from 'react-hook-form';
 /**
  * Componente `InputField`, reutilizable basado en Material UI y react-hook-form.
  *
- * Permite crear un campo de entrada con adornos (íconos) al inicio o al final.
- *
- * @param {object} props - Propiedades que se pasarán al componente `TextField` de MUI.
- * @param {string} props.name - Nombre del campo, usado por react-hook-form.
- * @param {string} props.label - Etiqueta del campo.
- * @param {object} props.control - Objeto `control` de react-hook-form.
- * @param {React.ReactNode} [props.startIcon] - Ícono opcional al inicio del campo.
- * @param {React.ReactNode} [props.endIcon] - Ícono opcional al final del campo.
- * @param {function} [props.onClickIcon] - Función ejecutada al hacer clic en el `endIcon`.
- * @param {string|number} [props.defaultValue=''] - Valor por defecto del campo.
- * @param {boolean} [props.fullWidth=true] - Define si el campo debe ocupar todo el ancho.
- * @param {boolean} [props.required=false] - Indica si el campo es obligatorio.
- * @param {boolean} [props.disabled=false] - Desactiva el campo si es `true`.
- * @param {function} [props.validate] - Función opcional para validación personalizada que se pasará a `react-hook-form`.
- * @param {object} [props] - Propiedades adicionales que se pasarán al componente `TextField` de MUI.
- *
- * @returns {JSX.Element} Un campo de texto con adornos opcionales y compatible con react-hook-form.
+ * @param {object} props
+ * @returns {JSX.Element}
  */
-
 const InputField = ({
   name,
   label,
@@ -35,8 +19,11 @@ const InputField = ({
   required = false,
   disabled = false,
   validate,
+  type,
   ...props
 }) => {
+  const isNumberType = type === 'number';
+
   const adornments = {
     startAdornment: startIcon ? (
       <InputAdornment position="start">{startIcon}</InputAdornment>
@@ -57,10 +44,22 @@ const InputField = ({
       name={name}
       control={control}
       defaultValue={defaultValue}
-      rules={{ validate }}
+      rules={{
+        validate: (value) => {
+          // Validar números naturales si es tipo number
+          if (isNumberType) {
+            if (value === '') return true;
+            if (!Number.isInteger(value) || value < 0) {
+              return 'Solo se permiten números naturales';
+            }
+          }
+          // Validación adicional externa
+          return validate ? validate(value) : true;
+        },
+      }}
       render={({ field, fieldState }) => (
         <TextField
-          {...field} //react-hook-form ya maneja `onChange`
+          {...field}
           label={label}
           error={!!fieldState.error}
           helperText={fieldState.error?.message || ''}
@@ -68,6 +67,26 @@ const InputField = ({
           fullWidth={fullWidth}
           required={required}
           disabled={disabled}
+          type={type}
+          onWheel={isNumberType ? (e) => e.target.blur() : undefined}
+          onKeyDown={(e) => {
+            if (isNumberType && ['e', 'E', '+', '-'].includes(e.key)) {
+              e.preventDefault();
+            }
+          }}
+          onChange={(e) => {
+            const value = e.target.value;
+            field.onChange(
+              isNumberType ? (value === '' ? '' : Number(value)) : value
+            );
+          }}
+          onBlur={(e) => {
+            const value = e.target.value;
+            field.onChange(
+              isNumberType ? (value === '' ? '' : Number(value)) : value
+            );
+            field.onBlur();
+          }}
           {...props}
         />
       )}

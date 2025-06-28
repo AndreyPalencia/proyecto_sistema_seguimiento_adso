@@ -113,9 +113,18 @@ const UsuarioDetalles = () => {
 
   const handleActualizacionFirma = async (formFirma) => {
     try {
-      // { archivo } = archivoFirma;
+      const archivo = formFirma.archivo// por si viene como array
+      if (!archivo) {
+        throw new Error('No file selected.');
+      }
+
       const formData = new FormData();
-      formData.append('archivo', formFirma.archivo);
+      formData.append('archivo', archivo);
+
+      // // 🔍 Verificar qué contiene
+      // for (let [key, value] of formData.entries()) {
+      //   console.log(`${key}:`, value);
+      // }
 
       const respuesta = await modificarUsuario(idUsuario, formData);
       setInfoUsuario(respuesta);

@@ -11,6 +11,9 @@ const formUsuarios = z.object({
     .string()
     .min(6, 'El número de documento debe tener al menos 6 dígitos.')
     .regex(/^\d+$/, 'El número de documento debe contener solo números')
+    .refine((val) => Number(val) <= 4294967295, {
+      message: 'El número de documento no puede ser mayor a 4,294,967,295.',
+    })
     .transform((val) => Number(val)),
 
   nombre: z.string().min(1, 'El nombre es obligatorio'),

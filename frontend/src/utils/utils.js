@@ -211,3 +211,13 @@ export const getUtcSlotFromOffset = ({
     end: `${dateStr}T${endTime}`,
   };
 };
+
+export const toTitleCaseWithSpaces = (str) => {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ') // evita dobles espacios
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};

@@ -49,7 +49,7 @@ const FormUploadFile = ({
    * @param {Object} event - El evento de cambio del input de tipo archivo.
    */
   const handleFileChange = (event) => {
-    console.log('Archivo seleccionado:', event.target.files);
+    //console.log('Archivo seleccionado:', event.target.files);
     const file = event.target.files[0];
     setSelectedFile(file);
     onFileChange?.(file); // Llama a la función onFileChange con el archivo seleccionado
@@ -89,7 +89,7 @@ const FormUploadFile = ({
       </DialogContent>
 
       <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
-        <Button onClick={onClose} color='secondary' variant='outlined'>
+        <Button onClick={onClose} color="secondary" variant="outlined">
           Cerrar
         </Button>
         {actions}

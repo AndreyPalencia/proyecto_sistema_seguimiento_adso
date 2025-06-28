@@ -7,7 +7,7 @@ const formUserLogin = z.object({
   tipoDocumento: z.enum(tiposDeDocumento, {
     errorMap: () => ({ message: 'Seleccione un tipo de documento válido' }),
   }),
-  numeroDocumento: z
+  numeroDocumento: z.coerce
     .string()
     .min(6, 'El número de documento debe tener al menos 6 caracteres'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),

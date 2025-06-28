@@ -1,27 +1,34 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAlert } from '../../context/AlertContext';
-import { cambiarPassword } from '../../services/Auth';
+import { cambiarPassword, cambiarPasswordAdmin } from '../../services/Auth';
 
 /**
- * Custom hook to handle password change.
- * @param {function} showAlert - function to display alerts in UI
- * @param {function} cambiarPassword - async function to call API to change password
+ * Custom hook to handle password change with optional mode.
  */
 const useCambiarPassword = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const { showAlert } = useAlert();
 
-  const changePassword = async (formData) => {
+  /**
+   * Changes password based on the `opcion` type.
+   * @param {Object} formData - Form data containing passwords
+   * @param {'admin' | 'normal'} [opcion] - Optional mode to determine which API to call
+   */
+  const changePassword = async (formData, opcion = 'normal') => {
     try {
       setLoading(true);
-      const data = await cambiarPassword(formData);
+
+      // Elegir servicio según la opción
+      const data =
+        opcion === 'admin'
+          ? await cambiarPasswordAdmin(formData)
+          : await cambiarPassword(formData);
 
       if (data.success) {
         showAlert({
-          message: 'Contraseña Cambiada Correctamente',
+          message: 'Contraseña cambiada correctamente',
           variant: 'standard',
           severity: 'success',
         });
@@ -30,7 +37,7 @@ const useCambiarPassword = () => {
     } catch (error) {
       console.error('Error al cambiar la contraseña:', error);
       showAlert({
-        message: `Ocurro un error: ${error.message}`,
+        message: `Ocurrió un error: ${error.message}`,
         variant: 'standard',
         severity: 'error',
       });

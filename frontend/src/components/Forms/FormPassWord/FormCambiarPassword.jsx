@@ -13,7 +13,11 @@ import { useCambiarPassword } from '../../../hook/auth/useCambiarPassword';
 import PasswordField from '../../FormFields/PasswordField';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import formCambiarPassword from '../../../schemas/formPassword'; // Nuevo schema de validación
+import formCambiarPassword, {
+  formRecuperarPassword,
+} from '../../../schemas/formPassword'; // Nuevo schema de validación
+import { useAuth } from '../../../context/AuthContext';
+import { useParams } from 'react-router-dom';
 
 /**
  * Diálogo para cambiar la contraseña del usuario.
@@ -25,8 +29,22 @@ import formCambiarPassword from '../../../schemas/formPassword'; // Nuevo schema
 const FormCambiarPassword = ({ open, onClose }) => {
   const { loading, changePassword } = useCambiarPassword();
 
+  const { roleUsuario } = useAuth();
+
+  const { idAprendizAdmin, idInstructorAdmin } = useParams();
+
+  const isAdmin = roleUsuario === 'admin';
+
+  const perfilUsuario = idAprendizAdmin || idInstructorAdmin;
+
+  const isAdminChangingAnotherUser = isAdmin && perfilUsuario;
+
+  const schemaToUse = isAdminChangingAnotherUser
+    ? formRecuperarPassword
+    : formCambiarPassword;
+
   const { control, handleSubmit, reset } = useForm({
-    resolver: zodResolver(formCambiarPassword),
+    resolver: zodResolver(schemaToUse),
     defaultValues: {
       currentPassword: '',
       newPassword: '',
@@ -37,11 +55,18 @@ const FormCambiarPassword = ({ open, onClose }) => {
   const onSubmit = async (formData) => {
     console.log('pass', formData);
     const { confirmPassword, ...rest } = formData;
-    await changePassword(rest);
-    if (loading) {
-      reset();
-      onClose();
+    const formDataUsuario = {
+      newPassword: rest?.newPassword,
+      idUsuario: perfilUsuario,
+    };
+    if (!isAdmin) {
+      await changePassword(rest);
+    } else {
+      await changePassword(formDataUsuario, 'admin');
     }
+
+    reset();
+    onClose();
   };
 
   useEffect(() => {
@@ -58,13 +83,15 @@ const FormCambiarPassword = ({ open, onClose }) => {
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
         >
-          <PasswordField
-            name="currentPassword"
-            label="Contraseña actual"
-            control={control}
-            required
-            variant="outlined"
-          />
+          {!isAdmin && !perfilUsuario && (
+            <PasswordField
+              name="currentPassword"
+              label="Contraseña actual"
+              control={control}
+              required
+            />
+          )}
+
           <PasswordField
             name="newPassword"
             label="Nueva contraseña"

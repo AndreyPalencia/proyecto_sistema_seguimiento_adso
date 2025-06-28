@@ -9,12 +9,13 @@ export const validateUserUpdate = async (req, res, next) => {
   const { numeroDocumento, correoElectronico } = req.body;
   const { idUsuario } = req.params; // ID del usuario (solo para actualización)
 
+  
   // Si no se proporcionan numeroDocumento ni correoElectronico, saltamos la validación
-  if (!numeroDocumento || !correoElectronico) {
-    if (req.file) deleteFileSafely(req.file.path);
-    return next();
+  if (!numeroDocumento && !correoElectronico) {
+    console.log(req.body.firma, 'Dato sin validar, se omite validación');
+    return next(); // NO eliminar archivo, porque puede venir por ejemplo solo firma
   }
-
+  
   try {
     // Condiciones para evitar conflictos al comparar solo los campos presentes
     const whereCondition = {

@@ -33,6 +33,7 @@ const TablaContainerLista = ({
   header,
   extraActions,
   rowActions,
+  formatCellValue,
 }) => {
   // Usar el hook personalizado SIN filtros
   const { tablaData, dataRows, isPaginador } = useTablaLogic({
@@ -50,6 +51,7 @@ const TablaContainerLista = ({
         selectedValue={selectedValue}
         extraActions={extraActions}
         rowActions={rowActions}
+        formatCellValue={formatCellValue}
       />
 
       {/* Paginador */}

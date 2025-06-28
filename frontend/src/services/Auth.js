@@ -57,6 +57,12 @@ export const cambiarPassword = async (formaData) => {
   return data;
 };
 
+export const cambiarPasswordAdmin = async (formaData) => {
+  const { data } = await apiClient.patch('/auth/change-password-admin', formaData);
+  console.log(data);
+  return data;
+};
+
 /**
  * Valida la sesión del usuario autenticado y retorna su información.
  *

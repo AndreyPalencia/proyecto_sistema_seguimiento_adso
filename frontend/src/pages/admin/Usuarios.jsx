@@ -18,6 +18,7 @@ import { useEditarEstadoUsuario } from '../../hook/usuarios/useEditarEstadoUsuar
 
 import { TablaCheckBox } from '../../components/Tabla/Tabla';
 import FormUsuario from '../../components/Forms/FormUsuarios/FormUsuario';
+import FullScreenLoader from '../../components/Feedback/FullScreenLoader';
 
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';

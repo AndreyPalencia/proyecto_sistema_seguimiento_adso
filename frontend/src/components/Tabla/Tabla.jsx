@@ -152,6 +152,7 @@ export const TablaLista = ({
   header,
   extraActions,
   rowActions,
+  formatCellValue,
 }) => {
   return (
     <>
@@ -162,6 +163,7 @@ export const TablaLista = ({
         header={header}
         extraActions={extraActions}
         rowActions={rowActions}
+        formatCellValue={formatCellValue}
       />
     </>
   );
