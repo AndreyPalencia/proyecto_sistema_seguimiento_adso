@@ -20,6 +20,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+
 /**
  * Componente `Header`
  *
@@ -126,6 +128,15 @@ const Header = () => {
             }}
           >
             <AccountCircleIcon sx={{ fontSize: 28 }} />
+          </IconButton>
+          <IconButton
+            aria-label="perfil"
+            sx={{ color: 'text.primary' }}
+            onClick={() => {
+              window.open('https://doc.sistemasaep.com/auth/login');
+            }}
+          >
+            <HelpOutlineIcon sx={{ fontSize: 30 }} />
           </IconButton>
         </HeaderBox>
       </Toolbar>

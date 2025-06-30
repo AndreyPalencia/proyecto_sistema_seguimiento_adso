@@ -10,7 +10,7 @@ import {
 /**
  * `ConfirmDialog`
  *
- * Componente de cuadro de diálogo de confirmación reutilizable. 
+ * Componente de cuadro de diálogo de confirmación reutilizable.
  * Muestra un mensaje de advertencia con opciones para confirmar o cancelar una acción.
  *
  * @param {Object} props - Propiedades del componente.
@@ -44,13 +44,19 @@ const ConfirmDialog = ({ open, title, content, onConfirm, onCancel }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} color="inherit" sx={{ paddingX: 3 }}>
+        <Button
+          onClick={onCancel}
+          color="inherit"
+          variant="outlined"
+          sx={{ paddingX: 3 }}
+        >
           Cancelar
         </Button>
         <Button
           onClick={onConfirm}
           color="error"
           variant="contained"
+
           sx={{
             backgroundColor: '#EC221F',
             '&:hover': {
