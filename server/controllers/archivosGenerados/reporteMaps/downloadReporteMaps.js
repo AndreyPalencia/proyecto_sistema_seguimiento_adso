@@ -12,11 +12,11 @@ const { GOOGLE_API_KEY } = process.env;
 export const downloadReporteMaps = async (req, res) => {
   try {
     const { idInstructor } = req.params;
-    const { fechaBusqueda } = req.body;
+    const { fechaBusqueda, origin } = req.body;
+
 
     // Fetch data: origin, destination, waypoints, and appointments
     const {
-      origin,
       destination,
       waypoints,
       direccionesEmpresa,
@@ -24,31 +24,22 @@ export const downloadReporteMaps = async (req, res) => {
     } = await reporteAgendamientosMaps({ idInstructor, fechaBusqueda });
 
     // Get optimized route (polyline, order, etc.)
-    const { polyline, order, summary, legs } = await getOptimizedRoute({
+    const {
+      polyline,
+      order,
+      summary,
+      legs,
+      mapsUrl,
+      staticMapUrl,
+      originAddress,
+    } = await getOptimizedRoute({
       origin,
       destination,
       waypoints,
     });
 
-    // Prepare markers for Google Static Map
-    const markers = [];
-    if (origin) markers.push(`color:red|label:O|${origin}`);
-    if (order && waypoints.length) {
-      order.forEach((idx, i) => {
-        markers.push(`color:red|label:${i + 1}|${waypoints[idx]}`);
-      });
-    }
-    if (destination) markers.push(`color:red|label:D|${destination}`);
 
-    const markersParam = markers
-      .map((m) => `markers=${encodeURIComponent(m)}`)
-      .join('&');
-
-    // Build Google Static Map URL
-    const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=800x600&path=enc:${polyline}&${markersParam}&key=${GOOGLE_API_KEY}`;
-
-    // Fetch map image as arraybuffer
-    const mapImageResponse = await axios.get(mapUrl, {
+    const mapImageResponse = await axios.get(staticMapUrl, {
       responseType: 'arraybuffer',
     });
 
@@ -101,7 +92,7 @@ export const downloadReporteMaps = async (req, res) => {
 
     // Route information section
     const datosRuta = [
-      ['Origen', origin || 'No definido'],
+      ['Origen', originAddress || 'No definido'],
       ['Destino', destination || 'No definido'],
       ['Número de Paradas', waypoints.length.toString()],
       ['Total Agendamientos', agendamientosResultado.length.toString()],
@@ -162,79 +153,67 @@ export const downloadReporteMaps = async (req, res) => {
       Math.ceil(datosRuta.length / maxPairsPerRow) * rowHeightInfo +
       30;
 
-    // Generate Google Maps URL for the optimized route
-    let googleMapsUrl = '';
-    if (origin && destination) {
-      const waypointsStr = waypoints.length > 0 ? waypoints.join('|') : '';
-      googleMapsUrl = `https://www.google.com/maps/dir/${encodeURIComponent(
-        origin
-      )}${
-        waypointsStr ? `/${encodeURIComponent(waypointsStr)}` : ''
-      }/${encodeURIComponent(destination)}`;
-    }
-
     // Add Google Maps link section
-    // if (googleMapsUrl) {
-    //   doc
-    //     .font('Helvetica-Bold')
-    //     .fontSize(12)
-    //     .fillColor('blue')
-    //     .text('Enlace para Abrir Ruta en Google Maps:', xStart, y);
 
-    //   y += 20;
+    doc
+      .font('Helvetica-Bold')
+      .fontSize(12)
+      .fillColor('blue')
+      .text('Enlace para Abrir Ruta en Google Maps:', xStart, y);
 
-    //   doc
-    //     .font('Helvetica')
-    //     .fontSize(9)
-    //     .fillColor('blue')
-    //     .text(googleMapsUrl, xStart, y, {
-    //       width: availableWidth,
-    //       link: googleMapsUrl,
-    //       underline: true,
-    //     });
+    y += 20;
 
-    //   y += 25;
+    doc
+      .font('Helvetica')
+      .fontSize(9)
+      .fillColor('blue')
+      .text('Abrir en Google Maps', xStart, y, {
+        width: availableWidth,
+        link: mapsUrl,
+        underline: true,
+      });
+  
 
-    //   doc
-    //     .font('Helvetica-Oblique')
-    //     .fontSize(8)
-    //     .fillColor('gray')
-    //     .text(
-    //       'Copie y pegue este enlace en su navegador para abrir la ruta optimizada en Google Maps.',
-    //       xStart,
-    //       y,
-    //       {
-    //         width: availableWidth,
-    //         align: 'left',
-    //       }
-    //     );
+    y += 25;
 
-    //   y += 25;
-    // }
+    doc
+      .font('Helvetica-Oblique')
+      .fontSize(8)
+      .fillColor('gray')
+      .text(
+        'Copie y pegue este enlace en su navegador para abrir la ruta optimizada en Google Maps.',
+        xStart,
+        y,
+        {
+          width: availableWidth,
+          align: 'left',
+        }
+      );
+
+    y += 25;
 
     // Add a new page before the image to avoid overlapping or cut-off
-
 
     const imageOriginalWidth = 800;
     const imageOriginalHeight = 600;
     const imageAspectRatio = imageOriginalWidth / imageOriginalHeight;
-    
+
     const minBottomMargin = 40; // << raise bottom margin from default
     const imageMaxWidth = availableWidth;
     const imageMaxHeight = doc.page.height - y - minBottomMargin;
-    
+
     // Calculate optimal size with preserved aspect ratio
     let imageWidth = imageMaxWidth;
     let imageHeight = imageWidth / imageAspectRatio;
-    
+
     // If height overflows, scale down
     if (imageHeight > imageMaxHeight) {
       imageHeight = imageMaxHeight;
       imageWidth = imageHeight * imageAspectRatio;
     }
-    
+
     const imageX = xStart + (availableWidth - imageWidth) / 2;
-    
+
     // Draw title
     doc
       .font('Helvetica-Bold')
@@ -242,9 +221,9 @@ export const downloadReporteMaps = async (req, res) => {
       .text('Mapa de Ruta Optimizada', xStart, y, {
         align: 'center',
       });
-    
+
     y += 20;
-    
+
     // Draw image centered
     doc.image(mapImageResponse.data, {
       x: imageX,
@@ -252,9 +231,8 @@ export const downloadReporteMaps = async (req, res) => {
       width: imageWidth,
       height: imageHeight,
     });
-    
+
     y += imageHeight + 20; // you can increase this if needed
-    
 
     // New page for appointments table
     doc.addPage();

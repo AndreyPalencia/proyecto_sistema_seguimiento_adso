@@ -1,4 +1,5 @@
 import express from 'express';
+import { createUploadMiddleware } from '../../config/multerConfig.js';
 
 import { validateParamsIds } from '../../middlewares/validateParamsIds.js';
 import verifyToken from '../../middlewares/verifyToken.js';
@@ -10,16 +11,32 @@ import { updateFichaAprendiz } from '../../controllers/fichaAprendiz/updateFicha
 import { getAprendiesByFichas } from '../../controllers/fichaAprendiz/getAprendiesByFichas.js';
 import { getFichaAprenidizByFichaAndAprendiz } from '../../controllers/fichaAprendiz/getFichaAprenidizByFichaAndAprendiz.js';
 import { getAprendicesByEmpresa } from '../../controllers/fichaAprendiz/getAprendicesByEmpresa.js';
+import { createAprendicesFichasByExcel } from '../../controllers/fichaAprendiz/createAprendicesFichasByExcel.js';
 
 /* Rutas Agendamientos */
 
 const routerFichaAprendiz = express.Router();
+
+// Configuración para subida obligatoria (allowEmpty: false)
+const uploadRequired = createUploadMiddleware('temporal', {
+  allowedExtensions: ['.xlsx'],
+  maxFileSize: 4 * 1024 * 1024,
+  allowEmpty: true, // Requiere archivo obligatorio
+});
 
 //Crear una relación entre una ficha  y un aprendiz
 routerFichaAprendiz.post(
   '/',
   verifyToken(['admin', 'instructor']),
   createFichaAprendiz
+);
+
+//Crear relacion-aprendices y ficha por archivo xlsx o excel
+routerFichaAprendiz.post(
+  '/ficha/:idFicha/aprendices-excel',
+  verifyToken(['admin', 'instructor']),
+  uploadRequired,
+  createAprendicesFichasByExcel
 );
 
 //Obtener la relación entre una ficha  y un aprendiz  por [ID]
