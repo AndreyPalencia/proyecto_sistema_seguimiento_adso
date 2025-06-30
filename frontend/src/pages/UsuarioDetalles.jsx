@@ -113,7 +113,7 @@ const UsuarioDetalles = () => {
 
   const handleActualizacionFirma = async (formFirma) => {
     try {
-      const archivo = formFirma.archivo// por si viene como array
+      const archivo = formFirma.archivo; // por si viene como array
       if (!archivo) {
         throw new Error('No file selected.');
       }
@@ -242,7 +242,6 @@ const UsuarioDetalles = () => {
         titulo="Firma"
         icono={<BorderColorIcon className="icon-section-info" />}
       >
-
         <InformationPanelFirma
           name="firma"
           titulo="Firma"

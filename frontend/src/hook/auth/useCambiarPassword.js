@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAlert } from '../../context/AlertContext';
 import { cambiarPassword, cambiarPasswordAdmin } from '../../services/Auth';
 
@@ -7,6 +7,7 @@ import { cambiarPassword, cambiarPasswordAdmin } from '../../services/Auth';
  * Custom hook to handle password change with optional mode.
  */
 const useCambiarPassword = () => {
+  const { idAprendizAdmin, idInstructorAdmin } = useParams();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { showAlert } = useAlert();
@@ -32,6 +33,7 @@ const useCambiarPassword = () => {
           variant: 'standard',
           severity: 'success',
         });
+        if(idAprendizAdmin || idInstructorAdmin) return
         navigate('/auth/login');
       }
     } catch (error) {

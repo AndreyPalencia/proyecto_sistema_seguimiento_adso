@@ -19,6 +19,7 @@ import { useFichaById } from '../../hook/useFichaById';
 import { TablaLista } from '../../components/Tabla/Tabla';
 import FormCrearAprendizFicha from '../../components/Forms/FormCrearAprendizFicha/FormCrearAprendizFicha';
 import FormReporteGFIPF from '../../components/Forms/FormularioReporteGFIPF/FormReporteGFIPF';
+import FormUploadAprendices from '../../components/Forms/FormUploadAprendices/FormUploadAprendices';
 import { useCrearReporteGFPIFAprendiz } from '../../hook/reportesGFPIF/useCrearReporteGFPIFAprendiz';
 
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
@@ -28,6 +29,7 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 //import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import { TbReportAnalytics } from 'react-icons/tb';
+import { FaLink } from 'react-icons/fa';
 import { useDescargarDocumentosFicha } from '../../hook/useDescargarDocumentosFicha';
 
 function formatearFecha(fechaStr) {
@@ -97,6 +99,12 @@ const AprendicesFichas = () => {
 
   const handleCrearAprendiz = () => {
     setOpenCrearAprendiz((prev) => !prev);
+  };
+
+  const [openUploadAprendices, setUploadAprendices] = useState(false);
+
+  const handleUploadAprendices = () => {
+    setUploadAprendices((prev) => !prev);
   };
 
   // Manejar clic en un aprendiz
@@ -197,6 +205,27 @@ const AprendicesFichas = () => {
           {!loadingFicha && `${ficha?.nombrePrograma} - ${ficha?.numeroFicha}`}
         </Typography>
         <ButtonGroup sx={{ display: 'flex', gap: '10px' }}>
+          <Tooltip title="Enlace de formulario base">
+            <IconButton
+              aria-label="Enlace de formulario base"
+              onClick={() =>
+                window.open(
+                  'https://docs.google.com/forms/d/1xK8CndPFNKTa9mCzP4d91l47QpfqiwSwQ5tRPOiWTVI/copy',
+                  '_blank'
+                )
+              }
+            >
+              <FaLink style={{ fontSize: 20, color: '#39A900' }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Cargar aprendices">
+            <IconButton
+              aria-label="Cargar aprendices "
+              onClick={handleUploadAprendices}
+            >
+              <UploadFileIcon sx={{ fontSize: 26, color: ' #39A900' }} />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Agregar Usuario">
             <IconButton
               fontSize="59px"
@@ -206,11 +235,6 @@ const AprendicesFichas = () => {
               <PersonAddAlt1Icon sx={{ fontSize: 26, color: ' #39A900' }} />
             </IconButton>
           </Tooltip>
-          {/* <Tooltip title="Cargar aprendices">
-            <IconButton aria-label="Cargar aprendices ">
-              <UploadFileIcon sx={{ fontSize: 26, color: ' #39A900' }} />
-            </IconButton>
-          </Tooltip> */}
           <Tooltip title="Descargar">
             <IconButton
               aria-label="Descargar documentos"
@@ -267,6 +291,12 @@ const AprendicesFichas = () => {
           open={openCrearReporte}
           onClose={handleCrearReporte}
           onNuevoReporte={handleNuevoReporte}
+        />
+      )}
+      {openUploadAprendices && (
+        <FormUploadAprendices
+          open={openUploadAprendices}
+          onCloseFile={handleUploadAprendices}
         />
       )}
     </Box>

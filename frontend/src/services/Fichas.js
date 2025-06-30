@@ -68,6 +68,3 @@ export const getFichasByIdAprendizAndState = async (
 
   return data.data;
 };
-
-
-

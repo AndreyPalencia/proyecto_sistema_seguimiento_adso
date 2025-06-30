@@ -7,8 +7,6 @@ import { apiClient } from './Axios';
  * @returns {Promise<object>} - Respuesta con los datos del usuario y el token.
  */
 export const iniciarSesion = async (formData) => {
-  console.log('Hola');
-
   const { data } = await apiClient.post(`/auth/login`, formData);
   return data;
 };
@@ -58,7 +56,10 @@ export const cambiarPassword = async (formaData) => {
 };
 
 export const cambiarPasswordAdmin = async (formaData) => {
-  const { data } = await apiClient.patch('/auth/change-password-admin', formaData);
+  const { data } = await apiClient.patch(
+    '/auth/change-password-admin',
+    formaData
+  );
   console.log(data);
   return data;
 };

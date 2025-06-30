@@ -203,7 +203,6 @@ const FormUsuario = ({
             menuOptions={[
               { label: 'Instructor', value: 'instructor' },
               { label: 'Aprendiz', value: 'aprendiz' },
-              { label: 'Administrador', value: 'admin' },
             ]}
             disabled={roleUsuario === 'admin' ? false : true}
           />

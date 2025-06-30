@@ -5,9 +5,14 @@ import {
   DialogActions,
   Button,
   Box,
+  DialogTitle,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { useState } from 'react';
+
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 /**
  * `FormUploadFile`
@@ -57,13 +62,33 @@ const FormUploadFile = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          pb={5}
+        >
+          <Typography
+            sx={{ flexGrow: 1, textAlign: 'center', ml: 4 }}
+            variant="h6"
+          >
+            {titulo}
+          </Typography>
+          <Tooltip title="Cerrar formulario">
+            <IconButton
+              onClick={() => {
+                onClose();
+              }}
+            >
+              <CloseOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </DialogTitle>
       <DialogContent
         sx={{ display: 'flex', flexDirection: 'column', gap: 3, py: 4 }}
       >
-        <Typography variant="h6" align="center" fontWeight="bold">
-          {titulo}
-        </Typography>
-
         {children}
 
         <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
