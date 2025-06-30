@@ -37,6 +37,18 @@ export const getAprendicesByEmpresa = async (idEmpresa, idInstructor) => {
   return data.data;
 };
 
+export const createAprendicesFichasByExcel = async (idFicha, formData) => {
+  const { data } = await apiClient.post(
+    `/ficha-aprendiz/ficha/${idFicha}/aprendices-excel`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+  return data.data;
+};
 /**
  * Modifica la relacion de FichaAprendiz asociado a un aprendiz.
  *

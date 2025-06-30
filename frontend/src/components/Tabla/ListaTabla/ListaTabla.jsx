@@ -44,6 +44,7 @@ const ListaTabla = ({
   selectedValue,
   extraActions,
   rowActions,
+  formatCellValue,
 }) => {
   //Estado local para almacenar la lista de filas de la tabla.
   //Inicialmente se establece como un array vacío.
@@ -111,7 +112,13 @@ const ListaTabla = ({
                         align="left"
                         key={`cell-${cellIndex}`}
                       >
-                        {cell || ' '}
+                        {formatCellValue
+                          ? formatCellValue({
+                              key,
+                              value: cell,
+                              row: filaTabla,
+                            })
+                          : cell || ' '}
                       </TableCell>
                     ) : null
                   )}

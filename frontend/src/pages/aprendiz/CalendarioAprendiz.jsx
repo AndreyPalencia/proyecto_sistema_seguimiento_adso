@@ -12,6 +12,7 @@ import CalendarioBase from '../../components/Calendario/CalendarioBase';
 import CrearAgendamientoFichaAprendiz from '../../components/Calendario/CrearAgendamiento/CrearAgendamientoFichaAprendiz';
 import VerAgendamiento from '../../components/Calendario/VerAgendamiento/VerAgendamiento';
 import EditarAgendamientoFicha from '../../components/Calendario/EditarAgendamiento/EditarAgendamientoFicha';
+import EditarAgendamiento from '../../components/Calendario/EditarAgendamiento/EditarAgendamiento';
 /**
  * CalendarioAprendiz
  *
@@ -94,10 +95,10 @@ const CalendarioAprendiz = () => {
               handleAgendamientoSeleccionado={setAgendamientoSeleccionado}
             />
           )}
+
         {isAdmin && agendamientoSeleccionado && (
-          <EditarAgendamientoFicha
+          <EditarAgendamiento
             idInstructor={idInstructor}
-            idFicha={idFicha}
             agendamientoSeleccionado={agendamientoSeleccionado}
             handleAgendamientoSeleccionado={setAgendamientoSeleccionado}
             actualizarEventoCalendario={actualizarEvento}

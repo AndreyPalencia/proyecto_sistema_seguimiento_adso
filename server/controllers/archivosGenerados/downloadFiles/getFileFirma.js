@@ -13,6 +13,7 @@ export const getFileFirma = (req, res) => {
   const ruta = path.join(process.cwd(), 'upload/firmas', nombre);
 
   if (!fs.existsSync(ruta)) {
+    console.log(nombre, ruta);
     return ApiResponse.notFound(res, 'Archivo no encontrado.');
   }
 

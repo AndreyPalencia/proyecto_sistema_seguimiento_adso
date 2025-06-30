@@ -67,7 +67,6 @@ const SelectField = ({
     <Controller
       name={name}
       control={control}
-      defaultValue={defaultValue ? defaultValue : undefined}
       render={({ field, fieldState }) => (
         <TextField
           {...field}

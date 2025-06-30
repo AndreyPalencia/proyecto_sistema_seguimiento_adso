@@ -13,6 +13,8 @@ export const updateUsuarioById = async (req, res) => {
     // Buscar usuario
     const usuario = await Usuario.findByPk(idUsuario);
 
+    console.log(usuario.dataValues, nuevosDatos);
+
     // Verificar si el usuario existe
     if (!usuario) {
       if (req.file) deleteFileSafely(req.file.path);
@@ -23,13 +25,13 @@ export const updateUsuarioById = async (req, res) => {
       ? await getFileByName('firmas', usuario.firma)
       : null;
 
-    if(usuario.numeroDocumento === nuevosDatos.numeroDocumento) {
-      delete nuevosDatos.numeroDocumento
-    } 
+    if (usuario.numeroDocumento === nuevosDatos.numeroDocumento) {
+      delete nuevosDatos.numeroDocumento;
+    }
 
     if (usuario.correoElectronico === nuevosDatos.correoElectronico) {
       delete nuevosDatos.correoElectronico;
-    } 
+    }
 
     // Verificar si el usuario existe
     if (nuevosDatos.password) {
@@ -47,7 +49,6 @@ export const updateUsuarioById = async (req, res) => {
     if (req.body.correoElectronico) {
       req.body.correoElectronico = req.body.correoElectronico.toLowerCase();
     }
-
 
     const [updateRow] = await Usuario.update(nuevosDatos, {
       where: {

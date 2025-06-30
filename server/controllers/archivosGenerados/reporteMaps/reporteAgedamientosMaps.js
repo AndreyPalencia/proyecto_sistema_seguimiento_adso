@@ -9,7 +9,6 @@ export const reporteAgendamientosMaps = async ({
   if (!fechaBusqueda) {
     throw new Error('fechaBusqueda es obligatorio');
   }
-  console.log('fecha', fechaBusqueda)
 
   const inicioDia = new Date(`${fechaBusqueda}T00:00:00.000Z`);
   const finDia = new Date(`${fechaBusqueda}T23:59:59.999Z`);
@@ -82,11 +81,12 @@ export const reporteAgendamientosMaps = async ({
     };
   });
 
-  const origin = direccionesEmpresa[0];
+
   const destination = direccionesEmpresa[direccionesEmpresa.length - 1];
-  const waypoints = direccionesEmpresa.slice(1, -1);
+  const waypoints = direccionesEmpresa.slice(0, -1);
+
+
   return {
-    origin,
     destination,
     waypoints,
     direccionesEmpresa,

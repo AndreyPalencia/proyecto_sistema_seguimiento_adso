@@ -10,7 +10,7 @@ const terminoProgramaEnum = [
 
 export const formCrearFicha = z
   .object({
-    numeroFicha: z
+    numeroFicha: z.coerce
       .string()
       .min(7, 'Debe tener al menos 7 dígitos')
       .max(10, 'No debe superar los 10 dígitos'),

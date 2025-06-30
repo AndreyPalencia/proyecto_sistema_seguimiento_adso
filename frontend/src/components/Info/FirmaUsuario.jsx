@@ -5,7 +5,10 @@ const FirmaUsuario = ({ nombreArchivo }) => {
   const [firmaUrl, setFirmaUrl] = useState(null);
   const [error, setError] = useState(null);
 
-  const archivo = nombreArchivo?.trim() ? nombreArchivo : 'img_tranparente.png'; // fallback manual
+  console.log(nombreArchivo);
+
+  const archivo = nombreArchivo?.trim() ? nombreArchivo : 'img_tranparente.png';
+  console.log('valor evaluado como archivo:', archivo);
 
   useEffect(() => {
     const cargarFirma = async () => {

@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 
 import { Box, Typography } from '@mui/material';
 
-import { obtenerUsuario, modificarUsuario } from '../../services/Usuarios';
+import { obtenerUsuario } from '../../services/Usuarios';
 
 import InformationPanel from '../../components/Info/InformationPanel';
 import SectionInfo from '../../components/Info/SectionInfo/SectionInfo';
@@ -17,6 +17,8 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 
+import { useModificarUsuario } from '../../hook/usuarios/useModificarUsuario';
+
 /**
  * `AprendizDetalles`
  *
@@ -27,88 +29,37 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
  * @returns {JSX.Element} Retorna el componente con la información detallada del aprendiz.
  */
 const AprendizDetalles = () => {
-  //Obtenemos el id del aprendiz desde la URL
   const { idAprendiz } = useParams();
-  //Estado para almacenar la información del aprendiz
   const [aprendiz, setAprendiz] = useState({});
-
-  const { showAlert } = useAlert();
-
   const { roleUsuario } = useAuth();
+  const { showAlert } = useAlert();
+  const { editarUsuario, loading } = useModificarUsuario();
 
-  /**
-   * Función asincrónica para obtener los datos del aprendiz desde la API.
-   *
-   * @returns {void}
-   */
+  // Obtener datos del aprendiz
   const obtenerDatosAprendiz = async () => {
     try {
       const response = await obtenerUsuario(idAprendiz);
       setAprendiz(response);
-      //console.log(response);
     } catch (error) {
-      console.error('Error al obtener la ficha:', error);
+      console.error('Error al obtener el aprendiz:', error);
       setAprendiz('error al cargar');
     }
   };
 
-  /**
-   * Función asincrónica para actualizar los datos del aprendiz en la base de datos.
-   * Si el objeto contiene un archivo, se maneja con FormData para la actualización.
-   *
-   * @param {Object} updatedAprendiz - Objeto con los datos actualizados del aprendiz.
-   * @returns {void}
-   */
+  // Actualización genérica del aprendiz
   const fetchUpdateAprendiz = async (updatedAprendiz) => {
-    try {
-      //Cualquier otro dato se actualiza despues del if validación
-      const aprendizActualizado = await modificarUsuario(
-        idAprendiz,
-        updatedAprendiz
-      );
-      //console.log('actualizacion exitosa', aprendizActualizado);
-      setAprendiz(aprendizActualizado);
-      showAlert({
-        message:
-          'Se actualizo de forma exitosa el la información del aprendiz.',
-        serverity: 'info',
-        variant: 'standard',
-      });
-      obtenerDatosAprendiz();
-    } catch (error) {
-      console.error('Error al actualizar el aprendiz:', error, updatedAprendiz);
-      showAlert({
-        message: `Ocurrio un error al actualizar la información del aprendiz. ${error.message}`,
-        serverity: 'error',
-        variant: 'standard',
-      });
-    }
+    await editarUsuario(idAprendiz, updatedAprendiz);
+    await obtenerDatosAprendiz();
   };
 
+  // Actualización específica para la firma
   const handleActualizacionFirma = async (formFirma) => {
-    try {
-      // { archivo } = archivoFirma;
-      const formData = new FormData();
-      formData.append('archivo', formFirma.archivo);
-
-      const respuesta = await modificarUsuario(idAprendiz, formData);
-      setAprendiz(respuesta);
-      showAlert({
-        message: 'Se actualizo de forma exitosa la firma del aprendiz.',
-        serverity: 'info',
-        variant: 'standard',
-      });
-      obtenerDatosAprendiz();
-    } catch (error) {
-      console.error('Error al actualizar la firma del aprendiz:', error);
-      showAlert({
-        message: `Error al actualizar la firma del aprendiz: ${error.message}`,
-        severity: 'error',
-      });
-    }
+    const formData = new FormData();
+    formData.append('archivo', formFirma.archivo);
+    await editarUsuario(idAprendiz, formData);
+    await obtenerDatosAprendiz();
   };
 
-  //useEffect que se ejecuta cuando cambia el idAprendiz
   useEffect(() => {
     obtenerDatosAprendiz();
   }, [idAprendiz]);
@@ -116,7 +67,7 @@ const AprendizDetalles = () => {
   return (
     <Box component="main" className="box-main-info" sx={{ marginBottom: 2 }}>
       <Typography
-        ccomponent="h2"
+        component="h2"
         variant="h5"
         className="typography-title-info"
         fontSize="28px"
@@ -124,6 +75,7 @@ const AprendizDetalles = () => {
       >
         Información de Aprendiz
       </Typography>
+
       <SectionInfo
         titulo="Información del Aprendiz"
         icono={<AccountCircleOutlinedIcon className="icon-section-info" />}
@@ -173,7 +125,7 @@ const AprendizDetalles = () => {
       >
         <InformationPanel
           name="telefono"
-          titulo="Telefono"
+          titulo="Teléfono"
           item={aprendiz.telefono}
           type="number"
           fetchUpdate={fetchUpdateAprendiz}
@@ -181,7 +133,7 @@ const AprendizDetalles = () => {
 
         <InformationPanel
           name="correoElectronico"
-          titulo="Correo electronico"
+          titulo="Correo electrónico"
           item={aprendiz.correoElectronico}
           isLast={true}
           fetchUpdate={fetchUpdateAprendiz}

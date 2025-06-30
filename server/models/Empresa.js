@@ -13,7 +13,6 @@ class Empresa extends Model {
   }
 }
 
-
 Empresa.init(
   {
     idEmpresa: {
@@ -106,4 +105,3 @@ Empresa.init(
 );
 
 export default Empresa;
-

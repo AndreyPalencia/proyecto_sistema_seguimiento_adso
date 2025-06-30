@@ -54,7 +54,7 @@ const EditInfoModalFile = ({ titulo, isOpen, onClose, onSave }) => {
       open={isOpen}
       onClose={onClose}
       onFileChange={(file) => {
-        console.log('Archivo seleccionado:', file);
+        //console.log('Archivo seleccionado:', file);
         setFileSelected({ archivo: file });
       }}
       actions={

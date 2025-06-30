@@ -36,6 +36,7 @@ export const useAprendicesByFichaId = (idFicha) => {
       }
     };
 
+
     fetchAprendices();
   }, [idFicha]);
 

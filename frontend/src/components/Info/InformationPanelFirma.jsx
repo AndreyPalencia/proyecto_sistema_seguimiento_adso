@@ -38,7 +38,7 @@ const InformationPanelFirma = ({
           flexDirection: 'column',
           alignItems: 'flex-start',
           cursor: disableClick ? 'default' : 'pointer',
-          padding: theme.spacing(isMobile ? 2 : isTablet ? 2.5 : 3),
+          padding: theme.spacing(isMobile ? 2 : isTablet ? 2.5 : 2),
           bgcolor: '#fff',
           borderRadius: theme.spacing(1.5),
           boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.08)',
@@ -63,25 +63,9 @@ const InformationPanelFirma = ({
             xs: 48,
             sm: 'auto',
           },
+          margin: 2,
         }}
       >
-        <Typography
-          variant={isMobile ? 'body1' : 'subtitle1'}
-          sx={{
-            mb: { xs: 1, sm: 1.5 },
-            fontWeight: 'bold',
-            fontSize: {
-              xs: '0.95rem',
-              sm: '1rem',
-              md: '1.1rem',
-            },
-            color: '#333',
-            lineHeight: 1.3,
-          }}
-        >
-          {titulo}
-        </Typography>
-
         {/* Contenedor para la imagen con mejor control */}
         <Box
           sx={{
@@ -115,7 +99,7 @@ const InformationPanelFirma = ({
             },
           }}
         >
-          <FirmaUsuario nombreArchivo={item} />
+          {item?.trim() && <FirmaUsuario nombreArchivo={item} />}
         </Box>
       </Box>
 

@@ -45,7 +45,7 @@ Usuario.init(
       field: 'tipo_documento',
     },
     numeroDocumento: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.BIGINT.UNSIGNED,
       unique: {
         msg: 'Este número de documento ya está registrado.',
       },
@@ -55,7 +55,7 @@ Usuario.init(
           msg: 'El número de documento debe ser un número entero.',
         },
         min: {
-          args: [100000], // valor mínimo (ej. 6 dígitos)
+          args: [100000],
           msg: 'El número de documento debe tener al menos 6 dígitos.',
         },
         max: {

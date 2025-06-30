@@ -11,6 +11,7 @@ import { perfilUser } from '../../authentication/perfilUser.js';
 import { changePassword } from '../../authentication/changePassword.js';
 import { resetPasswordRequest } from '../../authentication/resetPasswordRequest.js';
 import { resetPasswordConfirm } from '../../authentication/resetPasswordConfirm.js';
+import { changePasswordByAdmin } from '../../authentication/changePasswordByAdmin.js';
 
 /* Rutas Autentificacion */
 
@@ -30,6 +31,13 @@ routerAuthentification.patch(
   '/change-password',
   verifyToken(['*']),
   changePassword
+);
+
+//Cambiar Contraseña de otro usuario si endo admin
+routerAuthentification.patch(
+  '/change-password-admin',
+  verifyToken(['admin']),
+  changePasswordByAdmin
 );
 
 //Solicitar la recuperación de la contraseña por correo

@@ -17,7 +17,6 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-
 import { resetearPassword } from '../../services/Auth';
 
 import InputField from '../../components/FormFields/InputField';
@@ -27,7 +26,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
 import CircularProgress from '@mui/material/CircularProgress';
-
+import useResetearPassword from '../../hook/auth/useResetearPassword';
 
 const ResetearPassword = () => {
   const { token } = useParams();
@@ -36,9 +35,7 @@ const ResetearPassword = () => {
 
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-
-  const { showAlert } = useAlert();
+  const { resetear, loading } = useResetearPassword();
 
   const navigate = useNavigate();
 
@@ -46,42 +43,11 @@ const ResetearPassword = () => {
     resolver: zodResolver(formRecuperarPassword),
   });
 
-  const handleOnSumbit = (data) => {
+  const handleOnSumbit = async (data) => {
     const { newPassword } = data;
     const formData = { newPassword, token };
 
-    handleResetearPassword(formData);
-  };
-
-  const handleResetearPassword = async (formData) => {
-    try {
-      setLoading(true);
-      const response = await resetearPassword(formData);
-      if (!response.success) {
-        showAlert({
-          message: `Error no se puedo realizar el cambio de contraseña: ${response.error.message}`,
-          variant: 'standard',
-          severity: 'error',
-        });
-        return;
-      }
-
-      showAlert({
-        message: 'Contraseña Cambiada Correctamente',
-        variant: 'standard',
-        severity: 'success',
-      });
-      navigate('/auth/login');
-    } catch (error) {
-      console.error('Error al cambiar la contraseña:', error);
-      showAlert({
-        message: `Error no se puedo realizar el cambio de contraseña : ${error.message}`,
-        variant: 'standard',
-        severity: 'error',
-      });
-
-      setLoading(false);
-    }
+    await resetear(formData);
   };
 
   return (

@@ -136,6 +136,16 @@ const ReportesInstructorGFPIF = () => {
     return <Typography>Cargando datos del aprendiz...</Typography>;
   }
 
+  const formatCellReportes = ({ key, value }) => {
+    if (key === 'nombreReporte') {
+      const index = value.lastIndexOf('.');
+      const nombreSinExtension = index !== -1 ? value.slice(0, index) : value;
+      return nombreSinExtension;
+    }
+
+    return value;
+  };
+
   return (
     <Box component="main" className="box-main-info" sx={{ marginBottom: 2 }}>
       <Box
@@ -180,6 +190,7 @@ const ReportesInstructorGFPIF = () => {
               'Fecha de ultima actulización ',
               'Tipo reporte',
             ]}
+            formatCellValue={formatCellReportes}
           />
           {(openCrearReporte || openEditarReporte) && (
             <FormReporteGFIPF

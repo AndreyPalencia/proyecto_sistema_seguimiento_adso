@@ -82,7 +82,6 @@ export const deleteFileSafely = async (filePath) => {
   }
 };
 
-
 /**
  * Elimina el archivo antiguo durante una actualización.
  * Nota: No maneja la creación del nuevo archivo, solo la eliminación del antiguo.
@@ -227,7 +226,6 @@ export const filesDocumentosBitacorasAprendices = async (
   };
 };
 
-
 const moveFilesAprendices = async (
   folderAprendiz,
   folderName,
@@ -273,7 +271,9 @@ const moveFilesAprendices = async (
       await copyFile(origen, destino);
     } catch (err) {
       console.warn(`Fallo la copia del archivo: ${fileName}`, err);
-      errores.push(`Fallo la copia del archivo ${fileName}: ${err.message || err}`);
+      errores.push(
+        `Fallo la copia del archivo ${fileName}: ${err.message || err}`
+      );
     }
   }
 
@@ -331,7 +331,6 @@ export const eliminarCarpeta = async (path) => {
     throw error;
   }
 };
-
 
 export const handleFileDownload = async (res, folderName, fileName) => {
   if (!folderName || !fileName) {

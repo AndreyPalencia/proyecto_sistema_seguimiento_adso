@@ -16,7 +16,7 @@ import { useObtenerUsuarioById } from '../../../hook/usuarios/useObtenerUsuarioB
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import formUsuarios from '../../../schemas/formUsuarios';
-import { getChangedFields } from '../../../utils/utils';
+import { getChangedFields, toTitleCaseWithSpaces } from '../../../utils/utils';
 
 /**
  * @param {string} tipo - 'usuario' | 'aprendiz' | 'instructor' | etc.
@@ -37,6 +37,7 @@ const FormUsuario = ({
     formState: { isValid },
   } = useForm({
     resolver: zodResolver(formUsuarios),
+    mode: 'onChange',
     defaultValues: {
       tipoDocumento: '',
       numeroDocumento: '',
@@ -52,7 +53,7 @@ const FormUsuario = ({
 
   const { roleUsuario } = useAuth();
 
-  const { fetchCrearUsuario, loading: loadingCrearUsuario} = useCrearUsuario();
+  const { fetchCrearUsuario, loading: loadingCrearUsuario } = useCrearUsuario();
 
   const { editarUsuario, loading } = useModificarUsuario();
 
@@ -63,8 +64,18 @@ const FormUsuario = ({
   const [originalUsuario, setOriginalUsuario] = useState(null);
 
   const onSubmit = async (data) => {
+    const { nombre, apellido, ...rest } = data;
+
+    const nombreFormateado = toTitleCaseWithSpaces(data?.nombre);
+    const apellidoFormateado = toTitleCaseWithSpaces(data?.apellido);
+
+    const formData = {
+      nombre: nombreFormateado ?? nombre,
+      apellido: apellidoFormateado ?? apellido,
+      ...rest,
+    };
     if (isEdit) {
-      const editedFields = getChangedFields(data, originalUsuario);
+      const editedFields = getChangedFields(formData, originalUsuario);
 
       if (Object.keys(editedFields).length === 0) {
         showAlert({
@@ -81,7 +92,7 @@ const FormUsuario = ({
       }
       onClose();
     } else {
-      const res = await fetchCrearUsuario(data);
+      const res = await fetchCrearUsuario(formData);
       if (typeof onSuccess === 'function') {
         await onSuccess(res.idUsuario);
       }
@@ -121,7 +132,7 @@ const FormUsuario = ({
         console.log(error);
       })}
     >
-      <FullScreenLoader open={loadingCrearUsuario}  />
+      <FullScreenLoader open={loadingCrearUsuario} />
       <Box sx={{ width: '100%', padding: '20px 10px 5px 0' }}>
         <Box sx={{ mb: 2 }}>
           <SelectField
@@ -192,7 +203,6 @@ const FormUsuario = ({
             menuOptions={[
               { label: 'Instructor', value: 'instructor' },
               { label: 'Aprendiz', value: 'aprendiz' },
-              { label: 'Administrador', value: 'admin' },
             ]}
             disabled={roleUsuario === 'admin' ? false : true}
           />

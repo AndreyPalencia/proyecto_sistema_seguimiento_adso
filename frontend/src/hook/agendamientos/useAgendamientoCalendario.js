@@ -45,8 +45,7 @@ const useAgendamientoCalendar = (paramsFetch) => {
       );
 
       // Mapeamos para incluir un ID único que requiere FullCalendar
-      const eventosConId = data.
-      map((evento) => ({
+      const eventosConId = data.map((evento) => ({
         ...evento,
         id: evento.idAgendamiento,
       }));

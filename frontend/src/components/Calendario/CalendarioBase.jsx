@@ -24,7 +24,6 @@ const CalendarioBase = ({
     <Box sx={{ height: height ?? 'auto', overflow: 'auto', width:'100%' }}>
       <FullCalendar
         height="100%"
-        width='100%'
         locale={{ ...esLocale, allDayText: 'Todo el día' }}
         ref={calendarRef}
         initialView="dayGridMonth"

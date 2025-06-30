@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import {
   Typography,
   DialogContent,
@@ -13,9 +11,8 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { useNavigate } from 'react-router-dom';
-import { useAlert } from '../../context/AlertContext';
 
-import { recuperarPassword } from '../../services/Auth';
+import useRecuperarPassword from '../../hook/auth/useRecuperarPassword';
 import InputField from '../../components/FormFields/InputField';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,42 +28,12 @@ const RecuperarPassword = () => {
     resolver: zodResolver(formEmail),
   });
 
-  const { showAlert } = useAlert();
+  const { recuperar, loading } = useRecuperarPassword();
 
-  const [loading, setLoading] = useState(false);
-
-  const handleRecuperar = async (formData) => {
-    try {
-      setLoading(true);
-      const response = await recuperarPassword(formData);
-      if (!response.success) {
-        showAlert({
-          message: 'No se puedo enviar el correo de recuperacion.',
-          variant: 'standard',
-          severity: 'warning',
-        });
-        return;
-      }
-      showAlert({
-        message: 'Correo de recuperacion enviado.',
-        variant: 'standard',
-        severity: 'success',
-      });
-      navigate('/auth/login');
-    } catch (error) {
-      console.error('Error al recuperar la contraseña:', error);
-      showAlert({
-        message: `Error al enviar el correo de recuperacion: ${error}`,
-        variant: 'standard',
-        severity: 'warning',
-      });
-      setLoading(false);
-    }
+  const onSubmit = async (data) => {
+    await recuperar(data);
   };
 
-  const onSubmit = (data) => {
-    handleRecuperar(data);
-  };
   return (
     <>
       <Box

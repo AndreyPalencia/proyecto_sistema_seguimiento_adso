@@ -122,7 +122,6 @@ const EditarAgendamiento = ({
     );
   };
 
-  console.log(fichas);
   const fichaSeleccionada = useMemo(() => {
     return fichas.find((ficha) => ficha.idFicha === idFichaSeleccionada);
   }, [idFichaSeleccionada, fichas]);
@@ -145,10 +144,13 @@ const EditarAgendamiento = ({
    * Si la ficha no existe entre las disponibles, el campo queda vacío.
    */
   useEffect(() => {
-    if (agendamientoSeleccionado) {
-      //
+    if (
+      agendamientoSeleccionado &&
+      fichas.length > 0 &&
+      Object.keys(aprendices).length > 0
+    ) {
       const fichaExiste = fichas.some(
-        (ficha) => ficha.idFicha === agendamientoSeleccionado.idFicha
+        (ficha) => ficha?.idFicha === agendamientoSeleccionado?.idFicha
       );
 
       const idFicha = agendamientoSeleccionado.idFicha;
@@ -159,19 +161,18 @@ const EditarAgendamiento = ({
       );
 
       const idFichaAprendiz = aprendizSeleccionado?.idFichaAprendiz || '';
-
       reset({
-        idAgendamiento: agendamientoSeleccionado.idAgendamiento || '',
+        idAgendamiento: agendamientoSeleccionado?.idAgendamiento || '',
         idFicha: fichaExiste ? idFicha : '',
-        idFichaAprendiz: idFichaAprendiz,
+        idFichaAprendiz,
         idInstructor: idInstructor || '',
-        herramientaReunion: agendamientoSeleccionado.herramientaReunion || '',
-        enlaceReunion: agendamientoSeleccionado.enlaceReunion || '',
-        fechaInicio: agendamientoSeleccionado.fechaInicio || '',
-        fechaFin: agendamientoSeleccionado.fechaFin || '',
-        estadoVisita: agendamientoSeleccionado.estadoVisita || 'Pendiente',
-        tipoVisita: agendamientoSeleccionado.tipoVisita || 'Presencial',
-        numeroVisita: agendamientoSeleccionado.numeroVisita || '1',
+        herramientaReunion: agendamientoSeleccionado?.herramientaReunion || '',
+        enlaceReunion: agendamientoSeleccionado?.enlaceReunion || '',
+        fechaInicio: agendamientoSeleccionado?.fechaInicio || '',
+        fechaFin: agendamientoSeleccionado?.fechaFin || '',
+        estadoVisita: agendamientoSeleccionado?.estadoVisita || 'Pendiente',
+        tipoVisita: agendamientoSeleccionado?.tipoVisita || 'Presencial',
+        numeroVisita: agendamientoSeleccionado?.numeroVisita || '1',
       });
     }
   }, [agendamientoSeleccionado, reset, idInstructor, fichas, aprendices]);

@@ -21,9 +21,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { formBusquedaPorFecha } from '../../../schemas/formReporteVisitas';
 
 import { getTodayUtcFromBogota } from '../../../utils/utils';
+import { obtenerUbicacionActual } from '../../../utils/geolocation';
+import { useState } from 'react';
+import FullScreenLoader from '../../Feedback/FullScreenLoader';
 
 const FormAgendamientosRutaMaps = ({ open, onClose }) => {
   const { idInstructor, idInstructorAdmin } = useParams();
+
+  const [loading, setLoading] = useState(false);
 
   let idInstructorConsultas = idInstructor || idInstructorAdmin;
   const { control, handleSubmit, reset, watch } = useForm({
@@ -37,9 +42,15 @@ const FormAgendamientosRutaMaps = ({ open, onClose }) => {
 
   const OnSubmit = async (formData) => {
     try {
+      setLoading(true)
+      const origin = await obtenerUbicacionActual();
+      const formDataOrigin = {
+        ...formData,
+        origin,
+      };
       await descargarReporteRutaAgendamientosMaps(
         idInstructorConsultas,
-        formData
+        formDataOrigin
       );
       onClose();
     } catch (error) {
@@ -49,6 +60,8 @@ const FormAgendamientosRutaMaps = ({ open, onClose }) => {
         variant: 'standard',
         severity: 'error',
       });
+    }finally {
+      setLoading(false)
     }
   };
 
@@ -61,35 +74,38 @@ const FormAgendamientosRutaMaps = ({ open, onClose }) => {
   }, [open, reset]);
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Generar Reporte ruta de agendamientos:</DialogTitle>
+    <>
+    <FullScreenLoader open={loading}/>
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>Generar Reporte ruta de agendamientos:</DialogTitle>
 
-      <DialogContent>
-        <form onSubmit={handleSubmit(OnSubmit)}>
-          <Box sx={{ mt: 4 }}>
-            <Box sx={{ mb: 3 }}>
-              <DateFieldColombia
-                name="fechaBusqueda"
-                label="Seleccionar Fecha"
-                control={control}
-                required
-                inputLabel
-              />
+        <DialogContent>
+          <form onSubmit={handleSubmit(OnSubmit)}>
+            <Box sx={{ mt: 4 }}>
+              <Box sx={{ mb: 3 }}>
+                <DateFieldColombia
+                  name="fechaBusqueda"
+                  label="Seleccionar Fecha"
+                  control={control}
+                  required
+                  inputLabel
+                />
+              </Box>
             </Box>
-          </Box>
-          <DialogActions sx={{ padding: 0 }}>
-            <Stack direction="row" spacing={2}>
-              <Button onClick={onClose} color="secondary" variant="outlined">
-                Cancelar
-              </Button>
-              <Button color="primary" variant="contained" type="submit">
-                Generar
-              </Button>
-            </Stack>
-          </DialogActions>
-        </form>
-      </DialogContent>
-    </Dialog>
+            <DialogActions sx={{ padding: 0 }}>
+              <Stack direction="row" spacing={2}>
+                <Button onClick={onClose} color="secondary" variant="outlined">
+                  Cancelar
+                </Button>
+                <Button color="primary" variant="contained" type="submit">
+                  Generar
+                </Button>
+              </Stack>
+            </DialogActions>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

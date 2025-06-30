@@ -57,12 +57,7 @@ routerUsuarios.get(
 );
 
 //Visualizar usuarios
-routerUsuarios.get(
-  '',
-  verifyToken(['admin']),
-  validateParamsIds,
-  getUsuarios
-);
+routerUsuarios.get('', verifyToken(['admin']), validateParamsIds, getUsuarios);
 
 //Modificar usuarios por [ID]
 routerUsuarios.put(
