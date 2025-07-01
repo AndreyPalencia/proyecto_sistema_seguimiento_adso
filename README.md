@@ -109,7 +109,8 @@ Accede a la aplicación desde el navegador en la dirección que indique el front
 
 ## Contacto
 
-Para dudas, sugerencias o soporte: [AndreyPalencia](https://github.com/AndreyPalencia)
+Para dudas, sugerencias o soporte: [AndreyPalencia](https://github.com/AndreyPalencia), [GianFranco](https://github.com/francolondo), [Julian](https://github.com/JulyGuz59), [SamuelJaramillo
+](https://github.com/SAMIZEINS).
 
 ---
 
