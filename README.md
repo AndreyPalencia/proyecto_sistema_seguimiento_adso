@@ -107,6 +107,18 @@ Accede a la aplicación desde el navegador en la dirección que indique el front
 
 ---
 
+## Documentación
+La documentación detallada de este proyecto está disponible en GitHub Wiki, e incluye:
+- Objetivos y alcance del proyecto
+- Arquitectura del sistema
+- Funciones de los usuarios y flujos de trabajo
+- Detalles de instalación y configuración
+
+Acceda a la documentación completa aquí:
+👉 [Wiki Sistema de Seguimiento al Aprendiz en Etapa Pracatica](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Bienvenido-a-la-Wiki-del-Proyecto-Sistema-de-Seguimiento-al-Aprendiz-en-Etapa-Practica)
+
+---
+
 ## Contacto
 
 Para dudas, sugerencias o soporte: [AndreyPalencia](https://github.com/AndreyPalencia), [GianFranco](https://github.com/francolondo), [Julian](https://github.com/JulyGuz59), [SamuelJaramillo
