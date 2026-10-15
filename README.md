@@ -12,10 +12,11 @@ Este proyecto es un **Sistema de Información de Seguimiento al Aprendiz en Etap
 
 ## Tecnologías Utilizadas
 
-- **Backend:** Node.js + Express
-- **Frontend:** React.js
-- **Base de datos:** MySQL (ORM: Sequelize)
-- **Otros:** Archiver, PDFKit, Docxtemplater, PizZip
+- **Backend:** Node.js, Express, Sequelize (ORM), Socket.IO (tiempo real), JWT y bcryptjs (autenticación), Nodemailer (correos), Multer (carga de archivos)
+- **Frontend:** React 19 con Vite, Material UI, React Router, React Hook Form + Zod (formularios y validación), FullCalendar (agendamiento), Axios, Socket.IO Client
+- **Base de datos:** MySQL
+- **Reportes y archivos:** PDFKit (PDF), Docxtemplater + PizZip (Word), Archiver (ZIP)
+- **Seguridad:** JWT, bcryptjs, DOMPurify, CORS
 
 ---
 
@@ -103,31 +104,57 @@ Accede a la aplicación desde el navegador en la dirección que indique el front
 
 ## Estado del Proyecto
 
-> **En desarrollo:** Algunas funcionalidades pueden estar sujetas a cambios.
+> **Versión estable (v1.0).** Las funcionalidades principales están completas y operativas.
+>
+> ***Documentación esta completa:***. Ya están disponibles los manueales instalación y despliegue, manual técnico, análisis y diseño. Solo falta terminar los **manuales de uso para el usuario final**, que se están completando en el pagina web [DocumentaciónSAEP](https://doc-proyecto-saep.vercel.app/). 
+
 
 ---
 
 ## Documentación
-La documentación detallada de este proyecto está disponible en GitHub Wiki, e incluye:
-- Objetivos y alcance del proyecto
-- Arquitectura del sistema
-- Funciones de los usuarios y flujos de trabajo
-- Detalles de instalación y configuración
 
-Acceda a la documentación completa aquí:
-👉 [Wiki Sistema de Seguimiento al Aprendiz en Etapa Pracatica](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Bienvenido-a-la-Wiki-del-Proyecto-Sistema-de-Seguimiento-al-Aprendiz-en-Etapa-Practica)
+La documentación completa está en la [Wiki del proyecto](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Bienvenido-a-la-Wiki-del-Proyecto-Sistema-de-Seguimiento-al-Aprendiz-en-Etapa-Practica).
+
+**Guías técnicas**
+- [Manual de Instalación o Despliegue](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Manual-de-Instalaci%C3%B3n-o-Despliegue) (incluye la configuración de variables de entorno)
+- [Manual Técnico](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Manual-T%C3%A9cnico) (flujo general del sistema)
+
+**Análisis y diseño**
+- [Requerimientos Funcionales y No Funcionales](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Requerimientos-Funcionales-y-Requerimientos-No-Funcionales)
+- [Diagramas de Caso de uso, Clase y Objetos y Actividades](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Diagramas-de-Caso-de-uso,-Clase-y-Objetos-y-Actividades)
+- [Diagramas de Distribución, Componentes y Aplicaciones distribuidas](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Diagramas-de-Distribuci%C3%B3n,-Componentes-y-Aplicaciones-distribuidad)
+- [Mockups](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Mockups)
+
+**Gestión del proyecto**
+- [Mapa de Procesos y Ficha de Procesos](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Mapa-de-Procesos-y-Ficha-de-Procesos)
+- [Metodología tradicional](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Metodolog%C3%ADa-tradicional)
+- [Stakeholders](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Stakeholders)
+- [Técnicas de recolección](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/T%C3%A9cnicas-de-recolecci%C3%B3n)
 
 ---
 
-## Contacto
+Acceda a la documentación completa aquí:
+👉 [Wiki Sistema de Seguimiento al Aprendiz en Etapa Practica](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/wiki/Bienvenido-a-la-Wiki-del-Proyecto-Sistema-de-Seguimiento-al-Aprendiz-en-Etapa-Practica)
 
-Para dudas, sugerencias o soporte: [AndreyPalencia](https://github.com/AndreyPalencia), [GianFranco](https://github.com/francolondo), [Julian](https://github.com/JulyGuz59), [SamuelJaramillo
-](https://github.com/SAMIZEINS).
+---
+
+## Equipo
+
+Proyecto de fin de carrera del Tecnólogo en Análisis y Desarrollo de Software (SENA), desarrollado en equipo.
+
+| Integrante | GitHub | Rol | Aporte |
+| --- | --- | --- | --- |
+| Johan Andrey Palencia | [AndreyPalencia](https://github.com/AndreyPalencia) | Líder del equipo · Backend e integración | Modelos y normalización con Sequelize; módulos y endpoints del backend; middlewares y validación de datos previa a cada endpoint; esquemas de validación con Zod; componentes de formulario reutilizables; conexión frontend–backend con Axios; notificaciones con WebSockets. |
+| Gian Franco | [francolondo](https://github.com/francolondo) | Frontend · Backend | Modales del frontend (inicio de sesión, pantalla de carga, errores, observaciones, perfil, notificaciones); módulo de reportes del backend. |
+| Samuel Jaramillo | [SAMIZEINS](https://github.com/SAMIZEINS) | Frontend · Backend | Módulo de calendario y agendamiento de citas; lógica de backend del agendamiento. |
+| Julian  | [JulyGuz59](https://github.com/JulyGuz59) | Frontend · Backend | Componente de tablas del frontend; dos módulos de endpoints con su lógica de negocio. |
+
+¿Dudas, sugerencias o errores? Abre un [Issue](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/issues).
 
 ---
 
 ## Licencia
 
-Este proyecto no tiene una licencia específica por el momento.
+© 2025 Johan Andrey Palencia Ramírez, Gian Franco, Samuel Jaramillo, Julian. Todos los derechos reservados.
 
----
+El código se publica con fines de portafolio y consulta. Para reutilizarlo o distribuirlo, contacta a los autores abriendo un [Issue](https://github.com/AndreyPalencia/proyecto_sistema_seguimiento_adso/issues).
